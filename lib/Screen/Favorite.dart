@@ -16,6 +16,7 @@ class _FavoriteState extends State<Favorite> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
+            Navigator.pop(context);
             // Xử lý khi người dùng nhấn nút back
           },
         ),

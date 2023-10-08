@@ -16,6 +16,7 @@ class _MyCartState extends State<MyCart> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
+            Navigator.pop(context);
             // Xử lý khi người dùng nhấn nút back
           },
         ),
