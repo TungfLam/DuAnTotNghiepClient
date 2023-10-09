@@ -13,33 +13,33 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Adadas',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications_outlined),
+            icon: const Icon(Icons.notifications_outlined),
             onPressed: () {
               // Xử lý khi người dùng nhấn vào biểu tượng thông báo
             },
           ),
           IconButton(
-            icon: Icon(Icons.shopping_bag_outlined),
+            icon: const Icon(Icons.shopping_bag_outlined),
             onPressed: () {
               Navigator.pushNamed(context, '/mycart');
               // Xử lý khi người dùng nhấn vào biểu tượng giỏ hàng
             },
           ),
           IconButton(
-            icon: Icon(Icons.favorite_border_outlined),
+            icon: const Icon(Icons.favorite_border_outlined),
             onPressed: () {
               Navigator.pushNamed(context, '/favorite');
               // Xử lý khi người dùng nhấn vào biểu tượng yêu thích
             },
           ),
           IconButton(
-            icon: Icon(Icons.search_outlined),
+            icon: const Icon(Icons.search_outlined),
             onPressed: () {
               Navigator.pushNamed(context, '/find');
               // Xử lý khi người dùng nhấn vào biểu tượng tìm kiếm
@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Builder(
             builder: (BuildContext context) {
               return IconButton(
-                icon: Icon(Icons.menu_outlined),
+                icon: const Icon(Icons.menu_outlined),
                 onPressed: () {
                   // Mở thanh điều hướng bên phải khi người dùng nhấp vào biểu tượng menu
                   Scaffold.of(context).openEndDrawer();
@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.all(20),
         child: Container(
           color: Colors.amber,
-          child: Center(child: Text("Danh sách sản phẩm")),
+          child: const Center(child: Text("Danh sách sản phẩm")),
         ),
       ),
       // Định nghĩa thanh điều hướng bên phải với các tùy chọn điều hướng
@@ -122,9 +122,9 @@ class _MyHomePageState extends State<MyHomePage> {
             //   child: Text('Thanh điều hướng'),
             // ),
             ListTile(
-              leading: Icon(
+              leading: const Icon(
                   Icons.shopping_bag_outlined), // Thêm biểu tượng vào ListTile
-              title: Text(
+              title: const Text(
                 'Cart',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -133,9 +133,9 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             ListTile(
-              leading: Icon(Icons
+              leading: const Icon(Icons
                   .favorite_border_outlined), // Thêm biểu tượng vào ListTile
-              title: Text(
+              title: const Text(
                 'Favorite',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -144,9 +144,9 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             ListTile(
-              leading: Icon(
+              leading: const Icon(
                   Icons.location_on_outlined), // Thêm biểu tượng vào ListTile
-              title: Text(
+              title: const Text(
                 'Delivery Address',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -155,9 +155,9 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             ListTile(
-              leading:
-                  Icon(Icons.payment_outlined), // Thêm biểu tượng vào ListTile
-              title: Text(
+              leading: const Icon(
+                  Icons.payment_outlined), // Thêm biểu tượng vào ListTile
+              title: const Text(
                 'Payment Methods',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -166,9 +166,9 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             ListTile(
-              leading:
-                  Icon(Icons.discount_outlined), // Thêm biểu tượng vào ListTile
-              title: Text(
+              leading: const Icon(
+                  Icons.discount_outlined), // Thêm biểu tượng vào ListTile
+              title: const Text(
                 'Promo Cord',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -177,9 +177,9 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             ListTile(
-              leading: Icon(
+              leading: const Icon(
                   Icons.notifications_outlined), // Thêm biểu tượng vào ListTile
-              title: Text(
+              title: const Text(
                 'Notifecations',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -188,9 +188,9 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             ListTile(
-              leading: Icon(
+              leading: const Icon(
                   Icons.help_outline_outlined), // Thêm biểu tượng vào ListTile
-              title: Text(
+              title: const Text(
                 'Help',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -199,9 +199,9 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             ListTile(
-              leading:
-                  Icon(Icons.error_outline), // Thêm biểu tượng vào ListTile
-              title: Text(
+              leading: const Icon(
+                  Icons.error_outline), // Thêm biểu tượng vào ListTile
+              title: const Text(
                 'About',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -212,9 +212,9 @@ class _MyHomePageState extends State<MyHomePage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
               child: ListTile(
-                leading:
-                    Icon(Icons.logout_outlined), // Thêm biểu tượng vào ListTile
-                title: Text(
+                leading: const Icon(
+                    Icons.logout_outlined), // Thêm biểu tượng vào ListTile
+                title: const Text(
                   'LOGOUT',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),

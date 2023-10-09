@@ -14,20 +14,19 @@ class _MyCartState extends State<MyCart> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
             // Xử lý khi người dùng nhấn nút back
           },
         ),
-        title: Text(
+        title: const Text(
           'My Cart',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
         centerTitle: true,
-        actions: [
-        ],
+        actions: const [],
       ),
       body: Stack(
         children: [
@@ -37,7 +36,7 @@ class _MyCartState extends State<MyCart> {
               color: Colors.amber,
               width: double.infinity,
               height: 620,
-              child: Text("data"),
+              child: const Text("data"),
             ),
           ),
           Align(
@@ -51,10 +50,17 @@ class _MyCartState extends State<MyCart> {
                   onPressed: () {
                     // Xử lý khi nút được nhấn
                   },
-                  icon: Icon(Icons.shopping_cart,color: Colors.white,), // Icon tùy chọn
-                  label: Text('GO TO CHECKOUT',style: TextStyle(color: Colors.white,fontWeight:FontWeight.bold),),
+                  icon: const Icon(
+                    Icons.shopping_cart,
+                    color: Colors.white,
+                  ), // Icon tùy chọn
+                  label: const Text(
+                    'GO TO CHECKOUT',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF6342E8), // Đặt màu nền
+                    backgroundColor: const Color(0xFF6342E8), // Đặt màu nền
                   ),
                 ),
               ),

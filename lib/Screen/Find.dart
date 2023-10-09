@@ -14,7 +14,7 @@ class _FindState extends State<Find> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
             // Xử lý khi người dùng nhấn nút back
@@ -32,16 +32,17 @@ class _FindState extends State<Find> {
           Container(
             width: double.infinity,
             height: 70,
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 filled: true, // Đặt filled thành true để có màu nền
-                fillColor: Color(0xFFF2F3F2), // Đặt màu nền
+                fillColor: const Color(0xFFF2F3F2), // Đặt màu nền
                 border: OutlineInputBorder(
                   borderSide: BorderSide.none, // Xóa đường viền
-                  borderRadius: BorderRadius.circular(20.0), // Điều chỉnh radius tại đây
+                  borderRadius:
+                      BorderRadius.circular(20.0), // Điều chỉnh radius tại đây
                 ),
               ),
             ),
@@ -52,7 +53,7 @@ class _FindState extends State<Find> {
               child: Container(
                 color: Colors.amber,
                 width: double.infinity,
-                child: Text("data"),
+                child: const Text("data"),
               ),
             ),
           ),
