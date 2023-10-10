@@ -53,7 +53,7 @@ class _FindState extends State<Find> {
               child: Container(
                 color: Colors.white,
                 width: double.infinity,
-                child: const Text("data"),
+                child: const Text("data find"),
               ),
             ),
           ),

@@ -36,7 +36,7 @@ class _MyCartState extends State<MyCart> {
               color: Colors.white,
               width: double.infinity,
               height: 620,
-              child: const Text("data"),
+              child: const Text("data my cart"),
             ),
           ),
           Align(
