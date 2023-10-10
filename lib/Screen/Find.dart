@@ -21,7 +21,7 @@ class _FindState extends State<Find> {
           },
         ),
         title: const Text(
-          'My Cart',
+          'Find Products',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
@@ -51,7 +51,7 @@ class _FindState extends State<Find> {
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Container(
-                color: Colors.amber,
+                color: Colors.white,
                 width: double.infinity,
                 child: const Text("data"),
               ),
