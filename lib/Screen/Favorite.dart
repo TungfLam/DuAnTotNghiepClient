@@ -33,7 +33,7 @@ class _FavoriteState extends State<Favorite> {
           Padding(
             padding: const EdgeInsets.all(20),
             child: Container(
-              color: Colors.amber,
+              color: Colors.white,
               width: double.infinity,
               height: 620,
               child: const Text("data"),
