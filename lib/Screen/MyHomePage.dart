@@ -23,6 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
             IconButton(
               icon: const Icon(Icons.notifications_outlined),
               onPressed: () {
+                Navigator.pushNamed(context, '/detaiproduct');
                 // Xử lý khi người dùng nhấn vào biểu tượng thông báo
               },
             ),

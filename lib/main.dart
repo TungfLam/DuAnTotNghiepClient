@@ -1,3 +1,4 @@
+import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
 import 'package:appclient/Screen/Find.dart';
 import 'package:appclient/Screen/MyCart.dart';
@@ -25,8 +26,9 @@ class MyApp extends StatelessWidget {
         '/': (context) => const MyHomePage(title: ''),
         '/mycart': (context) => const MyCart(title: ''),
         '/find': (context) => const Find(title: ''),
-        '/favorite': (context) =>
-            const Favorite(title: ''), // Đăng ký đường dẫn cho màn hình MyCart
+        '/favorite': (context) => const Favorite(title: ''),
+        '/detaiproduct': (context) => const DetailProduct(title: ''), 
+        // Đăng ký đường dẫn cho màn hình MyCart
       },
     );
   }
