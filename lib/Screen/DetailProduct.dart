@@ -76,12 +76,8 @@ class _DetailProductState extends State<DetailProduct> {
                 child: Container(
                   width: double.infinity,
                   color: Color.fromARGB(255, 198, 198, 198),
-                  
-                    child: Transform.scale(
-                      scale: 1.3,
-                      child: Image.asset('lib/images/img2.jpg')
-                      ),
-                  
+                  child: Transform.scale(
+                      scale: 1.3, child: Image.asset('lib/images/img2.jpg')),
                 ),
               ),
               Expanded(
@@ -96,7 +92,6 @@ class _DetailProductState extends State<DetailProduct> {
                     child: Column(
                       children: [
                         Container(
-                          
                           child: Row(
                             children: [
                               Text(
@@ -174,9 +169,9 @@ class _DetailProductState extends State<DetailProduct> {
                                     quantity
                                         .toString(), // Display the updated quantity
                                     style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                    ),
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   IconButton(
                                     icon: Icon(Icons.add),
@@ -277,6 +272,7 @@ class _DetailProductState extends State<DetailProduct> {
                 icon: Icon(Icons.arrow_back),
                 onPressed: () {
                   // Xử lý khi nhấn nút back
+                  Navigator.pop(context);
                 },
               ),
             ),
@@ -302,4 +298,3 @@ class _DetailProductState extends State<DetailProduct> {
     );
   }
 }
-
