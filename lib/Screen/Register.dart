@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class Login extends StatefulWidget {
-  const Login({Key? key, required this.title}) : super(key: key);
+class Register extends StatefulWidget {
+  const Register({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _LoginState extends State<Login> {
+class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(
@@ -25,7 +25,7 @@ class _LoginState extends State<Login> {
           child: Padding(
             padding: const EdgeInsets.only(top: 60.0, left: 22),
             child: Text(
-              'Hello\nSign In!',
+              'Create Your\nAccount',
               style: TextStyle(
                 fontSize: 30,
                 color: Colors.white,
@@ -56,7 +56,19 @@ class _LoginState extends State<Login> {
                             color: Colors.grey,
                           ),
                           label: Text(
-                            'Gmail',
+                            'Your Name',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, color: Colors.red),
+                          )),
+                    ),
+                    TextField(
+                      decoration: InputDecoration(
+                          suffixIcon: Icon(
+                            Icons.check,
+                            color: Colors.grey,
+                          ),
+                          label: Text(
+                            'Gmail or Phone',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, color: Colors.red),
                           )),
@@ -74,19 +86,22 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'Forgot PassWord?',
+                    TextField(
+                      decoration: InputDecoration(
+                        suffixIcon: Icon(
+                          Icons.visibility_off,
+                          color: Colors.grey,
+                        ),
+                        label: Text(
+                          'Confirm PassWord',
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: Colors.black,
-                          ),
-                        )),
+                              fontWeight: FontWeight.bold, color: Colors.red),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
                         SizedBox(height: 70,),
                     Container(
                       height: 50,
@@ -98,13 +113,13 @@ class _LoginState extends State<Login> {
                           Color(0xffF5F5F5),
                         ]),
                       ),
-                      child: Center(child: Text('SIGN IN', style: TextStyle(
+                      child: Center(child: Text('SIGN UP', style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         fontSize: 20,
                       ),),),
                     ),
-                     SizedBox(height: 150,),
+                     SizedBox(height: 80,),
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Column(
@@ -115,7 +130,7 @@ class _LoginState extends State<Login> {
                             fontWeight: FontWeight.bold,
                             color: Colors.grey,
                           ),),
-                          Text("Sign Up",style: TextStyle(
+                          Text("Sign In",style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                             fontSize: 17,
