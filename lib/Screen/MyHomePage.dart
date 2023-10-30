@@ -17,6 +17,7 @@ class _MyHomePageState extends State<MyHomePage> {
       length: 4,  
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: const Text(
             'Adadas',
             style: TextStyle(fontWeight: FontWeight.bold),
@@ -244,6 +245,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   onTap: () {
                     // Xử lý khi người dùng chọn Tùy chọn 1
+                    Navigator.pushNamed(context, '/login');
                   },
                 ),
               ),

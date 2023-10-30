@@ -91,42 +91,32 @@ class _LoginState extends State<Login> {
                       FadeInUp(
                           duration: Duration(milliseconds: 1800),
                           child: Container(
-                            padding: EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                                color:Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  
-                                    color: Color.fromRGBO(47, 99, 240, 1)),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Color.fromRGBO(143, 148, 251, .2),
-                                      blurRadius: 100.0,
-                                      offset: Offset(0, 50))
-                                ]),
+                            decoration: BoxDecoration(),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                              TextFormField(
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
-                                  labelText: "Email", 
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                                  prefixIcon: Icon(Icons.email)
-                                ),
-                              ),
-                              SizedBox(height: 15,),
                                 TextFormField(
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
-                                  
-                                  labelText: "PassWord",
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  prefixIcon: Icon(Icons.lock)
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: InputDecoration(
+                                      labelText: "Email",
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      prefixIcon: Icon(Icons.email)),
                                 ),
-                              ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                TextFormField(
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: InputDecoration(
+                                      labelText: "PassWord",
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      prefixIcon: Icon(Icons.lock)),
+                                ),
                               ],
                             ),
                           )),
@@ -153,26 +143,28 @@ class _LoginState extends State<Login> {
                         height: 80,
                       ),
                       FadeInUp(
-                          duration: Duration(milliseconds: 1900),
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              gradient: LinearGradient(colors: [
-                               Color.fromARGB(255, 184, 22, 224),
-                                Color.fromARGB(153, 143, 148, 251),
-                              ]),
+                        duration: Duration(milliseconds: 1900),
+                        child: Container(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // Xử lý khi nút được nhấn
+                              Navigator.pushNamed(context, '/');
+                            }, 
+                            
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color(0xFF6342E8), // Đặt màu nền
+                            ), child: Text(
+                              'SIGN IN',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
-                            child: Center(
-                              child: Text(
-                                "SIGN IN",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20),
-                              ),
-                            ),
-                          )),
+                          ),
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
                         child: Container(
@@ -188,9 +180,18 @@ class _LoginState extends State<Login> {
                                   "No registers yet?\t",
                                   style: TextStyle(color: Colors.grey),
                                 )),
-                            FadeInUp(duration: Duration(milliseconds: 2000),
-                     child: Text("Create an account", 
-                     style: TextStyle(color: Color.fromARGB(255, 184, 22, 224)),))
+                            FadeInUp(
+                                duration: Duration(milliseconds: 2000),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/register');
+                                  },
+                                  child: Text(
+                                    "Create an account",
+                                    style: TextStyle(
+                                        color: Color(0xFF6342E8)),
+                                  ),
+                                ))
                           ],
                         )),
                       ),
