@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 
@@ -92,72 +94,72 @@ class _RegisterState extends State<Register> {
                           duration: Duration(milliseconds: 1800),
                           child: Container(
                             padding: EdgeInsets.all(4.8),
-                           
                             child: Column(
-                              
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                              TextFormField(
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
-                                  labelText: "Email", 
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                                  prefixIcon: Icon(Icons.email)
-                                ),
-                              ),
-                              SizedBox(height: 15,),
                                 TextFormField(
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
-                                  
-                                  labelText: "PassWord",
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  prefixIcon: Icon(Icons.lock)
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: InputDecoration(
+                                      labelText: "Email",
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      prefixIcon: Icon(Icons.email)),
                                 ),
-                              ),
-                               SizedBox(height: 15,),
+                                SizedBox(
+                                  height: 15,
+                                ),
                                 TextFormField(
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
-                                  
-                                  labelText: "RePassWord",
-                                  
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  prefixIcon: Icon(Icons.lock)
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: InputDecoration(
+                                      labelText: "PassWord",
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      prefixIcon: Icon(Icons.lock)),
                                 ),
-                              ),
-                                
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                TextFormField(
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: InputDecoration(
+                                      labelText: "RePassWord",
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      prefixIcon: Icon(Icons.lock)),
+                                ),
                               ],
                             ),
                           )),
-                     
                       SizedBox(
                         height: 50,
                       ),
                       FadeInUp(
-                          duration: Duration(milliseconds: 1900),
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              gradient: LinearGradient(colors: [
-                                Color.fromARGB(255, 184, 22, 224),
-                                Color.fromARGB(153, 143, 148, 251),
-                              ]),
+                        duration: Duration(milliseconds: 1900),
+                        child: Container(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // Xử lý khi nút được nhấn
+                              
+                            },
+
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color(0xFF6342E8), // Đặt màu nền
+                            ), child: Text(
+                              'SIGN UP',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
-                            child: Center(
-                              child: Text(
-                                "SIGN UP",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20),
-                              ),
-                            ),
-                          )),
+                          ),
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
                         child: Container(
@@ -173,9 +175,19 @@ class _RegisterState extends State<Register> {
                                   "Already have an account?\t",
                                   style: TextStyle(color: Colors.grey),
                                 )),
-                            FadeInUp(duration: Duration(milliseconds: 2000),
-                     child: Text("Sign In", 
-                     style: TextStyle(color: Color.fromARGB(255, 184, 22, 224)),))
+                            FadeInUp(
+                                duration: Duration(milliseconds: 2000),
+                                child: InkWell(
+                                  onTap: (){
+                                    Navigator.pushNamed(context, '/login');
+                                  },
+                                  child: Text(
+                                    
+                                    "Sign In",
+                                    style: TextStyle(
+                                        color: Color(0xFF6342E8)),
+                                  ),
+                                ))
                           ],
                         )),
                       ),
