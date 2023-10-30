@@ -23,13 +23,11 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/register', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/login', // Đường dẫn mặc định khi khởi chạy ứng dụng
       routes: {
-        '/register': (context) => const Register(title: ''),
-
-        '/login': (context) => const Login(title: ''),
-
         '/': (context) => const MyHomePage(title: ''),
+         '/register': (context) => const Register(title: ''),
+        '/login': (context) => const Login(title: ''),
         '/mycart': (context) => const MyCart(title: ''),
         '/find': (context) => const Find(title: ''),
         '/favorite': (context) => const Favorite(title: ''),

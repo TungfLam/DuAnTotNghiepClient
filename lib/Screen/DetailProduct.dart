@@ -26,8 +26,8 @@ class _DetailProductState extends State<DetailProduct> {
         });
       },
       child: Container(
-        width: 50,
-        height: 50,
+        width: 47,
+        height: 47,
         margin: EdgeInsets.all(8),
         padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
@@ -77,7 +77,7 @@ class _DetailProductState extends State<DetailProduct> {
                   width: double.infinity,
                   color: Color.fromARGB(255, 198, 198, 198),
                   child: Transform.scale(
-                      scale: 1.3, child: Image.asset('lib/images/img2.jpg')),
+                      scale: 1.3, child: Image.asset('lib/images/hoodie1.png')),
                 ),
               ),
               Expanded(
@@ -212,7 +212,7 @@ class _DetailProductState extends State<DetailProduct> {
                               Text(
                                 "select size",
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
+                                    fontSize: 14, fontWeight: FontWeight.bold),
                               ),
                               Row(
                                 children: [

@@ -1,4 +1,6 @@
+import 'package:appclient/models/ProductList.dart';
 import 'package:flutter/material.dart';
+
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -23,7 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
             IconButton(
               icon: const Icon(Icons.notifications_outlined),
               onPressed: () {
-                Navigator.pushNamed(context, '/detaiproduct');
+                
                 // Xử lý khi người dùng nhấn vào biểu tượng thông báo
               },
             ),
@@ -71,11 +73,13 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        body: const TabBarView(
+        body:  TabBarView(
           // Nội dung của các tab
           children: [
             // Nội dung của Tab 1
-            Center(child: Text('Popular')),
+            Container(
+              padding: EdgeInsets.all(20),
+              child: ProductList(),),
             // Nội dung của Tab 2
             Center(child: Text('Mens')),
             // Nội dung của Tab 3
