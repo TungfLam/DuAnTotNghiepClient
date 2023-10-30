@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:animate_do/animate_do.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key, required this.title}) : super(key: key);
@@ -11,124 +12,194 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-      children: [
-        Container(
-          height: double.infinity,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-              Color(0xff7B68EE),
-              Color(0xffF5F5F5),
-            ]),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 60.0, left: 22),
-            child: Text(
-              'Hello\nSign In!',
-              style: TextStyle(
-                fontSize: 30,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 200.0),
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
           child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(40), topRight: Radius.circular(40)),
-              color: Colors.white,
-            ),
-            height: double.infinity,
-            width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 18.0, right: 18),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextField(
-                      decoration: InputDecoration(
-                          suffixIcon: Icon(
-                            Icons.check,
-                            color: Colors.grey,
-                          ),
-                          label: Text(
-                            'Gmail',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, color: Colors.red),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  height: 350,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage('lib/images/background.png'),
+                          fit: BoxFit.fill)),
+                  child: Stack(
+                    children: <Widget>[
+                      Positioned(
+                        left: 30,
+                        width: 80,
+                        height: 200,
+                        child: FadeInUp(
+                            duration: Duration(seconds: 1),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'lib/images/light-1.png'))),
+                            )),
+                      ),
+                      Positioned(
+                        left: 140,
+                        width: 80,
+                        height: 150,
+                        child: FadeInUp(
+                            duration: Duration(milliseconds: 1200),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'lib/images/light-2.png'))),
+                            )),
+                      ),
+                      Positioned(
+                        right: 40,
+                        top: 40,
+                        width: 80,
+                        height: 150,
+                        child: FadeInUp(
+                            duration: Duration(milliseconds: 1300),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image:
+                                          AssetImage('lib/images/clock.png'))),
+                            )),
+                      ),
+                      Positioned(
+                        child: FadeInUp(
+                            duration: Duration(milliseconds: 1600),
+                            child: Container(
+                              margin: EdgeInsets.only(top: 80),
+                              child: Center(
+                                child: Text(
+                                  "Hello\nSign In!",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 40,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            )),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(30.0),
+                  child: Column(
+                    children: <Widget>[
+                      FadeInUp(
+                          duration: Duration(milliseconds: 1800),
+                          child: Container(
+                            padding: EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                                color:Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  
+                                    color: Color.fromRGBO(47, 99, 240, 1)),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Color.fromRGBO(143, 148, 251, .2),
+                                      blurRadius: 100.0,
+                                      offset: Offset(0, 50))
+                                ]),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                              TextFormField(
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                  labelText: "Email", 
+                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                                  prefixIcon: Icon(Icons.email)
+                                ),
+                              ),
+                              SizedBox(height: 15,),
+                                TextFormField(
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                  
+                                  labelText: "PassWord",
+                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  prefixIcon: Icon(Icons.lock)
+                                ),
+                              ),
+                              ],
+                            ),
                           )),
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        suffixIcon: Icon(
-                          Icons.visibility_off,
-                          color: Colors.grey,
-                        ),
-                        label: Text(
-                          'PassWord',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.red),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'Forgot PassWord?',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: Colors.black,
-                          ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: Container(
+                            child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            SizedBox(
+                              height: 20,
+                            ),
+                            FadeInUp(
+                              duration: Duration(milliseconds: 2000),
+                              child: Text("Forgot Password?",
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(3, 15, 243, 0.973),
+                                  )),
+                            ),
+                          ],
                         )),
-                        SizedBox(height: 70,),
-                    Container(
-                      height: 50,
-                      width: 300,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        gradient: LinearGradient(colors: [
-                          Color(0xff7B68EE),
-                          Color(0xffF5F5F5),
-                        ]),
                       ),
-                      child: Center(child: Text('SIGN IN', style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),),),
-                    ),
-                     SizedBox(height: 150,),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text("Don't have account?", style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey,
-                          ),),
-                          Text("Sign Up",style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontSize: 17,
-                          ),),
-
-                        ],
+                      SizedBox(
+                        height: 80,
                       ),
-                    ),
-                  ]),
+                      FadeInUp(
+                          duration: Duration(milliseconds: 1900),
+                          child: Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              gradient: LinearGradient(colors: [
+                               Color.fromARGB(255, 184, 22, 224),
+                                Color.fromARGB(153, 143, 148, 251),
+                              ]),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "SIGN IN",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20),
+                              ),
+                            ),
+                          )),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+                        child: Container(
+                            child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(
+                              height: 70,
+                            ),
+                            FadeInUp(
+                                duration: Duration(milliseconds: 2000),
+                                child: Text(
+                                  "No registers yet?\t",
+                                  style: TextStyle(color: Colors.grey),
+                                )),
+                            FadeInUp(duration: Duration(milliseconds: 2000),
+                     child: Text("Create an account", 
+                     style: TextStyle(color: Color.fromARGB(255, 184, 22, 224)),))
+                          ],
+                        )),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
           ),
-        ),
-      ],
-    ));
+        ));
   }
 }

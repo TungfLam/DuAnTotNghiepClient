@@ -5,7 +5,6 @@ import 'package:appclient/Screen/Login.dart';
 import 'package:appclient/Screen/MyCart.dart';
 import 'package:appclient/Screen/MyHomePage.dart';
 import 'package:appclient/Screen/Register.dart';
-import 'package:appclient/Screen/Welcome.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -30,7 +29,6 @@ class MyApp extends StatelessWidget {
 
         '/login': (context) => const Login(title: ''),
 
-        '/welcome': (context) => const Welcome(title: ''),
         '/': (context) => const MyHomePage(title: ''),
         '/mycart': (context) => const MyCart(title: ''),
         '/find': (context) => const Find(title: ''),
