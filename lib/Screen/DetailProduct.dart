@@ -1,8 +1,13 @@
+import 'dart:convert';
+
+import 'package:appclient/models/productModel.dart';
 import 'package:flutter/material.dart';
 
 class DetailProduct extends StatefulWidget {
-  const DetailProduct({Key? key, required this.title}) : super(key: key);
+  const DetailProduct({Key? key, required this.title, this.product})
+      : super(key: key);
   final String title;
+  final productModel? product;
 
   @override
   State<DetailProduct> createState() => _DetailProductState();
@@ -77,7 +82,13 @@ class _DetailProductState extends State<DetailProduct> {
                   width: double.infinity,
                   color: Color.fromARGB(255, 198, 198, 198),
                   child: Transform.scale(
-                      scale: 1.3, child: Image.asset('lib/images/hoodie1.png')),
+                    scale: 1.2,
+                    child: Image.memory(
+                      base64Decode(widget.product?.image?.elementAt(0) ?? ''),
+                      height: 200,
+                      width: 200,
+                    ),
+                  ),
                 ),
               ),
               Expanded(
@@ -92,21 +103,29 @@ class _DetailProductState extends State<DetailProduct> {
                     child: Column(
                       children: [
                         Container(
+                          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
                           child: Row(
                             children: [
-                              Text(
-                                "Purple Hoodie",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
+                              Expanded(
+                                flex: 8,
+                                child: Text(
+                                  widget.product?.name ??
+                                      'Unknown Product Name',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
-                              Text(
-                                "48.00 USD",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
+                              Expanded(
+                                flex: 1,
+                                child: Text(
+                                  '\$${widget.product?.price ?? 0.00}',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               )
                             ],
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -196,7 +215,7 @@ class _DetailProductState extends State<DetailProduct> {
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book...detail",
+                                widget.product?.description ?? 'Unknown Product Name',
                                 style:
                                     TextStyle(fontSize: 14, color: Colors.grey),
                               )

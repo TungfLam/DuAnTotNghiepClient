@@ -1,6 +1,9 @@
+import 'package:appclient/Apiservice/apiService.dart';
 import 'package:appclient/models/ProductList.dart';
+import 'dart:convert';
+import 'package:appclient/models/productModel.dart';
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -14,7 +17,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,  
+      length: 4,
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -26,7 +29,6 @@ class _MyHomePageState extends State<MyHomePage> {
             IconButton(
               icon: const Icon(Icons.notifications_outlined),
               onPressed: () {
-                
                 // Xử lý khi người dùng nhấn vào biểu tượng thông báo
               },
             ),
@@ -64,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
           backgroundColor: Colors.white,
-           bottom: const TabBar(
+          bottom: const TabBar(
             // Thanh TabBar ở đây
             tabs: [
               Tab(text: 'Popular'),
@@ -74,15 +76,19 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        body:  TabBarView(
+        body: TabBarView(
           // Nội dung của các tab
           children: [
             // Nội dung của Tab 1
             Container(
               padding: EdgeInsets.all(20),
-              child: ProductList(),),
+              child: ProductList(),
+            ),
             // Nội dung của Tab 2
-            Center(child: Text('Mens')),
+            Container(
+              padding: EdgeInsets.all(20),
+              child: ProductList(),
+            ),
             // Nội dung của Tab 3
             Center(child: Text('Womens')),
             // Nội dung của Tab 4
@@ -145,8 +151,8 @@ class _MyHomePageState extends State<MyHomePage> {
               //   child: Text('Thanh điều hướng'),
               // ),
               ListTile(
-                leading: const Icon(
-                    Icons.shopping_bag_outlined), // Thêm biểu tượng vào ListTile
+                leading: const Icon(Icons
+                    .shopping_bag_outlined), // Thêm biểu tượng vào ListTile
                 title: const Text(
                   'Cart',
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -202,8 +208,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
               ListTile(
-                leading: const Icon(
-                    Icons.notifications_outlined), // Thêm biểu tượng vào ListTile
+                leading: const Icon(Icons
+                    .notifications_outlined), // Thêm biểu tượng vào ListTile
                 title: const Text(
                   'Notifecations',
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -213,8 +219,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
               ListTile(
-                leading: const Icon(
-                    Icons.help_outline_outlined), // Thêm biểu tượng vào ListTile
+                leading: const Icon(Icons
+                    .help_outline_outlined), // Thêm biểu tượng vào ListTile
                 title: const Text(
                   'Help',
                   style: TextStyle(fontWeight: FontWeight.bold),
