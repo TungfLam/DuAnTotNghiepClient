@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'package:appclient/models/productSizeColor.dart';
+import 'package:http/http.dart' as http;
 import 'package:appclient/models/productModel.dart';
 import 'package:flutter/material.dart';
 
@@ -15,17 +16,63 @@ class DetailProduct extends StatefulWidget {
 
 class _DetailProductState extends State<DetailProduct> {
   String _selectedSize = ''; // Biến lưu kích thước đã chọn
+  List<ProductListSize> productList = [];
+  List<String> sizeList = [];
+  int maxQuantity = 10;
+  int quantity = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProductList();
+  }
+
+  Future<void> fetchProductList() async {
+    final response = await http.get(Uri.parse(
+        'http://192.168.45.105:6868/api/getListAll_deltail/${widget.product?.sId}'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body)['productListSize'];
+      setState(() {
+        productList =
+            data.map((item) => ProductListSize.fromJson(item)).toList();
+      });
+      print('Fetched product list: $productList');
+      productList.forEach((productListSize) {
+        print('Quantity: ${productListSize.quantity}');
+        sizeList.add('${productListSize.sizeId?.name}');
+      });
+    }
+  }
 
   Widget _buildSizeOption(String size) {
     bool isSelected = _selectedSize == size;
+    String selectedSizeQuantity = "";
 
+    if (isSelected) {
+      setState(() {
+        final selectedProductSize = productList.firstWhere(
+            (productListSize) => productListSize.sizeId?.name == size);
+
+        selectedSizeQuantity = selectedProductSize.quantity.toString();
+      });
+    }
+    if (isSelected) {
+      print('Selected size: $_selectedSize');
+      print('Quantity: $selectedSizeQuantity');
+      setState(() {
+        maxQuantity = int.parse('$selectedSizeQuantity');
+      });
+    }
     return GestureDetector(
       onTap: () {
         setState(() {
           if (isSelected) {
-            _selectedSize = ''; // Bỏ chọn kích thước nếu đã chọn rồi
+            _selectedSize = '';
+            // Bỏ chọn kích thước nếu đã chọn rồi
           } else {
-            _selectedSize = size; // Chọn kích thước nếu chưa chọn
+            _selectedSize = size;
+            // Chọn kích thước nếu chưa chọn
           }
           print('Selected size: $_selectedSize'); // In ra kích thước đã chọn
         });
@@ -52,16 +99,18 @@ class _DetailProductState extends State<DetailProduct> {
     );
   }
 
-  int quantity = 1; // Initialize the quantity with 1
+  // Initialize the quantity with 1
 
   void increaseQuantity() {
-    setState(() {
-      quantity++;
-    });
+    if (quantity < maxQuantity) {
+      setState(() {
+        quantity++;
+      });
+    }
   }
 
   void decreaseQuantity() {
-    if (quantity > 1) {
+    if (quantity > 0) {
       // Make sure quantity doesn't go below 1
       setState(() {
         quantity--;
@@ -118,7 +167,7 @@ class _DetailProductState extends State<DetailProduct> {
                                 ),
                               ),
                               Expanded(
-                                flex: 1,
+                                flex: 2,
                                 child: Text(
                                   '\$${widget.product?.price ?? 0.00}',
                                   style: TextStyle(
@@ -215,7 +264,8 @@ class _DetailProductState extends State<DetailProduct> {
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                widget.product?.description ?? 'Unknown Product Name',
+                                widget.product?.description ??
+                                    'Unknown Product Name',
                                 style:
                                     TextStyle(fontSize: 14, color: Colors.grey),
                               )
@@ -234,14 +284,9 @@ class _DetailProductState extends State<DetailProduct> {
                                     fontSize: 14, fontWeight: FontWeight.bold),
                               ),
                               Row(
-                                children: [
-                                  _buildSizeOption("S"), // Example size option
-                                  _buildSizeOption("M"), // Example size option
-                                  _buildSizeOption("L"), // Example size option
-                                  _buildSizeOption("XL"), // Example size option
-                                  _buildSizeOption("XXL"),
-                                  // Add more size options as needed
-                                ],
+                                children: sizeList.map((size) {
+                                  return _buildSizeOption(size);
+                                }).toList(),
                               ),
                             ],
                           ),
