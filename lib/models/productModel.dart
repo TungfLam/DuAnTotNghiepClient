@@ -5,7 +5,7 @@ class productModel {
   List<String>? image;
   String? createdAt;
   String? updatedAt;
-  String? price;
+  int? price;
   int? iV;
 
   productModel(

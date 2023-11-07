@@ -27,7 +27,7 @@ class ProductListSize {
   ProductId? productId;
   SizeId? sizeId;
   SizeId? colorId;
-  String? quantity;
+  int? quantity;
   String? createdAt;
   String? updatedAt;
   int? iV;
@@ -80,7 +80,7 @@ class ProductListSize {
 class ProductId {
   String? sId;
   String? name;
-  String? price;
+  int? price;
 
   ProductId({this.sId, this.name, this.price});
 

@@ -11,6 +11,7 @@ class BannerScreen extends StatefulWidget {
 class _BannerScreenState extends State<BannerScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Container(
           alignment: Alignment.bottomCenter,
@@ -45,7 +46,7 @@ class _BannerScreenState extends State<BannerScreen> {
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(40),
                             side: BorderSide( width:3.0,color: Colors.white)))),
-                onPressed: () => null),
+                onPressed: () => Navigator.pushNamed(context, '/loginorregister')),
                 ],
               )
             ) 
