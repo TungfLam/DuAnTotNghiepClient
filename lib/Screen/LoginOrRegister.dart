@@ -11,6 +11,7 @@ class LoginOrRegisterScreen extends StatefulWidget {
 class _LoginOrRegisterScreenState extends State<LoginOrRegisterScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Container(
           alignment: Alignment.bottomCenter,

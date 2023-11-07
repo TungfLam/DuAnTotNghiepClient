@@ -33,10 +33,14 @@ class _DetailProductState extends State<DetailProduct> {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['productListSize'];
-      setState(() {
-        productList =
-            data.map((item) => ProductListSize.fromJson(item)).toList();
-      });
+
+      if (mounted) {
+        setState(() {
+          productList =
+              data.map((item) => ProductListSize.fromJson(item)).toList();
+        });
+      }
+
       print('Fetched product list: $productList');
       productList.forEach((productListSize) {
         print('Quantity: ${productListSize.quantity}');
@@ -254,7 +258,8 @@ class _DetailProductState extends State<DetailProduct> {
                         ),
                         Container(
                           //descripsion
-                          margin: EdgeInsets.only(top: 10),
+                          width: double.infinity,
+                          padding: EdgeInsets.only(top: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
