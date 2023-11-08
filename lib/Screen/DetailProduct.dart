@@ -29,7 +29,7 @@ class _DetailProductState extends State<DetailProduct> {
 
   Future<void> fetchProductList() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.45.105:6868/api/getListAll_deltail/${widget.product?.sId}'));
+        'http://192.168.45.105:3000/api/getListAll_deltail/${widget.product?.sId}'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['productListSize'];
