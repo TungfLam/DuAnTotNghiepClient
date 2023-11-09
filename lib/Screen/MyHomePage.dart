@@ -1,5 +1,6 @@
-import 'package:appclient/Apiservice/apiService.dart';
-import 'package:appclient/models/ProductList.dart';
+import 'package:appclient/Listview/MensProductList.dart';
+import 'package:appclient/Listview/PopularProductList.dart';
+import 'package:appclient/Listview/WomensProductList.dart';
 import 'dart:convert';
 import 'package:appclient/models/productModel.dart';
 import 'package:flutter/material.dart';
@@ -82,15 +83,18 @@ class _MyHomePageState extends State<MyHomePage> {
             // Nội dung của Tab 1
             Container(
               padding: EdgeInsets.all(20),
-              child: ProductList(),
+              child: PopularProductList(),
             ),
             // Nội dung của Tab 2
             Container(
               padding: EdgeInsets.all(20),
-              child: ProductList(),
+              child: MensProductList(),
             ),
             // Nội dung của Tab 3
-            Center(child: Text('Womens')),
+            Container(
+              padding: EdgeInsets.all(20),
+              child: WomensProductList(),
+            ),
             // Nội dung của Tab 4
             Center(child: Text('Sale')),
           ],
