@@ -9,14 +9,14 @@ import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class ProductList extends StatefulWidget {
-  const ProductList({super.key});
+class WomensProductList extends StatefulWidget {
+  const WomensProductList({super.key});
 
   @override
-  _ProductListState createState() => _ProductListState();
+  _WomensProductListState createState() => _WomensProductListState();
 }
 
-class _ProductListState extends State<ProductList> {
+class _WomensProductListState extends State<WomensProductList> {
   List<productModel> products = []; // Danh sách sản phẩm từ API
   final scrollController = ScrollController();
   bool isLoadingMore = false;
@@ -25,7 +25,7 @@ class _ProductListState extends State<ProductList> {
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.45.105:6868/api/products/Popular/$page')); // Thay thế URL của API sản phẩm
+        'http://192.168.45.105:6868/api/products/Womens/$page')); // Thay thế URL của API sản phẩm
     if (response.statusCode == 200) {
       final List<dynamic>? productData = jsonDecode(response.body);
       if (productData != null && mounted) {
@@ -93,7 +93,7 @@ class _ProductListState extends State<ProductList> {
                               padding: EdgeInsets.only(top: 10),
                               child: Image.memory(
                                 base64Decode(product.image?.elementAt(0) ??
-                                    ''), // Giả sử danh sách ảnh là danh sách base64
+                                    'loading...'), // Giả sử danh sách ảnh là danh sách base64
                                 height: 200,
                                 width: 180,
                               ),
@@ -146,7 +146,9 @@ class _ProductListState extends State<ProductList> {
           ),
         );
         }else{
-          return Center(child: CircularProgressIndicator(),);
+          if (mounted) {
+            return Center(child: CircularProgressIndicator(),);
+          }         
         }
       },
     );
