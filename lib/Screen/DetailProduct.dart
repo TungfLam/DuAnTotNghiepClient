@@ -20,6 +20,7 @@ class _DetailProductState extends State<DetailProduct> {
   List<String> sizeList = [];
   int maxQuantity = 10;
   int quantity = 1;
+  int _selectedImageIndex = 0;
 
   @override
   void initState() {
@@ -28,24 +29,26 @@ class _DetailProductState extends State<DetailProduct> {
   }
 
   Future<void> fetchProductList() async {
-    final response = await http.get(Uri.parse(
-        'http://192.168.45.105:3000/api/getListAll_deltail/${widget.product?.sId}'));
+    if (mounted) {
+      final response = await http.get(Uri.parse(
+          'http://192.168.45.105:3000/api/getListAll_deltail/${widget.product?.sId}'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data =
+            json.decode(response.body)['productListSize'];
 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body)['productListSize'];
+        if (mounted) {
+          setState(() {
+            productList =
+                data.map((item) => ProductListSize.fromJson(item)).toList();
+          });
+        }
 
-      if (mounted) {
-        setState(() {
-          productList =
-              data.map((item) => ProductListSize.fromJson(item)).toList();
+        print('Fetched product list: $productList');
+        productList.forEach((productListSize) {
+          print('Quantity: ${productListSize.quantity}');
+          sizeList.add('${productListSize.sizeId?.name}');
         });
       }
-
-      print('Fetched product list: $productList');
-      productList.forEach((productListSize) {
-        print('Quantity: ${productListSize.quantity}');
-        sizeList.add('${productListSize.sizeId?.name}');
-      });
     }
   }
 
@@ -129,21 +132,85 @@ class _DetailProductState extends State<DetailProduct> {
         children: <Widget>[
           Column(
             children: <Widget>[
+              //hiển thị 1 ảnh
+
+              // Expanded(
+              //   flex: 4,
+              //   child: Container(
+              //     width: double.infinity,
+              //     color: Color.fromARGB(255, 198, 198, 198),
+              //     child: Transform.scale(
+              //       scale: 1.2,
+              //       child: Image.memory(
+              //         base64Decode(widget.product?.image?.elementAt(0) ?? ''),
+              //         height: 200,
+              //         width: 200,
+              //       ),
+              //     ),
+              //   ),
+              // ),
+
+              //hiển thị nhiều ảnh
+              // Expanded(
+              //   flex: 4,
+              //   child: Container(
+              //     color: Color.fromARGB(255, 198, 198, 198),
+              //     child: ListView.builder(
+              //       scrollDirection: Axis.horizontal,
+              //       itemCount: widget.product?.image?.length ?? 0,
+              //       itemBuilder: (context, index) {
+              //         return GestureDetector(
+              //           onTap: () {
+              //             setState(() {
+              //               _selectedImageIndex = index;
+              //             });
+              //           },
+              //           child: Container(
+              //             margin: EdgeInsets.all(8.0),
+              //             padding: EdgeInsets.all(8.0),
+              //             decoration: BoxDecoration(
+              //               border: Border.all(
+              //                 color: _selectedImageIndex == index
+              //                     ? Colors.blue
+              //                     : Colors.transparent,
+              //               ),
+              //               borderRadius: BorderRadius.circular(8.0),
+              //             ),
+              //             child: Image.memory(
+              //               base64Decode(
+              //                   widget.product?.image?.elementAt(index) ?? ''),
+              //               height: 80,
+              //               width: 80,
+              //             ),
+              //           ),
+              //         );
+              //       },
+              //     ),
+              //   ),
+              // ),
+
               Expanded(
                 flex: 4,
                 child: Container(
-                  width: double.infinity,
                   color: Color.fromARGB(255, 198, 198, 198),
-                  child: Transform.scale(
-                    scale: 1.2,
-                    child: Image.memory(
-                      base64Decode(widget.product?.image?.elementAt(0) ?? ''),
-                      height: 200,
-                      width: 200,
-                    ),
+                  child: PageView.builder(
+                    itemCount: widget.product?.image?.length ?? 0,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _selectedImageIndex = index;
+                      });
+                    },
+                    itemBuilder: (context, index) {
+                      return Image.memory(
+                        base64Decode(
+                            widget.product?.image?.elementAt(index) ?? ''),
+                        fit: BoxFit.cover,
+                      );
+                    },
                   ),
                 ),
               ),
+
               Expanded(
                 flex: 6,
                 child: SingleChildScrollView(
