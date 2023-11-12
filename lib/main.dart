@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/banner', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
         '/': (context) => const MyHomePage(title: ''),

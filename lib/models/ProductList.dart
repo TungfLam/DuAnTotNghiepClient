@@ -170,7 +170,7 @@ class _ProductListState extends State<ProductList> {
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.45.108:6868/api/products')); // Thay thế URL của API sản phẩm
+        'http://192.168.45.108:6868/api/products/')); // Thay thế URL của API sản phẩm
     if (response.statusCode == 200) {
       final List<dynamic> productData = jsonDecode(response.body);
       setState(() {
@@ -277,7 +277,28 @@ class _ProductListState extends State<ProductList> {
                             ),
                           ),
                         ),
-                      )
+                      ),
+                      SizedBox(width: 8),
+                      IconButton(
+                          onPressed: () async {
+                            final response = await http.post(
+                              Uri.parse(
+                                  'http://localhost:6868/api/addFavorite/iduser/id_product'),
+                              body: jsonEncode({
+                                'id_product': product.sId,
+                              }),
+                            );
+                            if (response.statusCode == 200) {
+                              setState(() {
+                                product.isFavorite = true;
+                              });
+                            }
+                          },
+                          icon: Icon(
+                            Icons.favorite,
+                            color:
+                                product.isFavorite! ? Colors.red : Colors.grey,
+                          )),
                     ],
                   ),
                 ],
@@ -289,3 +310,5 @@ class _ProductListState extends State<ProductList> {
     );
   }
 }
+
+class _ {}

@@ -7,6 +7,7 @@ class productModel {
   String? updatedAt;
   String? price;
   int? iV;
+  bool? isFavorite;
 
   productModel(
       {this.sId,
@@ -16,7 +17,8 @@ class productModel {
       this.createdAt,
       this.updatedAt,
       this.price,
-      this.iV});
+      this.iV,
+      this.isFavorite});
 
   productModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
