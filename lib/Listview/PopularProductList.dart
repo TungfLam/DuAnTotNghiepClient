@@ -26,7 +26,7 @@ class _PopularProductListState extends State<PopularProductList> {
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.45.105:6868/api/products/Popular/$page')); // Thay thế URL của API sản phẩm
+        'http://192.168.1.118:6868/api/products/Popular/$page')); // Thay thế URL của API sản phẩm
     if (response.statusCode == 200) {
       final List<dynamic>? productData = jsonDecode(response.body);
       if (productData != null && mounted) {

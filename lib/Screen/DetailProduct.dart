@@ -28,27 +28,56 @@ class _DetailProductState extends State<DetailProduct> {
     fetchProductList();
   }
 
+  // Future<void> fetchProductList() async {
+  //   final response = await http.get(
+  //     Uri.parse(
+  //         'http://192.168.45.105:3000/api/getListAll_deltail/${widget.product?.sId}'),
+  //       timeout: Duration(seconds: 10),
+  //   );
+  //   if (response.statusCode == 200) {
+  //     final List<dynamic> data = json.decode(response.body)['productListSize'];
+
+  //     if (mounted) {
+  //       setState(() {
+  //         productList =
+  //             data.map((item) => ProductListSize.fromJson(item)).toList();
+  //       });
+  //     }
+
+  //     print('Fetched product list: $productList');
+  //     productList.forEach((productListSize) {
+  //       print('Quantity: ${productListSize.quantity}');
+  //       sizeList.add('${productListSize.sizeId?.name}');
+  //     });
+  //   }
+  // }
+
   Future<void> fetchProductList() async {
-    if (mounted) {
-      final response = await http.get(Uri.parse(
-          'http://192.168.45.105:3000/api/getListAll_deltail/${widget.product?.sId}'));
-      if (response.statusCode == 200) {
-        final List<dynamic> data =
-            json.decode(response.body)['productListSize'];
+    try {
+      final response = await http.read(
+        Uri.parse(
+          'http://192.168.1.118:3000/api/getListAll_deltail/${widget.product?.sId}',
+        ),
+        headers: {'Content-Type': 'application/json'},
+      );
 
-        if (mounted) {
-          setState(() {
-            productList =
-                data.map((item) => ProductListSize.fromJson(item)).toList();
-          });
-        }
+      // Xử lý dữ liệu response ở đây
+      final List<dynamic> data = json.decode(response)['productListSize'];
 
-        print('Fetched product list: $productList');
-        productList.forEach((productListSize) {
-          print('Quantity: ${productListSize.quantity}');
-          sizeList.add('${productListSize.sizeId?.name}');
+      if (mounted) {
+        setState(() {
+          productList =
+              data.map((item) => ProductListSize.fromJson(item)).toList();
         });
       }
+
+      print('Fetched product list: $productList');
+      productList.forEach((productListSize) {
+        print('Quantity: ${productListSize.quantity}');
+        sizeList.add('${productListSize.sizeId?.name}');
+      });
+    } catch (error) {
+      print('Error fetching product list: $error');
     }
   }
 
