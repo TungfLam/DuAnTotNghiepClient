@@ -158,6 +158,8 @@ class _FindState extends State<Find> {
                       ],
                     ),
                     Expanded(
+                      //phải có gridview như này này
+
                         child: GridView.builder(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
@@ -189,6 +191,7 @@ class _FindState extends State<Find> {
                                 ),
                               );
                             },
+                            //cái card này viết trong listview
                             child: Card(
                               color: Colors.white,
                               shadowColor: Colors.black,
@@ -273,7 +276,8 @@ class _FindState extends State<Find> {
                           }
                         }
                       },
-                    ))
+                    )
+                    )
                   ],
                 ),
               ),

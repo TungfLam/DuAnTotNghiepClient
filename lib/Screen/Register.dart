@@ -145,13 +145,12 @@ class _RegisterState extends State<Register> {
                           child: ElevatedButton(
                             onPressed: () {
                               // Xử lý khi nút được nhấn
-                              
                             },
-
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   const Color(0xFF6342E8), // Đặt màu nền
-                            ), child: Text(
+                            ),
+                            child: Text(
                               'SIGN UP',
                               style: TextStyle(
                                   color: Colors.white,
@@ -178,14 +177,12 @@ class _RegisterState extends State<Register> {
                             FadeInUp(
                                 duration: Duration(milliseconds: 2000),
                                 child: InkWell(
-                                  onTap: (){
+                                  onTap: () {
                                     Navigator.pushNamed(context, '/login');
                                   },
                                   child: Text(
-                                    
                                     "Sign In",
-                                    style: TextStyle(
-                                        color: Color(0xFF6342E8)),
+                                    style: TextStyle(color: Color(0xFF6342E8)),
                                   ),
                                 ))
                           ],
