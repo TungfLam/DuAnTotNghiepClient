@@ -27,16 +27,16 @@ class _MyCartState extends State<MyCart> {
 
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.1.211:6868/api/getListCart/6549d3feffe41106e077bd42')); // Thay thế URL của API sản phẩm
+        'http://192.168.45.105:6868/api/getListCart/6549d3feffe41106e077bd42')); // Thay thế URL của API sản phẩm
 
     if (response.statusCode == 200) {
       try {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
 
-        if (responseData.containsKey('listProducts') &&
-            responseData['listProducts'] is List) {
+        if (responseData.containsKey('listCart') &&
+            responseData['listCart'] is List) {
           final List<dynamic> productListData =
-              responseData['listProducts'] as List<dynamic>;
+              responseData['listCart'] as List<dynamic>;
 
           setState(() {
             products = productListData
@@ -56,6 +56,7 @@ class _MyCartState extends State<MyCart> {
   void initState() {
     super.initState();
     // Gọi API khi widget được khởi tạo
+    fetchProducts();
   }
 
   @override
@@ -85,14 +86,8 @@ class _MyCartState extends State<MyCart> {
               color: Colors.white,
               width: double.infinity,
               height: 620,
-              child: const Text("data"),
-            ),
-          ),
-          // cái lisview của tôi đâu
-          //k có list view thì item biết bỏ vào đâu
-          Expanded(
+              child:           Expanded(
               //phải có gridview như này này
-
               child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
@@ -226,6 +221,11 @@ class _MyCartState extends State<MyCart> {
               );
             },
           )),
+            ),
+          ),
+          // cái lisview của tôi đâu
+          //k có list view thì item biết bỏ vào đâu
+
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(

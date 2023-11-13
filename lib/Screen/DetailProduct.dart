@@ -28,35 +28,11 @@ class _DetailProductState extends State<DetailProduct> {
     fetchProductList();
   }
 
-  // Future<void> fetchProductList() async {
-  //   final response = await http.get(
-  //     Uri.parse(
-  //         'http://192.168.45.105:3000/api/getListAll_deltail/${widget.product?.sId}'),
-  //       timeout: Duration(seconds: 10),
-  //   );
-  //   if (response.statusCode == 200) {
-  //     final List<dynamic> data = json.decode(response.body)['productListSize'];
-
-  //     if (mounted) {
-  //       setState(() {
-  //         productList =
-  //             data.map((item) => ProductListSize.fromJson(item)).toList();
-  //       });
-  //     }
-
-  //     print('Fetched product list: $productList');
-  //     productList.forEach((productListSize) {
-  //       print('Quantity: ${productListSize.quantity}');
-  //       sizeList.add('${productListSize.sizeId?.name}');
-  //     });
-  //   }
-  // }
-
   Future<void> fetchProductList() async {
     try {
       final response = await http.read(
         Uri.parse(
-          'http://192.168.1.118:3000/api/getListAll_deltail/${widget.product?.sId}',
+          'http://192.168.45.105:6868/api/getListAll_deltail/${widget.product?.sId}',
         ),
         headers: {'Content-Type': 'application/json'},
       );
@@ -161,63 +137,6 @@ class _DetailProductState extends State<DetailProduct> {
         children: <Widget>[
           Column(
             children: <Widget>[
-              //hiển thị 1 ảnh
-
-              // Expanded(
-              //   flex: 4,
-              //   child: Container(
-              //     width: double.infinity,
-              //     color: Color.fromARGB(255, 198, 198, 198),
-              //     child: Transform.scale(
-              //       scale: 1.2,
-              //       child: Image.memory(
-              //         base64Decode(widget.product?.image?.elementAt(0) ?? ''),
-              //         height: 200,
-              //         width: 200,
-              //       ),
-              //     ),
-              //   ),
-              // ),
-
-              //hiển thị nhiều ảnh
-              // Expanded(
-              //   flex: 4,
-              //   child: Container(
-              //     color: Color.fromARGB(255, 198, 198, 198),
-              //     child: ListView.builder(
-              //       scrollDirection: Axis.horizontal,
-              //       itemCount: widget.product?.image?.length ?? 0,
-              //       itemBuilder: (context, index) {
-              //         return GestureDetector(
-              //           onTap: () {
-              //             setState(() {
-              //               _selectedImageIndex = index;
-              //             });
-              //           },
-              //           child: Container(
-              //             margin: EdgeInsets.all(8.0),
-              //             padding: EdgeInsets.all(8.0),
-              //             decoration: BoxDecoration(
-              //               border: Border.all(
-              //                 color: _selectedImageIndex == index
-              //                     ? Colors.blue
-              //                     : Colors.transparent,
-              //               ),
-              //               borderRadius: BorderRadius.circular(8.0),
-              //             ),
-              //             child: Image.memory(
-              //               base64Decode(
-              //                   widget.product?.image?.elementAt(index) ?? ''),
-              //               height: 80,
-              //               width: 80,
-              //             ),
-              //           ),
-              //         );
-              //       },
-              //     ),
-              //   ),
-              // ),
-
               Expanded(
                 flex: 4,
                 child: Container(
