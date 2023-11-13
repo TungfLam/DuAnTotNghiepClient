@@ -1,4 +1,10 @@
+import 'dart:async';
+import 'dart:core';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:appclient/models/productModel.dart';
 
 class Favorite extends StatefulWidget {
   const Favorite({Key? key, required this.title}) : super(key: key);
@@ -8,7 +14,29 @@ class Favorite extends StatefulWidget {
   State<Favorite> createState() => _FavoriteState();
 }
 
+
 class _FavoriteState extends State<Favorite> {
+  List<productModel> products = []; // Danh sách sản phẩm từ API
+
+    Future<void> fetchProducts() async {
+    final response = await http.get(Uri.parse(
+        'http://localhost:6868/api/getListFavorite/')); // Thay thế URL của API sản phẩm
+    if (response.statusCode == 200) {
+      final List<dynamic>? productData = jsonDecode(response.body);
+      if (productData != null && mounted) {
+        setState(() {
+          products = products +
+              productData.map((item) => productModel.fromJson(item)).toList();
+        });
+      }
+    }
+  }
+
+    @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

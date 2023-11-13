@@ -38,6 +38,24 @@ class _PopularProductListState extends State<PopularProductList> {
     }
   }
 
+  Future<bool> addFavoritesProduct(productModel product) async {
+    final response = await http.post(
+        Uri.parse('http://localhost:6868/api/addFavorite/iduser/id_product'),
+        body: jsonEncode({
+          'id_product': product.sId,
+        }));
+    return response.statusCode == 200;
+  }
+
+  Future<bool> deleteFavoritesProduct(productModel product) async {
+    final response = await http.post(
+        Uri.parse('http://localhost:6868/api/deleteFavorite/id_favorite'),
+        body: jsonEncode({
+          'id_product': product.sId,
+        }));
+    return response.statusCode == 200;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -50,11 +68,12 @@ class _PopularProductListState extends State<PopularProductList> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-         Row(
+        Row(
           children: [
             Padding(
               padding: const EdgeInsets.only(right: 10),
-              child: Text('Filter & Sort', style: TextStyle(fontWeight: FontWeight.bold)),
+              child: Text('Filter & Sort',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             PopupMenuButton<String>(
               onSelected: (String value) {
@@ -65,11 +84,13 @@ class _PopularProductListState extends State<PopularProductList> {
                 if (value == 'Sort Down') {
                   // Sắp xếp danh sách sản phẩm theo thứ tự giảm dần
                   // Đặt logic sắp xếp ở đây
-                  products.sort((a, b) => (a.price ?? 0).compareTo(b.price ?? 0));
+                  products
+                      .sort((a, b) => (a.price ?? 0).compareTo(b.price ?? 0));
                 } else if (value == 'Sort Up') {
                   // Sắp xếp danh sách sản phẩm theo thứ tự tăng dần
                   // Đặt logic sắp xếp ở đây
-                  products.sort((a, b) => (b.price ?? 0).compareTo(a.price ?? 0));
+                  products
+                      .sort((a, b) => (b.price ?? 0).compareTo(a.price ?? 0));
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -144,10 +165,16 @@ class _PopularProductListState extends State<PopularProductList> {
                                     top: 5,
                                     right: 5,
                                     child: IconButton(
-                                      icon:
-                                          Icon(Icons.favorite_border_outlined),
+                                      icon: Icon(Icons.favorite_border_outlined),
+                                      color: product.isFavorite!
+                                          ? Colors.grey
+                                          : Colors.red,
                                       onPressed: () {
-                                        setState(() {});
+                                        if (product.isFavorite!) {
+                                          addFavoritesProduct(product);
+                                        } else {
+                                          deleteFavoritesProduct(product);
+                                        }
                                       },
                                     ),
                                   ),
