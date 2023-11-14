@@ -23,7 +23,9 @@ class MyCart extends StatefulWidget {
 }
 
 class _MyCartState extends State<MyCart> {
-  List<productCartModel> products = []; //
+  List<ListCart> products = []; //
+  int maxQuantity = 10;
+  int quantity = 1;
 
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
@@ -39,9 +41,9 @@ class _MyCartState extends State<MyCart> {
               responseData['listCart'] as List<dynamic>;
 
           setState(() {
-            products = productListData
-                .map((item) => productCartModel.fromJson(item))
-                .toList();
+            products =
+                productListData.map((item) => ListCart.fromJson(item)).toList();
+            print(products.length);
           });
         } else {
           print('Invalid data format');
@@ -57,6 +59,23 @@ class _MyCartState extends State<MyCart> {
     super.initState();
     // Gọi API khi widget được khởi tạo
     fetchProducts();
+  }
+
+  void increaseQuantity() {
+    if (quantity < maxQuantity) {
+      setState(() {
+        quantity++;
+      });
+    }
+  }
+
+  void decreaseQuantity() {
+    if (quantity > 0) {
+      // Make sure quantity doesn't go below 1
+      setState(() {
+        quantity--;
+      });
+    }
   }
 
   @override
@@ -86,141 +105,153 @@ class _MyCartState extends State<MyCart> {
               color: Colors.white,
               width: double.infinity,
               height: 620,
-              child:           Expanded(
               //phải có gridview như này này
               child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-              childAspectRatio: 0.8,
-            ),
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                child: Card(
-                  child: Container(
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(
-                          height: 100,
-                        ),
-                        Container(
-                          height: 150,
-                          margin: EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 10),
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 234, 240, 245),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Row(children: [
-                            Container(
-                              height: 100,
-                              width: 120,
-                              margin: EdgeInsets.only(right: 15),
-                              child: Image.asset("lib/images/aooo.png"),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Printed Shirt",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF4C53A5)),
-                                  ),
-                                  Text(
-                                    "\$28.00 USD",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  crossAxisSpacing: 6,
+                  mainAxisSpacing: 6,
+                  childAspectRatio: 2.2,
+                ),
+                itemCount: products.length,
+                itemBuilder: (context, index) {
+                  if (index < products.length) {
+                    final product = products[index];
+                    print(product.productId?.product?.image);
+                    return GestureDetector(
+                      child: Card(
+                        child: Stack(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 4,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Image.memory(
+                                      base64Decode(product
+                                              .productId?.product?.image
+                                              ?.elementAt(0) ??
+                                          ''),
+                                      height: 200,
+                                      width: 180,
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
-                                ],
+                                ),
+                                Expanded(
+                                  flex: 6,
+                                  child: Container(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        0, 30, 10, 20),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          product.productId?.product?.name ??
+                                              "Unknown",
+                                          style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xff6342E8)),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              '\$${product.productId?.product?.price ?? 'Unknown Price'}',
+                                              style: const TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Container(
+                                              child: Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Container(
+                                                  margin: const EdgeInsets.only(
+                                                      top: 10),
+                                                  width: 115,
+                                                  height: 35,
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: Colors.grey),
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                10)),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: <Widget>[
+                                                      IconButton(
+                                                        icon: const Icon(
+                                                            Icons.remove,size: 20,),
+                                                        onPressed: () {
+                                                          decreaseQuantity(); // Call the decreaseQuantity function
+                                                        },
+                                                      ),
+                                                      Text(
+                                                        quantity
+                                                            .toString(), // Display the updated quantity
+                                                        style: const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      IconButton(
+                                                        icon: const Icon(
+                                                            Icons.add,size: 20,),
+                                                        onPressed: () {
+                                                          increaseQuantity(); // Call the increaseQuantity function
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              child: IconButton(
+                                icon: const Icon(Icons.close,
+                                    color: Colors.black),
+                                onPressed: () {
+                                  // Xử lý khi nút "x" được nhấn
+                                },
                               ),
                             ),
-                            Spacer(),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 5),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Icon(
-                                    Icons.delete,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey
-                                                    .withOpacity(0.5),
-                                                spreadRadius: 1,
-                                                blurRadius: 10,
-                                              )
-                                            ]),
-                                        child: Icon(
-                                          CupertinoIcons.plus,
-                                          size: 18,
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Text(
-                                          "01",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xFF4C53A5),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey
-                                                    .withOpacity(0.5),
-                                                spreadRadius: 1,
-                                                blurRadius: 10,
-                                              )
-                                            ]),
-                                        child: Icon(
-                                          CupertinoIcons.minus,
-                                          size: 18,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ]),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          )),
+                      ),
+                    );
+                  } else {
+                    if (mounted) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  }
+                  return null;
+                },
+              ),
             ),
           ),
           // cái lisview của tôi đâu

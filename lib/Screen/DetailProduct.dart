@@ -33,10 +33,11 @@ class _DetailProductState extends State<DetailProduct> {
       final response = await http.read(
         Uri.parse(
           'http://192.168.45.105:6868/api/getListAll_deltail/${widget.product?.sId}',
+          
         ),
         headers: {'Content-Type': 'application/json'},
       );
-
+      print(widget.product?.sId);
       // Xử lý dữ liệu response ở đây
       final List<dynamic> data = json.decode(response)['productListSize'];
 
@@ -45,11 +46,13 @@ class _DetailProductState extends State<DetailProduct> {
           productList =
               data.map((item) => ProductListSize.fromJson(item)).toList();
         });
+       
       }
 
       print('Fetched product list: $productList');
       productList.forEach((productListSize) {
         print('Quantity: ${productListSize.quantity}');
+        print('Quantity: ${productListSize.sizeId?.name}');
         sizeList.add('${productListSize.sizeId?.name}');
       });
     } catch (error) {
