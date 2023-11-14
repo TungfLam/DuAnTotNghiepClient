@@ -166,15 +166,13 @@ class _PopularProductListState extends State<PopularProductList> {
                                     right: 5,
                                     child: IconButton(
                                       icon: Icon(Icons.favorite_border_outlined),
-                                      color: product.isFavorite!
-                                          ? Colors.grey
-                                          : Colors.red,
+
                                       onPressed: () {
-                                        if (product.isFavorite!) {
-                                          addFavoritesProduct(product);
-                                        } else {
-                                          deleteFavoritesProduct(product);
-                                        }
+                                        // if (product.isFavorite!) {
+                                        //   addFavoritesProduct(product);
+                                        // } else {
+                                        //   deleteFavoritesProduct(product);
+                                        // }
                                       },
                                     ),
                                   ),
