@@ -40,7 +40,7 @@ class _PopularProductListState extends State<PopularProductList> {
 
   Future<bool> addFavoritesProduct(productModel product) async {
     final response = await http.post(
-        Uri.parse('http://localhost:6868/api/addFavorite/iduser/id_product'),
+        Uri.parse('http://192.168.45.105:6868/api/addFavorite/iduser/id_product'),
         body: jsonEncode({
           'id_product': product.sId,
         }));
@@ -49,7 +49,7 @@ class _PopularProductListState extends State<PopularProductList> {
 
   Future<bool> deleteFavoritesProduct(productModel product) async {
     final response = await http.post(
-        Uri.parse('http://localhost:6868/api/deleteFavorite/id_favorite'),
+        Uri.parse('http://192.168.45.105:6868/api/deleteFavorite/id_favorite'),
         body: jsonEncode({
           'id_product': product.sId,
         }));
