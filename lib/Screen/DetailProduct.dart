@@ -15,12 +15,16 @@ class DetailProduct extends StatefulWidget {
 }
 
 class _DetailProductState extends State<DetailProduct> {
-  String _selectedSize = ''; // Biến lưu kích thước đã chọn
+  String _selectedSize = '';
+  String _selectedColor = ''; // Biến lưu kích thước đã chọn
   List<ProductListSize> productList = [];
   List<String> sizeList = [];
+  List<String> colorList = [];
   int maxQuantity = 10;
   int quantity = 1;
   int _selectedImageIndex = 0;
+  ProductListSize? _selectedProductListSize;
+  final ip = '192.168.45.105';
 
   @override
   void initState() {
@@ -32,8 +36,7 @@ class _DetailProductState extends State<DetailProduct> {
     try {
       final response = await http.read(
         Uri.parse(
-          'http://192.168.45.105:6868/api/getListAll_deltail/${widget.product?.sId}',
-          
+          'http://$ip:6868/api/getListAll_deltail/${widget.product?.sId}',
         ),
         headers: {'Content-Type': 'application/json'},
       );
@@ -46,50 +49,82 @@ class _DetailProductState extends State<DetailProduct> {
           productList =
               data.map((item) => ProductListSize.fromJson(item)).toList();
         });
-       
       }
 
-      print('Fetched product list: $productList');
       productList.forEach((productListSize) {
         print('Quantity: ${productListSize.quantity}');
         print('Quantity: ${productListSize.sizeId?.name}');
+        print('idsizecolor : ${productListSize.sId}');
         sizeList.add('${productListSize.sizeId?.name}');
+        colorList.add('${productListSize.colorId?.name}');
       });
     } catch (error) {
       print('Error fetching product list: $error');
     }
   }
 
-  Widget _buildSizeOption(String size) {
-    bool isSelected = _selectedSize == size;
-    String selectedSizeQuantity = "";
+Future<void> addToCart(String productId, int quantity) async {
+  try {
+    final response = await http.post(
+      Uri.parse('http://$ip:6868/api/addCart/6549d3feffe41106e077bd42/$productId'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'quantity': quantity}),
+    );
 
-    if (isSelected) {
-      setState(() {
-        final selectedProductSize = productList.firstWhere(
-            (productListSize) => productListSize.sizeId?.name == size);
+    if (response.statusCode == 200) {
+      // Xử lý khi thành công
+      print('Added to cart successfully!');
+    } else {
+      // Xử lý khi không thành công
+      print('Failed to add to cart. Status code: ${response.statusCode}');
+    }
+  } catch (error) {
+    // Xử lý khi có lỗi
+    print('Error adding to cart: $error');
+  }
+}
 
-        selectedSizeQuantity = selectedProductSize.quantity.toString();
+  void updateSizeList() {
+    sizeList.clear();
+    colorList.clear();
+
+    productList.forEach((productListSize) {
+      sizeList.add('${productListSize.sizeId?.name}');
+    });
+
+    // Cập nhật danh sách màu dựa trên kích thước đã chọn
+    if (_selectedSize.isNotEmpty) {
+      productList
+          .where((productListSize) =>
+              productListSize.sizeId?.name == _selectedSize)
+          .forEach((selectedProductSize) {
+        if (selectedProductSize.colorId != null) {
+          colorList.add('${selectedProductSize.colorId?.name}');
+        }
       });
     }
+  }
+
+  Widget _buildSizeOption(String size) {
+    bool isSelected = _selectedSize == size;
     if (isSelected) {
-      print('Selected size: $_selectedSize');
-      print('Quantity: $selectedSizeQuantity');
-      setState(() {
-        maxQuantity = int.parse('$selectedSizeQuantity');
-      });
+      _selectedSize = size;
+      _selectedColor = ''; // Xóa màu đã chọn khi kích thước bị hủy chọn
+      _selectedProductListSize = productList.firstWhere(
+        (productListSize) => productListSize.sizeId?.name == _selectedSize,
+      );
     }
     return GestureDetector(
       onTap: () {
         setState(() {
           if (isSelected) {
             _selectedSize = '';
-            // Bỏ chọn kích thước nếu đã chọn rồi
+            _selectedColor = ''; // Xóa màu đã chọn khi kích thước bị hủy chọn
           } else {
             _selectedSize = size;
-            // Chọn kích thước nếu chưa chọn
           }
-          print('Selected size: $_selectedSize'); // In ra kích thước đã chọn
+          print('Kích thước đã chọn: $_selectedSize');
+          updateSizeList(); // Cập nhật danh sách màu khi kích thước được chọn
         });
       },
       child: Container(
@@ -113,6 +148,51 @@ class _DetailProductState extends State<DetailProduct> {
       ),
     );
   }
+
+  Widget _buildColorOption(String color) {
+    bool isSelected = _selectedColor == color;
+    if (isSelected) {
+      _selectedColor = color;
+      _selectedProductListSize = productList.firstWhere(
+        (productListSize) =>
+            productListSize.sizeId?.name == _selectedSize &&
+            productListSize.colorId?.name == _selectedColor,
+      );
+    }
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (isSelected) {
+            _selectedColor = '';
+          } else {
+            _selectedColor = color;
+          }
+          print('Màu đã chọn: $_selectedColor');
+        });
+      },
+      child: Container(
+        width: 100,
+        height: 47,
+        margin: EdgeInsets.all(8),
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isSelected ? Color(0xFF6342E8) : Color(0xFFF1F4FB),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(
+          child: Text(
+            color,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+
 
   // Initialize the quantity with 1
 
@@ -161,7 +241,6 @@ class _DetailProductState extends State<DetailProduct> {
                   ),
                 ),
               ),
-
               Expanded(
                 flex: 6,
                 child: SingleChildScrollView(
@@ -307,9 +386,13 @@ class _DetailProductState extends State<DetailProduct> {
                                     fontSize: 14, fontWeight: FontWeight.bold),
                               ),
                               Row(
-                                children: sizeList.map((size) {
-                                  return _buildSizeOption(size);
-                                }).toList(),
+                                children: _selectedSize.isEmpty
+                                    ? sizeList.map((size) {
+                                        return _buildSizeOption(size);
+                                      }).toList()
+                                    : colorList.map((color) {
+                                        return _buildColorOption(color);
+                                      }).toList(),
                               ),
                             ],
                           ),
@@ -322,6 +405,18 @@ class _DetailProductState extends State<DetailProduct> {
                             child: ElevatedButton.icon(
                               onPressed: () {
                                 // Xử lý khi nút được nhấn
+                                if (_selectedProductListSize != null) {
+                                  print(
+                                      'idsizecolor : ${_selectedProductListSize?.sId}');
+                                      
+                                      addToCart(_selectedProductListSize?.sId ??'',1);
+                                } else {
+                                  print('No size and color selected');
+                                }
+
+                                // call api add cart
+                                
+
                               },
                               icon: const Icon(
                                 Icons.shopping_cart,
