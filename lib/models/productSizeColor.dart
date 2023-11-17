@@ -26,7 +26,7 @@ class ProductListSize {
   String? sId;
   ProductId? productId;
   SizeId? sizeId;
-  SizeId? colorId;
+  ColorId? colorId;
   int? quantity;
   String? createdAt;
   String? updatedAt;
@@ -50,7 +50,7 @@ class ProductListSize {
     sizeId =
         json['size_id'] != null ? new SizeId.fromJson(json['size_id']) : null;
     colorId =
-        json['color_id'] != null ? new SizeId.fromJson(json['color_id']) : null;
+        json['color_id'] != null ? new ColorId.fromJson(json['color_id']) : null;
     quantity = json['quantity'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
@@ -106,6 +106,24 @@ class SizeId {
   SizeId({this.sId, this.name});
 
   SizeId.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['name'] = this.name;
+    return data;
+  }
+}
+class ColorId {
+  String? sId;
+  String? name;
+
+  ColorId({this.sId, this.name});
+
+  ColorId.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     name = json['name'];
   }

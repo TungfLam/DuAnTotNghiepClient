@@ -17,10 +17,11 @@ class Favorite extends StatefulWidget {
 
 class _FavoriteState extends State<Favorite> {
   List<ListFavorite> products = []; // Danh sách sản phẩm từ API
+  final ip = '192.168.45.105';
 
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.45.105:6868/api/getListFavorite/6549d3feffe41106e077bd42')); // Thay thế URL của API sản phẩm
+        'http://$ip:6868/api/getListFavorite/6549d3feffe41106e077bd42')); // Thay thế URL của API sản phẩm
 
     if (response.statusCode == 200) {
       try {
