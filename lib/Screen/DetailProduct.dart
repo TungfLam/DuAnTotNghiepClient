@@ -20,8 +20,8 @@ class _DetailProductState extends State<DetailProduct> {
   List<ProductListSize> productList = [];
   List<String> sizeList = [];
   List<String> colorList = [];
-  int maxQuantity = 10;
-  int quantity = 1;
+  int maxQuantity = 0;
+  int quantity = 0;
   int _selectedImageIndex = 0;
   ProductListSize? _selectedProductListSize;
   final ip = '192.168.45.105';
@@ -63,26 +63,44 @@ class _DetailProductState extends State<DetailProduct> {
     }
   }
 
-Future<void> addToCart(String productId, int quantity) async {
-  try {
-    final response = await http.post(
-      Uri.parse('http://$ip:6868/api/addCart/6549d3feffe41106e077bd42/$productId'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'quantity': quantity}),
-    );
+  void addToCart(String productId, int quantity) async {
+    try {
+      if (_selectedProductListSize != null) {
+        final response = await http.post(
+          Uri.parse(
+              'http://$ip:6868/api/addCart/6549d3feffe41106e077bd42/$productId'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({'quantity': quantity}),
+        );
 
-    if (response.statusCode == 200) {
-      // Xử lý khi thành công
-      print('Added to cart successfully!');
-    } else {
-      // Xử lý khi không thành công
-      print('Failed to add to cart. Status code: ${response.statusCode}');
+        if (response.statusCode == 200) {
+          // Xử lý khi thành công
+          print('Added to cart successfully!');
+        } else {
+          // Xử lý khi không thành công
+          print('Failed to add to cart. Status code: ${response.statusCode}');
+        }
+      } else {
+        print('No size and color selected');
+      }
+    } catch (error) {
+      // Xử lý khi có lỗi
+      print('Error adding to cart: $error');
     }
-  } catch (error) {
-    // Xử lý khi có lỗi
-    print('Error adding to cart: $error');
   }
-}
+
+  void updateMaxQuantity() {
+    if (_selectedSize.isNotEmpty && _selectedColor.isNotEmpty) {
+      _selectedProductListSize = productList.firstWhere(
+        (productListSize) =>
+            productListSize.sizeId?.name == _selectedSize &&
+            productListSize.colorId?.name == _selectedColor,
+      );
+      maxQuantity = _selectedProductListSize?.quantity ?? 0;
+    } else {
+      maxQuantity = 0;
+    }
+  }
 
   void updateSizeList() {
     sizeList.clear();
@@ -103,6 +121,20 @@ Future<void> addToCart(String productId, int quantity) async {
         }
       });
     }
+
+    updateMaxQuantity();
+  }
+
+  List<String> getUniqueSizes() {
+    Set<String> uniqueSizes = Set();
+    List<String> result = [];
+
+    productList.forEach((productListSize) {
+      uniqueSizes.add(productListSize.sizeId?.name ?? '');
+    });
+
+    result.addAll(uniqueSizes);
+    return result;
   }
 
   Widget _buildSizeOption(String size) {
@@ -158,6 +190,7 @@ Future<void> addToCart(String productId, int quantity) async {
             productListSize.sizeId?.name == _selectedSize &&
             productListSize.colorId?.name == _selectedColor,
       );
+      updateMaxQuantity(); // Gọi hàm để cập nhật số lượng khi màu được chọn
     }
     return GestureDetector(
       onTap: () {
@@ -166,6 +199,7 @@ Future<void> addToCart(String productId, int quantity) async {
             _selectedColor = '';
           } else {
             _selectedColor = color;
+            quantity = 0; // Đặt lại quantity thành 0 khi chọn màu mới
           }
           print('Màu đã chọn: $_selectedColor');
         });
@@ -192,12 +226,12 @@ Future<void> addToCart(String productId, int quantity) async {
     );
   }
 
-
-
   // Initialize the quantity with 1
 
   void increaseQuantity() {
-    if (quantity < maxQuantity) {
+    if (_selectedProductListSize != null &&
+        _selectedProductListSize?.quantity != null &&
+        quantity < _selectedProductListSize!.quantity!) {
       setState(() {
         quantity++;
       });
@@ -301,12 +335,12 @@ Future<void> addToCart(String productId, int quantity) async {
                                 size: 15,
                               ),
                               Icon(
-                                Icons.star,
+                                Icons.star_half,
                                 color: Colors.yellow,
                                 size: 15,
                               ),
                               Icon(
-                                Icons.star,
+                                Icons.star_border_outlined,
                                 color: Colors.yellow,
                                 size: 15,
                               ),
@@ -387,7 +421,7 @@ Future<void> addToCart(String productId, int quantity) async {
                               ),
                               Row(
                                 children: _selectedSize.isEmpty
-                                    ? sizeList.map((size) {
+                                    ? getUniqueSizes().map((size) {
                                         return _buildSizeOption(size);
                                       }).toList()
                                     : colorList.map((color) {
@@ -408,15 +442,14 @@ Future<void> addToCart(String productId, int quantity) async {
                                 if (_selectedProductListSize != null) {
                                   print(
                                       'idsizecolor : ${_selectedProductListSize?.sId}');
-                                      
-                                      addToCart(_selectedProductListSize?.sId ??'',1);
+
+                                  addToCart(
+                                      _selectedProductListSize?.sId ?? '', 1);
                                 } else {
                                   print('No size and color selected');
                                 }
 
                                 // call api add cart
-                                
-
                               },
                               icon: const Icon(
                                 Icons.shopping_cart,
