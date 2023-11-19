@@ -7,9 +7,14 @@ import 'package:appclient/Screen/LoginOrRegister.dart';
 import 'package:appclient/Screen/MyCart.dart';
 import 'package:appclient/Screen/MyHomePage.dart';
 import 'package:appclient/Screen/Register.dart';
+import 'package:appclient/services/local_notification.dart';
+import 'package:appclient/services/socket_io.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureLocalNotifications();
+  connectSocket();
   runApp(const MyApp());
 }
 
