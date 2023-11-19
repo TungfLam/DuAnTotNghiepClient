@@ -22,11 +22,12 @@ class _PopularProductListState extends State<PopularProductList> {
   bool isLoadingMore = false;
   int page = 1;
   String _selectedSortOption = 'Sort Down';
+  final ip = '192.168.45.105';
 
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.45.105:6868/api/products/Popular/$page')); // Thay thế URL của API sản phẩm
+        'http://$ip:6868/api/products/Popular/$page')); // Thay thế URL của API sản phẩm
     if (response.statusCode == 200) {
       final List<dynamic>? productData = jsonDecode(response.body);
       if (productData != null && mounted) {
@@ -38,23 +39,7 @@ class _PopularProductListState extends State<PopularProductList> {
     }
   }
 
-  Future<bool> addFavoritesProduct(productModel product) async {
-    final response = await http.post(
-        Uri.parse('http://localhost:6868/api/addFavorite/iduser/id_product'),
-        body: jsonEncode({
-          'id_product': product.sId,
-        }));
-    return response.statusCode == 200;
-  }
 
-  Future<bool> deleteFavoritesProduct(productModel product) async {
-    final response = await http.post(
-        Uri.parse('http://localhost:6868/api/deleteFavorite/id_favorite'),
-        body: jsonEncode({
-          'id_product': product.sId,
-        }));
-    return response.statusCode == 200;
-  }
 
   @override
   void initState() {

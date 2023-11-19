@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/mycart', // Đường dẫn mặc định khi khởi chạy ứng dụng
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
         '/': (context) => const MyHomePage(title: ''),

@@ -21,11 +21,12 @@ class _WomensProductListState extends State<WomensProductList> {
   final scrollController = ScrollController();
   bool isLoadingMore = false;
   int page = 1;
+  final ip = '192.168.45.105';
 
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.45.105:6868/api/products/Womens/$page')); // Thay thế URL của API sản phẩm
+        'http://$ip:6868/api/products/Womens/$page')); // Thay thế URL của API sản phẩm
     if (response.statusCode == 200) {
       final List<dynamic>? productData = jsonDecode(response.body);
       if (productData != null && mounted) {
