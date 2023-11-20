@@ -1,23 +1,21 @@
 import 'dart:convert';
 import 'package:appclient/models/productFvoriteModel.dart';
 import 'package:appclient/models/productSizeColor.dart';
-import 'package:appclient/services/baseApi.dart';
 import 'package:http/http.dart' as http;
 import 'package:appclient/models/productModel.dart';
 import 'package:flutter/material.dart';
 
-class DetailProduct extends StatefulWidget {
-  const DetailProduct({Key? key, required this.title, this.product,this.productfvr})
+class DetailFavoriteProduct extends StatefulWidget {
+  const DetailFavoriteProduct({Key? key, required this.title,this.productfvr})
       : super(key: key);
   final String title;
-  final productModel? product;
   final ListFavorite? productfvr;
 
   @override
-  State<DetailProduct> createState() => _DetailProductState();
+  State<DetailFavoriteProduct> createState() => _DetailFavoriteProductState();
 }
 
-class _DetailProductState extends State<DetailProduct> {
+class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
   String _selectedSize = '';
   String _selectedColor = ''; // Biến lưu kích thước đã chọn
   List<ProductListSize> productList = [];
@@ -27,6 +25,7 @@ class _DetailProductState extends State<DetailProduct> {
   int quantity = 0;
   int _selectedImageIndex = 0;
   ProductListSize? _selectedProductListSize;
+  final ip = '192.168.45.105';
 
   @override
   void initState() {
@@ -38,11 +37,11 @@ class _DetailProductState extends State<DetailProduct> {
     try {
       final response = await http.read(
         Uri.parse(
-          'http://$BASE_API:6868/api/getListAll_deltail/${widget.product?.sId}',
+          'http://$ip:6868/api/getListAll_deltail/${widget.productfvr?.productId?.sId}',
         ),
         headers: {'Content-Type': 'application/json'},
       );
-      print(widget.product?.sId);
+      print(widget.productfvr?.productId?.sId);
       // Xử lý dữ liệu response ở đây
       final List<dynamic> data = json.decode(response)['productListSize'];
 
@@ -70,7 +69,7 @@ class _DetailProductState extends State<DetailProduct> {
       if (_selectedProductListSize != null) {
         final response = await http.post(
           Uri.parse(
-              'http://$BASE_API:6868/api/addCart/6549d3feffe41106e077bd42/$productId'),
+              'http://$ip:6868/api/addCart/6549d3feffe41106e077bd42/$productId'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({'quantity': quantity}),
         );
@@ -261,7 +260,7 @@ class _DetailProductState extends State<DetailProduct> {
                 child: Container(
                   color: Color.fromARGB(255, 198, 198, 198),
                   child: PageView.builder(
-                    itemCount: widget.product?.image?.length ?? 0,
+                    itemCount: widget.productfvr?.productId?.image?.length ?? 0,
                     onPageChanged: (index) {
                       setState(() {
                         _selectedImageIndex = index;
@@ -270,7 +269,7 @@ class _DetailProductState extends State<DetailProduct> {
                     itemBuilder: (context, index) {
                       return Image.memory(
                         base64Decode(
-                            widget.product?.image?.elementAt(index) ?? ''),
+                            widget.productfvr?.productId?.image?.elementAt(index) ?? ''),
                         fit: BoxFit.cover,
                       );
                     },
@@ -295,7 +294,7 @@ class _DetailProductState extends State<DetailProduct> {
                               Expanded(
                                 flex: 8,
                                 child: Text(
-                                  widget.product?.name ??
+                                  widget.productfvr?.productId?.name ??
                                       'Unknown Product Name',
                                   style: TextStyle(
                                       color: Colors.black,
@@ -306,7 +305,7 @@ class _DetailProductState extends State<DetailProduct> {
                               Expanded(
                                 flex: 2,
                                 child: Text(
-                                  '\$${widget.product?.price ?? 0.00}',
+                                  '\$${widget.productfvr?.productId?.price ?? 0.00}',
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 20,
@@ -402,7 +401,7 @@ class _DetailProductState extends State<DetailProduct> {
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                widget.product?.description ??
+                                widget.productfvr?.productId?.description ??
                                     'Unknown Product Name',
                                 style:
                                     TextStyle(fontSize: 14, color: Colors.grey),

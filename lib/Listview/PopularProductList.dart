@@ -4,6 +4,7 @@ import 'dart:ffi';
 
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/models/productModel.dart';
+import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
@@ -26,7 +27,7 @@ class _PopularProductListState extends State<PopularProductList> {
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.45.105:6868/api/products/Popular/$page')); // Thay thế URL của API sản phẩm
+        'http://$BASE_API:6868/api/products/Popular/$page')); // Thay thế URL của API sản phẩm
     if (response.statusCode == 200) {
       final List<dynamic>? productData = jsonDecode(response.body);
       if (productData != null && mounted) {
@@ -38,22 +39,25 @@ class _PopularProductListState extends State<PopularProductList> {
     }
   }
 
-  Future<bool> addFavoritesProduct(productModel product) async {
-    final response = await http.post(
-        Uri.parse('http://192.168.45.105:6868/api/addFavorite/iduser/id_product'),
-        body: jsonEncode({
-          'id_product': product.sId,
-        }));
-    return response.statusCode == 200;
-  }
+  Future<void> addFavorite(String productId) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://$ip:6868/api/addFavorite/6549d3feffe41106e077bd42/$productId'),
+        headers: {'Content-Type': 'application/json'},
+      );
 
-  Future<bool> deleteFavoritesProduct(productModel product) async {
-    final response = await http.post(
-        Uri.parse('http://192.168.45.105:6868/api/deleteFavorite/id_favorite'),
-        body: jsonEncode({
-          'id_product': product.sId,
-        }));
-    return response.statusCode == 200;
+      if (response.statusCode == 200) {
+        // Xử lý khi thành công
+        print('Added to favorites successfully!');
+      } else {
+        // Xử lý khi không thành công
+        print(
+            'Failed to add to favorites. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Xử lý khi có lỗi
+      print('Error adding to favorites: $error');
+    }
   }
 
   @override
@@ -165,14 +169,11 @@ class _PopularProductListState extends State<PopularProductList> {
                                     top: 5,
                                     right: 5,
                                     child: IconButton(
-                                      icon: Icon(Icons.favorite_border_outlined),
-
+                                      icon:
+                                          Icon(Icons.favorite_border_outlined),
                                       onPressed: () {
-                                        // if (product.isFavorite!) {
-                                        //   addFavoritesProduct(product);
-                                        // } else {
-                                        //   deleteFavoritesProduct(product);
-                                        // }
+
+                                        addFavorite(product.sId ?? '');
                                       },
                                     ),
                                   ),

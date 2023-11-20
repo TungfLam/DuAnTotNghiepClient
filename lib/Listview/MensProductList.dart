@@ -4,6 +4,7 @@ import 'dart:ffi';
 
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/models/productModel.dart';
+import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
@@ -26,7 +27,7 @@ class _MensProductListState extends State<MensProductList> {
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.45.105:6868/api/products/Men/$page')); // Thay thế URL của API sản phẩm
+        'http://$BASE_API:6868/api/products/Men/$page')); // Thay thế URL của API sản phẩm
     if (response.statusCode == 200) {
       final List<dynamic>? productData = jsonDecode(response.body);
       if (productData != null && mounted) {

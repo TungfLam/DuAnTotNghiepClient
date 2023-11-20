@@ -116,11 +116,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       padding: EdgeInsets.only(right: 16.0),
                       child: ClipOval(
                         child: Image(
-                          image:
-                              NetworkImage("https://via.placeholder.com/60x60"),
-                          width: 60, // Điều chỉnh kích thước hình ảnh
                           height: 60,
+                          width: 60,
+                          image: AssetImage('lib/images/img2.jpg'),
                         ),
+                          
                       ),
                     ),
                     // Thêm hai dòng văn bản bên phải
