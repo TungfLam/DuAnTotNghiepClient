@@ -84,14 +84,16 @@ class UserId {
 class ProductId {
   String? sId;
   String? name;
+  String? description;
   List<String>? image;
   int? price;
 
-  ProductId({this.sId, this.name, this.image, this.price});
+  ProductId({this.sId, this.name,this.description, this.image, this.price});
 
   ProductId.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     name = json['name'];
+    description = json['description'];
     image = json['image'].cast<String>();
     price = json['price'];
   }
@@ -100,6 +102,7 @@ class ProductId {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['_id'] = this.sId;
     data['name'] = this.name;
+    data['description'] = this.description;
     data['image'] = this.image;
     data['price'] = this.price;
     return data;

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:appclient/models/productModel.dart';
+import 'package:appclient/Screen/DetailFavariteProduct.dart';
 
 class Favorite extends StatefulWidget {
   const Favorite({Key? key, required this.title}) : super(key: key);
@@ -45,6 +46,29 @@ class _FavoriteState extends State<Favorite> {
       print('Request failed with status: ${response.statusCode}');
     }
   }
+
+void _removeItemFromFavorite(String favoriteId) async {
+  try {
+    final response = await http.get(
+      Uri.parse('http://$ip:6868/api/deleteFavorite/$favoriteId'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      // Xử lý khi xóa thành công
+      print('Removed from cart successfully!');
+      // Gọi lại hàm fetchProducts để làm mới danh sách
+      fetchProducts();
+    } else {
+      // Xử lý khi xóa không thành công
+      print(
+          'Failed to remove from cart. Status code: ${response.statusCode}');
+    }
+  } catch (error) {
+    // Xử lý khi có lỗi
+    print('Error removing from cart: $error');
+  }
+}
 
   @override
   void initState() {
@@ -92,6 +116,21 @@ class _FavoriteState extends State<Favorite> {
                     final product = products[index];
                     print(product.productId?.name);
                     return GestureDetector(
+                      onTap: () {
+                        // Xử lý khi bạn click vào item
+                        print('Bạn đã click vào sản phẩm: ${product.sId}');
+                        // Navigator.pushNamed(context, '/detaiproduct');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailFavoriteProduct(
+                              title: 'Chi tiết sản phẩm',
+                              productfvr: product,
+                              // Truyền đối tượng sản phẩm đã được chọn
+                            ),
+                          ),
+                        );
+                      },
                       child: Card(
                         child: Stack(
                           children: [
@@ -147,15 +186,20 @@ class _FavoriteState extends State<Favorite> {
                                                         FontWeight.bold),
                                               ),
                                               Container(
-                                                decoration: BoxDecoration(
-                                                    color: Color(0xff6342E8),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                10))),
-                                                padding: EdgeInsets.all(5),
-                                                child: Text("Add to cart",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)
-                                              ),
+                                                  decoration: BoxDecoration(
+                                                      color: Color(0xff6342E8),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10))),
+                                                  padding: EdgeInsets.all(5),
+                                                  child: Text(
+                                                    "Add to cart",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white),
+                                                  )),
                                             ],
                                           ),
                                         ),
@@ -173,6 +217,10 @@ class _FavoriteState extends State<Favorite> {
                                     color: Colors.black),
                                 onPressed: () {
                                   // Xử lý khi nút "x" được nhấn
+
+                                  if (product.sId != null) {
+                                    _removeItemFromFavorite(product.sId!);
+                                  } else {}
                                 },
                               ),
                             ),
