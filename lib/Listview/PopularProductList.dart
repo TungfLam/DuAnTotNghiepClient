@@ -42,7 +42,7 @@ class _PopularProductListState extends State<PopularProductList> {
   Future<void> addFavorite(String productId) async {
     try {
       final response = await http.post(
-        Uri.parse('http://$ip:6868/api/addFavorite/6549d3feffe41106e077bd42/$productId'),
+        Uri.parse('http://$BASE_API:6868/api/addFavorite/6549d3feffe41106e077bd42/$productId'),
         headers: {'Content-Type': 'application/json'},
       );
 
