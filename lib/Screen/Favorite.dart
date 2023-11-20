@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:core';
+import 'dart:html';
+import 'dart:math';
 
 import 'package:appclient/models/productFvoriteModel.dart';
 import 'package:appclient/services/baseApi.dart';
@@ -20,10 +22,10 @@ class Favorite extends StatefulWidget {
 class _FavoriteState extends State<Favorite> {
   List<ListFavorite> products = []; // Danh sách sản phẩm từ API
 
+
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
         'http://$BASE_API:6868/api/getListFavorite/6549d3feffe41106e077bd42')); // Thay thế URL của API sản phẩm
-
     if (response.statusCode == 200) {
       try {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -72,6 +74,7 @@ void _removeItemFromFavorite(String favoriteId) async {
 
   @override
   void initState() {
+     fetchFavoritesProducts();
     super.initState();
     fetchProducts();
   }
