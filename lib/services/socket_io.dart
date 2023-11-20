@@ -4,7 +4,7 @@ import 'package:socket_io_client/socket_io_client.dart';
 
 void connectSocket() async {
   String deviceId = '';
-  final socket = io('$BASE_API/' , <String , dynamic>{
+  final socket = io('http://$BASE_API:6868/' , <String , dynamic>{
     'transports': ['websocket'],
   });
 

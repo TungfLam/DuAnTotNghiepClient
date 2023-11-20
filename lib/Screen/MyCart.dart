@@ -1,3 +1,4 @@
+import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -15,12 +16,11 @@ class _MyCartState extends State<MyCart> {
   List<ListCart> products = [];
   int maxQuantity = 10;
   int quantity = 1;
-  final ip = '192.168.45.105';
 
   Future<void> fetchProducts() async {
     try {
       final response = await http.get(
-        Uri.parse('http://$ip:6868/api/getListCart/6549d3feffe41106e077bd42'),
+        Uri.parse('http://$BASE_API:6868/api/getListCart/6549d3feffe41106e077bd42'),
       );
 
       if (response.statusCode == 200) {
@@ -54,7 +54,7 @@ class _MyCartState extends State<MyCart> {
   void _removeItemFromCart(String cartId) async {
     try {
       final response = await http.delete(
-        Uri.parse('http://$ip:6868/api/deleteCart/$cartId'),
+        Uri.parse('http://$BASE_API:6868/api/deleteCart/$cartId'),
         headers: {'Content-Type': 'application/json'},
       );
 
