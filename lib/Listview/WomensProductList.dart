@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:core';
-import 'dart:ffi';
 
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/models/productModel.dart';

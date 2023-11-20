@@ -2,7 +2,6 @@ import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:core';
-import 'dart:ffi';
 
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/models/productModel.dart';
