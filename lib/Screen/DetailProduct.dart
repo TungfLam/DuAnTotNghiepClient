@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:appclient/models/productFvoriteModel.dart';
 import 'package:appclient/models/productSizeColor.dart';
+import 'package:appclient/services/baseApi.dart';
 import 'package:http/http.dart' as http;
 import 'package:appclient/models/productModel.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,6 @@ class _DetailProductState extends State<DetailProduct> {
   int quantity = 0;
   int _selectedImageIndex = 0;
   ProductListSize? _selectedProductListSize;
-  final ip = '192.168.45.105';
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _DetailProductState extends State<DetailProduct> {
     try {
       final response = await http.read(
         Uri.parse(
-          'http://$ip:6868/api/getListAll_deltail/${widget.product?.sId}',
+          'http://$BASE_API:6868/api/getListAll_deltail/${widget.product?.sId}',
         ),
         headers: {'Content-Type': 'application/json'},
       );
@@ -70,7 +70,7 @@ class _DetailProductState extends State<DetailProduct> {
       if (_selectedProductListSize != null) {
         final response = await http.post(
           Uri.parse(
-              'http://$ip:6868/api/addCart/6549d3feffe41106e077bd42/$productId'),
+              'http://$BASE_API:6868/api/addCart/6549d3feffe41106e077bd42/$productId'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({'quantity': quantity}),
         );
