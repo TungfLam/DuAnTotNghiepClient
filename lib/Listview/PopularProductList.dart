@@ -39,7 +39,26 @@ class _PopularProductListState extends State<PopularProductList> {
     }
   }
 
+  Future<void> addFavorite(String productId) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://$ip:6868/api/addFavorite/6549d3feffe41106e077bd42/$productId'),
+        headers: {'Content-Type': 'application/json'},
+      );
 
+      if (response.statusCode == 200) {
+        // Xử lý khi thành công
+        print('Added to favorites successfully!');
+      } else {
+        // Xử lý khi không thành công
+        print(
+            'Failed to add to favorites. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Xử lý khi có lỗi
+      print('Error adding to favorites: $error');
+    }
+  }
 
   @override
   void initState() {
@@ -150,14 +169,11 @@ class _PopularProductListState extends State<PopularProductList> {
                                     top: 5,
                                     right: 5,
                                     child: IconButton(
-                                      icon: Icon(Icons.favorite_border_outlined),
-
+                                      icon:
+                                          Icon(Icons.favorite_border_outlined),
                                       onPressed: () {
-                                        // if (product.isFavorite!) {
-                                        //   addFavoritesProduct(product);
-                                        // } else {
-                                        //   deleteFavoritesProduct(product);
-                                        // }
+
+                                        addFavorite(product.sId ?? '');
                                       },
                                     ),
                                   ),
