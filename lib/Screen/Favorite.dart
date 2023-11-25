@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:core';
 
 import 'package:appclient/models/productFvoriteModel.dart';
+import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -18,12 +19,15 @@ class Favorite extends StatefulWidget {
 
 class _FavoriteState extends State<Favorite> {
   List<ListFavorite> products = []; // Danh sách sản phẩm từ API
-  final ip = '192.168.45.105';
 
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
         'https://adadas.onrender.com/api/getListFavorite/6524318746e12608b3558d74')); // Thay thế URL của API sản phẩm
 
+
+  Future<void> fetchFavoritesProducts() async {
+    final response = await http.get(Uri.parse(
+        'http://$BASE_API:6868/api/getListFavorite/6549d3feffe41106e077bd42')); // Thay thế URL của API sản phẩm
     if (response.statusCode == 200) {
       try {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -50,7 +54,9 @@ class _FavoriteState extends State<Favorite> {
 void _removeItemFromFavorite(String favoriteId) async {
   try {
     final response = await http.get(
+
       Uri.parse('https://adadas.onrender.com/api/deleteFavorite/$favoriteId'),
+
       headers: {'Content-Type': 'application/json'},
     );
 
@@ -58,7 +64,7 @@ void _removeItemFromFavorite(String favoriteId) async {
       // Xử lý khi xóa thành công
       print('Removed from cart successfully!');
       // Gọi lại hàm fetchProducts để làm mới danh sách
-      fetchProducts();
+      fetchFavoritesProducts();
     } else {
       // Xử lý khi xóa không thành công
       print(
@@ -72,8 +78,10 @@ void _removeItemFromFavorite(String favoriteId) async {
 
   @override
   void initState() {
+     
     super.initState();
-    fetchProducts();
+    fetchFavoritesProducts();
+    
   }
 
   @override

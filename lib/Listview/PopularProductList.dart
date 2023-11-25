@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:core';
-import 'dart:ffi';
 
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/models/productModel.dart';
+import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
@@ -22,15 +22,16 @@ class _PopularProductListState extends State<PopularProductList> {
   bool isLoadingMore = false;
   int page = 1;
   String _selectedSortOption = 'Sort Down';
-  final ip = '192.168.45.105';
 
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
+
         'https://adadas.onrender.com/api/products/655ef3095e659702ab6c1d10/$page'),
         headers: {'Content-Type': 'application/json'},
         ); // Thay thế URL của API sản phẩm
         
+
     if (response.statusCode == 200) {
       final List<dynamic>? productData = jsonDecode(response.body);
       if (productData != null && mounted) {
@@ -45,7 +46,9 @@ class _PopularProductListState extends State<PopularProductList> {
   Future<void> addFavorite(String productId) async {
     try {
       final response = await http.post(
+
         Uri.parse('https://adadas.onrender.com/api/addFavorite/6524318746e12608b3558d74/$productId'),
+
         headers: {'Content-Type': 'application/json'},
       );
 

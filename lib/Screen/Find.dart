@@ -1,7 +1,7 @@
+import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:core';
-import 'dart:ffi';
 
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/models/productModel.dart';
@@ -28,7 +28,9 @@ class _FindState extends State<Find> {
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
+
         'https://adadas.onrender.com/api/products/search?searchValues=$searchText')); // Thay thế URL của API sản phẩm
+
     print(searchText);
 
     if (response.statusCode == 200) {

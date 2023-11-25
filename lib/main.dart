@@ -7,10 +7,16 @@ import 'package:appclient/Screen/LoginOrRegister.dart';
 import 'package:appclient/Screen/MyCart.dart';
 import 'package:appclient/Screen/MyHomePage.dart';
 import 'package:appclient/Screen/Register.dart';
+
 import 'package:appclient/Screen/billScreen.dart';
+=======
+
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureLocalNotifications();
+  connectSocket();
   runApp(const MyApp());
 }
 
@@ -27,7 +33,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
+
       initialRoute: '/bill', // Đường dẫn mặc định khi khởi chạy ứng dụng
+
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
         '/': (context) => const MyHomePage(title: ''),

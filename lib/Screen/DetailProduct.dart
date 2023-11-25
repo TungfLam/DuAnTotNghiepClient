@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
+
 import 'package:http/http.dart' as http;
 
 import 'package:appclient/models/productFvoriteModel.dart';
@@ -39,7 +41,9 @@ class _DetailProductState extends State<DetailProduct> {
     try {
       final response = await http.read(
         Uri.parse(
+
           'https://adadas.onrender.com/api/getListAll_deltail/${widget.product?.sId}',
+
         ),
         headers: {'Content-Type': 'application/json'},
       );
@@ -71,7 +75,9 @@ class _DetailProductState extends State<DetailProduct> {
       if (_selectedProductListSize != null) {
         final response = await http.post(
           Uri.parse(
+
               'https://adadas.onrender.com/api/addCart/6524318746e12608b3558d74/$productId'),
+
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({'quantity': quantity}),
         );

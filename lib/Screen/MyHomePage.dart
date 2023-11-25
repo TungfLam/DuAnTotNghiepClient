@@ -1,10 +1,7 @@
 import 'package:appclient/Listview/MensProductList.dart';
 import 'package:appclient/Listview/PopularProductList.dart';
 import 'package:appclient/Listview/WomensProductList.dart';
-import 'dart:convert';
-import 'package:appclient/models/productModel.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
