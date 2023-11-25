@@ -28,7 +28,9 @@ class _FindState extends State<Find> {
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
-        'http://$BASE_API:6868/api/products/search?searchValues=$searchText')); // Thay thế URL của API sản phẩm
+
+        'https://adadas.onrender.com/api/products/search?searchValues=$searchText')); // Thay thế URL của API sản phẩm
+
     print(searchText);
 
     if (response.statusCode == 200) {

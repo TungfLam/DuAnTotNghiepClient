@@ -26,7 +26,12 @@ class _PopularProductListState extends State<PopularProductList> {
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
-        'http://$BASE_API:6868/api/products/Popular/$page')); // Thay thế URL của API sản phẩm
+
+        'https://adadas.onrender.com/api/products/655ef3095e659702ab6c1d10/$page'),
+        headers: {'Content-Type': 'application/json'},
+        ); // Thay thế URL của API sản phẩm
+        
+
     if (response.statusCode == 200) {
       final List<dynamic>? productData = jsonDecode(response.body);
       if (productData != null && mounted) {
@@ -41,7 +46,9 @@ class _PopularProductListState extends State<PopularProductList> {
   Future<void> addFavorite(String productId) async {
     try {
       final response = await http.post(
-        Uri.parse('http://$BASE_API:6868/api/addFavorite/6549d3feffe41106e077bd42/$productId'),
+
+        Uri.parse('https://adadas.onrender.com/api/addFavorite/6524318746e12608b3558d74/$productId'),
+
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -75,7 +82,7 @@ class _PopularProductListState extends State<PopularProductList> {
           children: [
             Padding(
               padding: const EdgeInsets.only(right: 10),
-              child: Text('Filter & Sort',
+              child: Text('Lọc & sắp xếp',
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             PopupMenuButton<String>(
@@ -99,11 +106,11 @@ class _PopularProductListState extends State<PopularProductList> {
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                 const PopupMenuItem<String>(
                   value: 'Sort Down',
-                  child: Text('Sort Down'),
+                  child: Text('lớn đến bé'),
                 ),
                 const PopupMenuItem<String>(
                   value: 'Sort Up',
-                  child: Text('Sort Up'),
+                  child: Text('bé đến lớn'),
                 ),
               ],
               child: Icon(Icons.filter_list), // Biểu tượng sắp xếp xuống
@@ -162,6 +169,7 @@ class _PopularProductListState extends State<PopularProductList> {
                                           'loading...'), // Giả sử danh sách ảnh là danh sách base64
                                       height: 200,
                                       width: 180,
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                   Positioned(
@@ -172,7 +180,7 @@ class _PopularProductListState extends State<PopularProductList> {
                                           Icon(Icons.favorite_border_outlined),
                                       onPressed: () {
 
-                                        addFavorite(product.sId ?? '');
+                                        addFavorite(product.sId!);
                                       },
                                     ),
                                   ),

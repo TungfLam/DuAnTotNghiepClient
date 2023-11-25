@@ -20,6 +20,10 @@ class Favorite extends StatefulWidget {
 class _FavoriteState extends State<Favorite> {
   List<ListFavorite> products = []; // Danh sách sản phẩm từ API
 
+  Future<void> fetchProducts() async {
+    final response = await http.get(Uri.parse(
+        'https://adadas.onrender.com/api/getListFavorite/6524318746e12608b3558d74')); // Thay thế URL của API sản phẩm
+
 
   Future<void> fetchFavoritesProducts() async {
     final response = await http.get(Uri.parse(
@@ -50,7 +54,9 @@ class _FavoriteState extends State<Favorite> {
 void _removeItemFromFavorite(String favoriteId) async {
   try {
     final response = await http.get(
-      Uri.parse('http://$BASE_API:6868/api/deleteFavorite/$favoriteId'),
+
+      Uri.parse('https://adadas.onrender.com/api/deleteFavorite/$favoriteId'),
+
       headers: {'Content-Type': 'application/json'},
     );
 
@@ -156,7 +162,7 @@ void _removeItemFromFavorite(String favoriteId) async {
                                   flex: 6,
                                   child: Container(
                                     padding: const EdgeInsets.fromLTRB(
-                                        0, 30, 10, 20),
+                                        0, 10, 10, 20),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -181,9 +187,9 @@ void _removeItemFromFavorite(String favoriteId) async {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                '\$${product.productId?.price ?? 'Unknown Price'}',
+                                                '\đ${product.productId?.price ?? 'Unknown Price'}',
                                                 style: const TextStyle(
-                                                    fontSize: 20,
+                                                    fontSize: 18,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
