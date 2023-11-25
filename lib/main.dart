@@ -13,10 +13,11 @@ import 'package:appclient/Screen/billScreen.dart';
 
 import 'package:flutter/material.dart';
 
+import 'services/local_notification.dart';
+
 void main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await configureLocalNotifications();
-  // connectSocket();
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureLocalNotifications();
   runApp(const MyApp());
 }
 
