@@ -9,14 +9,14 @@ import 'package:appclient/Screen/MyHomePage.dart';
 import 'package:appclient/Screen/Register.dart';
 
 import 'package:appclient/Screen/billScreen.dart';
-=======
+
 
 import 'package:flutter/material.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await configureLocalNotifications();
-  connectSocket();
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await configureLocalNotifications();
+  // connectSocket();
   runApp(const MyApp());
 }
 

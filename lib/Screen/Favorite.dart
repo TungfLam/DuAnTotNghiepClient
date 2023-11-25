@@ -20,14 +20,9 @@ class Favorite extends StatefulWidget {
 class _FavoriteState extends State<Favorite> {
   List<ListFavorite> products = []; // Danh sách sản phẩm từ API
 
-  Future<void> fetchProducts() async {
-    final response = await http.get(Uri.parse(
-        'https://adadas.onrender.com/api/getListFavorite/6524318746e12608b3558d74')); // Thay thế URL của API sản phẩm
-
-
   Future<void> fetchFavoritesProducts() async {
     final response = await http.get(Uri.parse(
-        'http://$BASE_API:6868/api/getListFavorite/6549d3feffe41106e077bd42')); // Thay thế URL của API sản phẩm
+        'https://adadas.onrender.com/api/getListFavorite/6524318746e12608b3558d74')); // Thay thế URL của API sản phẩm
     if (response.statusCode == 200) {
       try {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -51,37 +46,33 @@ class _FavoriteState extends State<Favorite> {
     }
   }
 
-void _removeItemFromFavorite(String favoriteId) async {
-  try {
-    final response = await http.get(
+  void _removeItemFromFavorite(String favoriteId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://adadas.onrender.com/api/deleteFavorite/$favoriteId'),
+        headers: {'Content-Type': 'application/json'},
+      );
 
-      Uri.parse('https://adadas.onrender.com/api/deleteFavorite/$favoriteId'),
-
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    if (response.statusCode == 200) {
-      // Xử lý khi xóa thành công
-      print('Removed from cart successfully!');
-      // Gọi lại hàm fetchProducts để làm mới danh sách
-      fetchFavoritesProducts();
-    } else {
-      // Xử lý khi xóa không thành công
-      print(
-          'Failed to remove from cart. Status code: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        // Xử lý khi xóa thành công
+        print('Removed from cart successfully!');
+        // Gọi lại hàm fetchProducts để làm mới danh sách
+        fetchFavoritesProducts();
+      } else {
+        // Xử lý khi xóa không thành công
+        print(
+            'Failed to remove from cart. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Xử lý khi có lỗi
+      print('Error removing from cart: $error');
     }
-  } catch (error) {
-    // Xử lý khi có lỗi
-    print('Error removing from cart: $error');
   }
-}
 
   @override
   void initState() {
-     
     super.initState();
     fetchFavoritesProducts();
-    
   }
 
   @override
