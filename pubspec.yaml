@@ -37,6 +37,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   animate_do: ^3.1.2
   http: ^0.13.3
+  another_flushbar: ^1.12.30
+  webview_flutter: ^4.2.4
 
 dev_dependencies:
   flutter_test:

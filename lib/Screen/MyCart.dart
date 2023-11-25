@@ -13,14 +13,17 @@ class MyCart extends StatefulWidget {
 
 class _MyCartState extends State<MyCart> {
   List<ListCart> products = [];
-  int maxQuantity = 10;
-  int quantity = 1;
-  final ip = '192.168.45.105';
+  String selectedPaymentMethod = '';
+  List<String> paymentMethods = [
+    'Thanh toán khi nhận hàng',
+    'Thanh toán VNPAY'
+  ];
 
   Future<void> fetchProducts() async {
     try {
       final response = await http.get(
-        Uri.parse('http://$ip:6868/api/getListCart/6549d3feffe41106e077bd42'),
+        Uri.parse(
+            'https://adadas.onrender.com/api/getListCart/6524318746e12608b3558d74'),
       );
 
       if (response.statusCode == 200) {
@@ -54,7 +57,7 @@ class _MyCartState extends State<MyCart> {
   void _removeItemFromCart(String cartId) async {
     try {
       final response = await http.delete(
-        Uri.parse('http://$ip:6868/api/deleteCart/$cartId'),
+        Uri.parse('https://adadas.onrender.com/api/deleteCart/$cartId'),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -74,13 +77,100 @@ class _MyCartState extends State<MyCart> {
     }
   }
 
+  void _showProductDetailsModal(BuildContext context, ListCart product) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          // Nội dung của modal bottom sheet
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Hiển thị thông tin chi tiết về sản phẩm (ví dụ: tên, giá, màu sắc, kích thước, v.v.)
+              // Các thông tin có thể được truy cập thông qua đối tượng `product` được truyền vào hàm này.
+              Center(
+                child: Text(
+                  product.productId?.product?.name ?? "Unknown",
+                  style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xff6342E8)),
+                ),
+              ),
+
+              // Chọn phương thức thanh toán
+              Container(
+                width: double.infinity,
+                child: DropdownButton<String>(
+                  value: selectedPaymentMethod.isNotEmpty
+                      ? selectedPaymentMethod
+                      : null,
+                  hint: Text(
+                    'Phương thức thanh toán: ${selectedPaymentMethod}',
+                    style: TextStyle(
+                      color: selectedPaymentMethod.isNotEmpty
+                          ? Colors.black
+                          : Colors.grey,
+                    ),
+                  ),
+                  onChanged: (String? newPaymentMethod) {
+                    setState(() {
+                      selectedPaymentMethod = newPaymentMethod!;
+                      
+                    });
+                  },
+                  items: paymentMethods.map((String paymentMethod) {
+                    return DropdownMenuItem<String>(
+                      value: paymentMethod,
+                      child: Text(paymentMethod),
+                    );
+                  }).toList(),
+                ),
+              ),
+
+              Container(child: const Text("phiếu giảm giá")),
+
+              Text("Tổng tiền: ${product.productId?.product?.price}"),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    // Handle button pressed
+                    print('phương thức tt đã chọn: $selectedPaymentMethod');
+                  },
+                  icon: const Icon(
+                    Icons.shopping_cart,
+                    color: Colors.white,
+                  ),
+                  label: const Text(
+                    'Đặt hàng',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF6342E8),
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     fetchProducts();
+    
   }
 
-  void increaseQuantity() {
+  void increaseQuantity(int quantity, int maxQuantity) {
     if (quantity < maxQuantity) {
       setState(() {
         quantity++;
@@ -88,7 +178,7 @@ class _MyCartState extends State<MyCart> {
     }
   }
 
-  void decreaseQuantity() {
+  void decreaseQuantity(int quantity, int maxQuantity) {
     if (quantity > 0) {
       setState(() {
         quantity--;
@@ -107,7 +197,7 @@ class _MyCartState extends State<MyCart> {
           },
         ),
         title: const Text(
-          'My Cart',
+          'Giỏ hàng',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
@@ -127,7 +217,7 @@ class _MyCartState extends State<MyCart> {
                   crossAxisCount: 1,
                   crossAxisSpacing: 6,
                   mainAxisSpacing: 6,
-                  childAspectRatio: 2.5,
+                  childAspectRatio: 2,
                 ),
                 itemCount: products.length,
                 itemBuilder: (context, index) {
@@ -136,6 +226,16 @@ class _MyCartState extends State<MyCart> {
                     if (product.productId != null) {
                       print(product.productId?.quantity);
                       return GestureDetector(
+                        onTap: () {
+                          if (index < products.length) {
+                            final product = products[index];
+                            if (product.productId != null) {
+                              _showProductDetailsModal(context, product);
+                              print(
+                                  'soluongmax: ${product.productId!.quantity!}');
+                            }
+                          }
+                        },
                         child: Card(
                           child: Stack(
                             children: [
@@ -160,91 +260,79 @@ class _MyCartState extends State<MyCart> {
                                     flex: 6,
                                     child: Container(
                                       padding: const EdgeInsets.fromLTRB(
-                                          0, 30, 10, 20),
+                                          0, 10, 30, 20),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
-                                            product.productId?.product?.name ??
-                                                "Unknown",
-                                            style: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xff6342E8)),
+                                          Expanded(
+                                            flex: 5,
+                                            child: Text(
+                                              product.productId?.product
+                                                      ?.name ??
+                                                  "Unknown",
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xff6342E8)),
+                                            ),
                                           ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                '\$${product.productId?.product?.price ?? ''}',
-                                                style: const TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Container(
-                                                child: Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Container(
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            top: 10),
-                                                    width: 115,
-                                                    height: 35,
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          width: 1,
-                                                          color: Colors.grey),
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                              .all(
-                                                              Radius.circular(
-                                                                  10)),
-                                                    ),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: <Widget>[
-                                                        IconButton(
-                                                          icon: const Icon(
-                                                            Icons.remove,
-                                                            size: 20,
-                                                          ),
-                                                          onPressed: () {
-                                                            decreaseQuantity();
-                                                          },
-                                                        ),
-                                                        Text(
-                                                          quantity.toString(),
-                                                          style: const TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        IconButton(
-                                                          icon: const Icon(
-                                                            Icons.add,
-                                                            size: 20,
-                                                          ),
-                                                          onPressed: () {
-                                                            increaseQuantity();
-                                                          },
-                                                        ),
-                                                      ],
-                                                    ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  'Kích cỡ: ${product.productId?.sizeId?.name ?? ''}',
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 3,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  'Màu sắc: ${product.productId?.colorId?.name ?? ''}',
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 3,
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  '\đ${product.productId?.product?.price ?? ''}',
+                                                  style: const TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                // Container(
+                                                //   child: Text(
+                                                //     'Số Lượng: ${product.quantity ?? ''}',
+                                                //     style: const TextStyle(
+                                                //         fontSize: 15,
+                                                //         fontWeight:
+                                                //             FontWeight.bold),
+                                                //   ),
+                                                // ),
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -299,6 +387,7 @@ class _MyCartState extends State<MyCart> {
                 child: ElevatedButton.icon(
                   onPressed: () {
                     // Handle button pressed
+                    
                   },
                   icon: const Icon(
                     Icons.shopping_cart,

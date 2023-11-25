@@ -7,6 +7,7 @@ import 'package:appclient/Screen/LoginOrRegister.dart';
 import 'package:appclient/Screen/MyCart.dart';
 import 'package:appclient/Screen/MyHomePage.dart';
 import 'package:appclient/Screen/Register.dart';
+import 'package:appclient/Screen/billScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/bill', // Đường dẫn mặc định khi khởi chạy ứng dụng
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
         '/': (context) => const MyHomePage(title: ''),
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const Login(title: ''),
         '/loginorregister': (context) => const LoginOrRegisterScreen(title: ''),
         '/mycart': (context) => const MyCart(title: ''),
+        '/bill': (context) => const BillScreen(),
         '/find': (context) => const Find(title: ''),
         '/favorite': (context) => const Favorite(title: ''),
         '/detaiproduct': (context) => const DetailProduct(title: ''),

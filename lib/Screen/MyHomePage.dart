@@ -70,10 +70,10 @@ class _MyHomePageState extends State<MyHomePage> {
           bottom: const TabBar(
             // Thanh TabBar ở đây
             tabs: [
-              Tab(text: 'Popular'),
-              Tab(text: 'Mens'),
-              Tab(text: 'Womens'),
-              Tab(text: 'Sale'),
+              Tab(text: 'Phổ biến'),
+              Tab(text: 'Nam'),
+              Tab(text: 'Nữ'),
+              Tab(text: 'Khiến mại'),
             ],
           ),
         ),
@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: WomensProductList(),
             ),
             // Nội dung của Tab 4
-            Center(child: Text('Sale')),
+            Center(child: Text('Khuyến mãi')),
           ],
         ),
         // Định nghĩa thanh điều hướng bên phải với các tùy chọn điều hướng
@@ -120,7 +120,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           width: 60,
                           image: AssetImage('lib/images/img2.jpg'),
                         ),
-                          
                       ),
                     ),
                     // Thêm hai dòng văn bản bên phải
@@ -158,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 leading: const Icon(Icons
                     .shopping_bag_outlined), // Thêm biểu tượng vào ListTile
                 title: const Text(
-                  'Cart',
+                  'Giỏ hàng',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
@@ -170,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 leading: const Icon(Icons
                     .favorite_border_outlined), // Thêm biểu tượng vào ListTile
                 title: const Text(
-                  'Favorite',
+                  'Yêu thích',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
@@ -180,9 +179,21 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               ListTile(
                 leading: const Icon(
+                    Icons.shopify_sharp), // Thêm biểu tượng vào ListTile
+                title: const Text(
+                  'Đơn hàng',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onTap: () {
+                  // Xử lý khi người dùng chọn Tùy chọn 1
+                  Navigator.pushNamed(context, '/bill');
+                },
+              ),
+              ListTile(
+                leading: const Icon(
                     Icons.location_on_outlined), // Thêm biểu tượng vào ListTile
                 title: const Text(
-                  'Delivery Address',
+                  'Địa trỉ',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
@@ -193,7 +204,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 leading: const Icon(
                     Icons.payment_outlined), // Thêm biểu tượng vào ListTile
                 title: const Text(
-                  'Payment Methods',
+                  'Phương thức thanh toán',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
@@ -204,7 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 leading: const Icon(
                     Icons.discount_outlined), // Thêm biểu tượng vào ListTile
                 title: const Text(
-                  'Promo Cord',
+                  'Khuyến mại',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
@@ -215,7 +226,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 leading: const Icon(Icons
                     .notifications_outlined), // Thêm biểu tượng vào ListTile
                 title: const Text(
-                  'Notifecations',
+                  'Thông báo',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
@@ -226,31 +237,31 @@ class _MyHomePageState extends State<MyHomePage> {
                 leading: const Icon(Icons
                     .help_outline_outlined), // Thêm biểu tượng vào ListTile
                 title: const Text(
-                  'Help',
+                  'Hỗ trợ',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
                   // Xử lý khi người dùng chọn Tùy chọn 1
                 },
               ),
-              ListTile(
-                leading: const Icon(
-                    Icons.error_outline), // Thêm biểu tượng vào ListTile
-                title: const Text(
-                  'About',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  // Xử lý khi người dùng chọn Tùy chọn 1
-                },
-              ),
+              // ListTile(
+              //   leading: const Icon(
+              //       Icons.error_outline), // Thêm biểu tượng vào ListTile
+              //   title: const Text(
+              //     'About',
+              //     style: TextStyle(fontWeight: FontWeight.bold),
+              //   ),
+              //   onTap: () {
+              //     // Xử lý khi người dùng chọn Tùy chọn 1
+              //   },
+              // ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
                 child: ListTile(
                   leading: const Icon(
                       Icons.logout_outlined), // Thêm biểu tượng vào ListTile
                   title: const Text(
-                    'LOGOUT',
+                    'Đăng xuất',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   onTap: () {

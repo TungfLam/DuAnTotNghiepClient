@@ -26,8 +26,11 @@ class _MensProductListState extends State<MensProductList> {
 
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
-    final response = await http.get(Uri.parse(
-        'http://$ip:6868/api/products/Men/$page')); // Thay thế URL của API sản phẩm
+    final response = await http.get(
+      Uri.parse(
+          'https://adadas.onrender.com/api/products/655ef4523d0e29622dc02c6c/$page'),
+      headers: {'Content-Type': 'application/json'},
+    ); // Thay thế URL của API sản phẩm
     if (response.statusCode == 200) {
       final List<dynamic>? productData = jsonDecode(response.body);
       if (productData != null && mounted) {
@@ -39,6 +42,28 @@ class _MensProductListState extends State<MensProductList> {
     }
   }
 
+  Future<void> addFavorite(String productId) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+            'https://adadas.onrender.com/api/addFavorite/6549d3feffe41106e077bd42/$productId'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        // Xử lý khi thành công
+        print('Added to favorites successfully!');
+      } else {
+        // Xử lý khi không thành công
+        print(
+            'Failed to add to favorites. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Xử lý khi có lỗi
+      print('Error adding to favorites: $error');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -47,15 +72,16 @@ class _MensProductListState extends State<MensProductList> {
     fetchProducts();
   }
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-         Row(
+        Row(
           children: [
             Padding(
               padding: const EdgeInsets.only(right: 10),
-              child: Text('Filter & Sort', style: TextStyle(fontWeight: FontWeight.bold)),
+              child: Text('Filter & Sort',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             PopupMenuButton<String>(
               onSelected: (String value) {
@@ -66,11 +92,13 @@ class _MensProductListState extends State<MensProductList> {
                 if (value == 'Sort Down') {
                   // Sắp xếp danh sách sản phẩm theo thứ tự giảm dần
                   // Đặt logic sắp xếp ở đây
-                  products.sort((a, b) => (a.price ?? 0).compareTo(b.price ?? 0));
+                  products
+                      .sort((a, b) => (a.price ?? 0).compareTo(b.price ?? 0));
                 } else if (value == 'Sort Up') {
                   // Sắp xếp danh sách sản phẩm theo thứ tự tăng dần
                   // Đặt logic sắp xếp ở đây
-                  products.sort((a, b) => (b.price ?? 0).compareTo(a.price ?? 0));
+                  products
+                      .sort((a, b) => (b.price ?? 0).compareTo(a.price ?? 0));
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -133,13 +161,15 @@ class _MensProductListState extends State<MensProductList> {
                                   Container(
                                     width: double.infinity,
                                     padding: EdgeInsets.only(top: 10),
-                                    child: Image.memory(
-                                      base64Decode(product.image
-                                              ?.elementAt(0) ??
-                                          'loading...'), // Giả sử danh sách ảnh là danh sách base64
-                                      height: 200,
-                                      width: 180,
-                                    ),
+                                    child: product.image?.elementAt(1) != null
+                                        ? Image.memory(
+                                            base64Decode(
+                                                product.image!.elementAt(0)),
+                                            height: 200,
+                                            width: 180,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Placeholder(), // You can use a placeholder or any other widget
                                   ),
                                   Positioned(
                                     top: 5,
@@ -148,7 +178,9 @@ class _MensProductListState extends State<MensProductList> {
                                       icon:
                                           Icon(Icons.favorite_border_outlined),
                                       onPressed: () {
-                                        setState(() {});
+                                        setState(() {
+                                          addFavorite(product.sId!);
+                                        });
                                       },
                                     ),
                                   ),
@@ -202,7 +234,7 @@ class _MensProductListState extends State<MensProductList> {
     );
   }
 
-  Future<void> _scrollListener() async{
+  Future<void> _scrollListener() async {
     if (isLoadingMore) {
       return;
     }

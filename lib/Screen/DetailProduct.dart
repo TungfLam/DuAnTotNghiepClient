@@ -1,12 +1,14 @@
 import 'dart:convert';
-import 'package:appclient/models/productFvoriteModel.dart';
-import 'package:appclient/models/productSizeColor.dart';
-import 'package:http/http.dart' as http;
-import 'package:appclient/models/productModel.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import 'package:appclient/models/productFvoriteModel.dart';
+import 'package:appclient/models/productModel.dart';
+import 'package:appclient/models/productSizeColor.dart';
 
 class DetailProduct extends StatefulWidget {
-  const DetailProduct({Key? key, required this.title, this.product,this.productfvr})
+  const DetailProduct(
+      {Key? key, required this.title, this.product, this.productfvr})
       : super(key: key);
   final String title;
   final productModel? product;
@@ -26,7 +28,6 @@ class _DetailProductState extends State<DetailProduct> {
   int quantity = 0;
   int _selectedImageIndex = 0;
   ProductListSize? _selectedProductListSize;
-  final ip = '192.168.45.105';
 
   @override
   void initState() {
@@ -38,7 +39,7 @@ class _DetailProductState extends State<DetailProduct> {
     try {
       final response = await http.read(
         Uri.parse(
-          'http://$ip:6868/api/getListAll_deltail/${widget.product?.sId}',
+          'https://adadas.onrender.com/api/getListAll_deltail/${widget.product?.sId}',
         ),
         headers: {'Content-Type': 'application/json'},
       );
@@ -70,7 +71,7 @@ class _DetailProductState extends State<DetailProduct> {
       if (_selectedProductListSize != null) {
         final response = await http.post(
           Uri.parse(
-              'http://$ip:6868/api/addCart/6549d3feffe41106e077bd42/$productId'),
+              'https://adadas.onrender.com/api/addCart/6524318746e12608b3558d74/$productId'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({'quantity': quantity}),
         );
@@ -293,7 +294,7 @@ class _DetailProductState extends State<DetailProduct> {
                           child: Row(
                             children: [
                               Expanded(
-                                flex: 8,
+                                flex: 7,
                                 child: Text(
                                   widget.product?.name ??
                                       'Unknown Product Name',
@@ -304,7 +305,7 @@ class _DetailProductState extends State<DetailProduct> {
                                 ),
                               ),
                               Expanded(
-                                flex: 2,
+                                flex: 3,
                                 child: Text(
                                   '\$${widget.product?.price ?? 0.00}',
                                   style: TextStyle(
@@ -441,17 +442,31 @@ class _DetailProductState extends State<DetailProduct> {
                             child: ElevatedButton.icon(
                               onPressed: () {
                                 // Xử lý khi nút được nhấn
-                                if (_selectedProductListSize != null) {
+                                if (quantity > 0 &&
+                                    _selectedProductListSize != null) {
                                   print(
                                       'idsizecolor : ${_selectedProductListSize?.sId}');
-
-                                  addToCart(
-                                      _selectedProductListSize?.sId ?? '', 1);
+                                  addToCart(_selectedProductListSize?.sId ?? '',
+                                      quantity);
                                 } else {
-                                  print('No size and color selected');
+                                  // Hiển thị thông báo khi quantity <= 0 hoặc không có kích thước/màu được chọn
+                                  if (quantity <= 0) {
+                                    // Hiển thị thông báo "Vui lòng chọn số lượng"
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Vui lòng chọn số lượng'),
+                                      ),
+                                    );
+                                  } else if (_selectedProductListSize == null) {
+                                    // Hiển thị thông báo "Vui lòng chọn kích thước và màu"
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            'Vui lòng chọn kích thước và màu'),
+                                      ),
+                                    );
+                                  }
                                 }
-
-                                // call api add cart
                               },
                               icon: const Icon(
                                 Icons.shopping_cart,
@@ -460,8 +475,9 @@ class _DetailProductState extends State<DetailProduct> {
                               label: const Text(
                                 'ADD TO CART',
                                 style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:

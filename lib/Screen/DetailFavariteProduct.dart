@@ -37,7 +37,7 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
     try {
       final response = await http.read(
         Uri.parse(
-          'http://$ip:6868/api/getListAll_deltail/${widget.productfvr?.productId?.sId}',
+          'https://adadas.onrender.com/api/getListAll_deltail/${widget.productfvr?.productId?.sId}',
         ),
         headers: {'Content-Type': 'application/json'},
       );
@@ -69,7 +69,7 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
       if (_selectedProductListSize != null) {
         final response = await http.post(
           Uri.parse(
-              'http://$ip:6868/api/addCart/6549d3feffe41106e077bd42/$productId'),
+              'https://adadas.onrender.com/api/addCart/6524318746e12608b3558d74/$productId'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({'quantity': quantity}),
         );
@@ -292,7 +292,7 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
                           child: Row(
                             children: [
                               Expanded(
-                                flex: 8,
+                                flex: 7,
                                 child: Text(
                                   widget.productfvr?.productId?.name ??
                                       'Unknown Product Name',
@@ -303,7 +303,7 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
                                 ),
                               ),
                               Expanded(
-                                flex: 2,
+                                flex: 3,
                                 child: Text(
                                   '\$${widget.productfvr?.productId?.price ?? 0.00}',
                                   style: TextStyle(
