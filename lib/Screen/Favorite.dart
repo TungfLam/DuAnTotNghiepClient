@@ -22,7 +22,7 @@ class _FavoriteState extends State<Favorite> {
 
   Future<void> fetchFavoritesProducts() async {
     final response = await http.get(Uri.parse(
-        'https://adadas.onrender.com/api/getListFavorite/6524318746e12608b3558d74')); // Thay thế URL của API sản phẩm
+        '$BASE_API/api/getListFavorite/6524318746e12608b3558d74')); // Thay thế URL của API sản phẩm
     if (response.statusCode == 200) {
       try {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -49,7 +49,7 @@ class _FavoriteState extends State<Favorite> {
   void _removeItemFromFavorite(String favoriteId) async {
     try {
       final response = await http.get(
-        Uri.parse('https://adadas.onrender.com/api/deleteFavorite/$favoriteId'),
+        Uri.parse('$BASE_API/api/deleteFavorite/$favoriteId'),
         headers: {'Content-Type': 'application/json'},
       );
 

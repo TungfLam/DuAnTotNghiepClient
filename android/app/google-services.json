@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "859755294139",
+    "project_id": "du-an-adadas",
+    "storage_bucket": "du-an-adadas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:859755294139:android:74e6d0bc1456e7bd36a89e",
+        "android_client_info": {
+          "package_name": "com.example.appclient"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhvSeNlZf-DMxFyPi7CoCJzEI75mK-mq8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -21,8 +21,6 @@ class _BillScreenState extends State<BillScreen> {
       _controller= controller;
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return WebViewWidget(controller: _controller);

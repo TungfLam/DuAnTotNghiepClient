@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:appclient/models/productFvoriteModel.dart';
 import 'package:appclient/models/productSizeColor.dart';
+import 'package:appclient/services/baseApi.dart';
 import 'package:http/http.dart' as http;
 import 'package:appclient/models/productModel.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
     try {
       final response = await http.read(
         Uri.parse(
-          'https://adadas.onrender.com/api/getListAll_deltail/${widget.productfvr?.productId?.sId}',
+          '$BASE_API/api/getListAll_deltail/${widget.productfvr?.productId?.sId}',
         ),
         headers: {'Content-Type': 'application/json'},
       );
@@ -69,7 +70,7 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
       if (_selectedProductListSize != null) {
         final response = await http.post(
           Uri.parse(
-              'https://adadas.onrender.com/api/addCart/6524318746e12608b3558d74/$productId'),
+              '$BASE_API/api/addCart/6524318746e12608b3558d74/$productId'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({'quantity': quantity}),
         );
