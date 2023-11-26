@@ -162,7 +162,7 @@ class _PopularProductListState extends State<PopularProductList> {
                                 children: [
                                   Container(
                                     width: double.infinity,
-                                    padding: EdgeInsets.only(top: 10),
+                                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                                     child: Image.memory(
                                       base64Decode(product.image
                                               ?.elementAt(0) ??
