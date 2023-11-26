@@ -87,7 +87,7 @@ class _FavoriteState extends State<Favorite> {
           },
         ),
         title: const Text(
-          'Favorite',
+          'Yêu thích',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
@@ -192,13 +192,7 @@ class _FavoriteState extends State<Favorite> {
                                                               Radius.circular(
                                                                   10))),
                                                   padding: EdgeInsets.all(5),
-                                                  child: Text(
-                                                    "Add to cart",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white),
-                                                  )),
+                                                  child: Icon(Icons.shopify_outlined,color: Colors.white,)),
                                             ],
                                           ),
                                         ),
@@ -239,33 +233,33 @@ class _FavoriteState extends State<Favorite> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    // Xử lý khi nút được nhấn
-                  },
-                  icon: const Icon(
-                    Icons.shopping_cart,
-                    color: Colors.white,
-                  ), // Icon tùy chọn
-                  label: const Text(
-                    'ADD ALL TO CART',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6342E8), // Đặt màu nền
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.bottomCenter,
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(16.0),
+          //     child: SizedBox(
+          //       width: double.infinity,
+          //       height: 50,
+          //       child: ElevatedButton.icon(
+          //         onPressed: () {
+          //           // Xử lý khi nút được nhấn
+          //         },
+          //         icon: const Icon(
+          //           Icons.shopping_cart,
+          //           color: Colors.white,
+          //         ), // Icon tùy chọn
+          //         label: const Text(
+          //           'ADD ALL TO CART',
+          //           style: TextStyle(
+          //               color: Colors.white, fontWeight: FontWeight.bold),
+          //         ),
+          //         style: ElevatedButton.styleFrom(
+          //           backgroundColor: const Color(0xFF6342E8), // Đặt màu nền
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
