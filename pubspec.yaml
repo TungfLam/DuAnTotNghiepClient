@@ -47,6 +47,8 @@ dependencies:
   firebase_auth: any
   firebase_messaging: ^14.7.2
 
+  device_info: ^2.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

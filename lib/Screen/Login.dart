@@ -4,7 +4,6 @@ import 'package:appclient/models/apiRes.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:appclient/services/firebaseAuthService.dart';
 import 'package:appclient/services/firebaseMessagingService.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,8 +18,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  // final FirebaseAuthService _authService = FirebaseAuthService();
-  // final FirebaseMessagingService _messagingService = FirebaseMessagingService();
+  final FirebaseAuthService _authService = FirebaseAuthService();
+  final FirebaseMessagingService _messagingService = FirebaseMessagingService();
   final TextEditingController _username = TextEditingController();
   final TextEditingController _password = TextEditingController();
   bool _isLoading = false;
@@ -49,34 +48,83 @@ class _LoginState extends State<Login> {
           ),
         );
       }else{
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString("idUser", res.idUser.toString());
-        await prefs.setString("role", res.role.toString());
-        await prefs.setBool("isLogin", true);
+        String deviceId = await _authService.getDeviceId(context);
+        String token = await _messagingService.getToken();
 
-        // String token = await _messagingService.getToken();
-        // print('Token : $token');
-        //
-        // print("idUser : ${res.idUser.toString()} role : ${res.role.toString()}");
-        //
-        // try {
-        //   User? user = await _authService.signUpWithEmail("dudy234d23@gamil.com", "12345678");
-        //   print("User signed up successfully: ${user?.uid}");
-        // } catch (e) {
-        //   print("Error during sign up: $e");
-        // }
+        bool statusToken = await setToken(context , res.idUser.toString() , token , deviceId);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(res.msg!, style: const TextStyle(color: Colors.white) ),
-            backgroundColor: Colors.green,
-          ),
-        );
+        if(statusToken){
+          final SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString("idUser", res.idUser.toString());
+          await prefs.setString("role", res.role.toString());
+          await prefs.setBool("isLogin", true);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(res.msg!, style: const TextStyle(color: Colors.white) ),
+              backgroundColor: Colors.green,
+            ),
+          );
+          await Navigator.pushReplacementNamed(context,"/");
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Đăng nhập thất bại", style: TextStyle(color: Colors.white) ),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
     setState(() {
       _isLoading = false;
     });
+  }
+
+  Future<bool> setToken(BuildContext context , String idUser , String token , String deviceId) async {
+    final response = await http.put(
+        Uri.parse("$BASE_API/api/setoken/$idUser"),
+        headers: <String , String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: jsonEncode(<String , String>{
+          'token' : token,
+          'deviceId' : deviceId,
+        })
+    );
+
+    if(response.statusCode == 200){
+      Map<String , dynamic> apiRes = jsonDecode(response.body);
+      ApiRes res = ApiRes.fromJson(apiRes);
+
+      if(res.err!){
+        print("err : set Token thất bại : ${res.msg}");
+        return false;
+      }else{
+        if(res.msg == "đăng nhập thiết bị 2"){
+          // ignore: use_build_context_synchronously
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text("Thông báo"),
+                  content: const Text("Tài khoản đã đăng nhập ở nơi khác"),
+                  actions: [
+                    TextButton(
+                        onPressed: (){
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("OK")
+                    )
+                  ],
+                );
+              }
+          );
+        }
+        return true;
+      }
+    }
+    return false;
   }
 
   @override
@@ -141,7 +189,7 @@ class _LoginState extends State<Login> {
                             margin: const EdgeInsets.only(top: 80),
                             child: const Center(
                               child: Text(
-                                "Hello\nSign In!",
+                                "Adadas\n   Xin Chào",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 40,
@@ -169,7 +217,7 @@ class _LoginState extends State<Login> {
                                 controller: _username,
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
-                                    labelText: "Username",
+                                    labelText: "Tài khoản",
                                     hintText: "Sdt/email/username",
                                     hintStyle: const TextStyle(color: Colors.black26),
                                     border: OutlineInputBorder(
@@ -185,7 +233,7 @@ class _LoginState extends State<Login> {
                                 keyboardType: TextInputType.visiblePassword,
                                 obscureText: true,
                                 decoration: InputDecoration(
-                                    labelText: "PassWord",
+                                    labelText: "Mật khẩu",
                                     hintText: "password",
                                     hintStyle: const TextStyle(color: Colors.black26),
                                     border: OutlineInputBorder(
@@ -206,7 +254,7 @@ class _LoginState extends State<Login> {
                           ),
                           FadeInUp(
                             duration: const Duration(milliseconds: 1500),
-                            child: const Text("Forgot Password?",
+                            child: const Text("Quên mật khẩu?",
                                 style: TextStyle(
                                   color: Color.fromRGBO(3, 15, 243, 0.973),
                                 )),
@@ -230,7 +278,7 @@ class _LoginState extends State<Login> {
                             backgroundColor:
                                 const Color(0xFF6342E8), // Đặt màu nền
                           ), child: const Text(
-                            'SIGN IN',
+                            'Đăng nhập',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
@@ -249,7 +297,7 @@ class _LoginState extends State<Login> {
                           FadeInUp(
                               duration: const Duration(milliseconds: 1500),
                               child: const Text(
-                                "No registers yet?\t",
+                                "Bạn không có tài khoản?\t",
                                 style: TextStyle(color: Colors.grey),
                               )),
                           FadeInUp(
@@ -259,7 +307,7 @@ class _LoginState extends State<Login> {
                                   Navigator.pushNamed(context, '/register');
                                 },
                                 child: const Text(
-                                  "Create an account",
+                                  "Tạo tải khoản",
                                   style: TextStyle(
                                       color: Color(0xFF6342E8)),
                                 ),
