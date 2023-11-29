@@ -103,12 +103,12 @@ class _LoginState extends State<Login> {
       }else{
         if(res.msg == "đăng nhập thiết bị 2"){
           // ignore: use_build_context_synchronously
-          showDialog(
+          await showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: const Text("Thông báo"),
-                  content: const Text("Tài khoản đã đăng nhập ở nơi khác"),
+                  content: const Text("Tài khoản đã đăng nhập ở nơi khác , tiếp tục"),
                   actions: [
                     TextButton(
                         onPressed: (){
@@ -128,206 +128,225 @@ class _LoginState extends State<Login> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _username.dispose();
+    _password.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Container(
-                height: 350,
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage('lib/images/background.png'),
-                        fit: BoxFit.fill)),
-                child: Stack(
-                  children: <Widget>[
-                    Positioned(
-                      left: 30,
-                      width: 80,
-                      height: 200,
-                      child: FadeInUp(
-                          duration: const Duration(milliseconds: 500),
-                          child: Container(
-                            decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(
-                                        'lib/images/light-1.png'))),
-                          )),
-                    ),
-                    Positioned(
-                      left: 140,
-                      width: 80,
-                      height: 150,
-                      child: FadeInUp(
-                          duration: const Duration(milliseconds: 700),
-                          child: Container(
-                            decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(
-                                        'lib/images/light-2.png'))),
-                          )),
-                    ),
-                    Positioned(
-                      right: 40,
-                      top: 40,
-                      width: 80,
-                      height: 150,
-                      child: FadeInUp(
-                          duration: const Duration(milliseconds: 800),
-                          child: Container(
-                            decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                    image:
-                                        AssetImage('lib/images/clock.png'))),
-                          )),
-                    ),
-                    Positioned(
-                      child: FadeInUp(
-                          duration: const Duration(milliseconds: 1100),
-                          child: Container(
-                            margin: const EdgeInsets.only(top: 80),
-                            child: const Center(
-                              child: Text(
-                                "Adadas\n   Xin Chào",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 40,
-                                    fontWeight: FontWeight.bold),
+    return WillPopScope(
+      onWillPop: () async {
+        // sự kiện người dùng nhấn nút back
+        return false;
+      },
+      child: Scaffold(
+          backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  height: 350,
+                  decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage('lib/images/background.png'),
+                          fit: BoxFit.fill)),
+                  child: Stack(
+                    children: <Widget>[
+                      Positioned(
+                        left: 30,
+                        width: 80,
+                        height: 200,
+                        child: FadeInUp(
+                            duration: const Duration(milliseconds: 500),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'lib/images/light-1.png'))),
+                            )),
+                      ),
+                      Positioned(
+                        left: 140,
+                        width: 80,
+                        height: 150,
+                        child: FadeInUp(
+                            duration: const Duration(milliseconds: 700),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'lib/images/light-2.png'))),
+                            )),
+                      ),
+                      Positioned(
+                        right: 40,
+                        top: 40,
+                        width: 80,
+                        height: 150,
+                        child: FadeInUp(
+                            duration: const Duration(milliseconds: 800),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                      image:
+                                          AssetImage('lib/images/clock.png'))),
+                            )),
+                      ),
+                      Positioned(
+                        child: FadeInUp(
+                            duration: const Duration(milliseconds: 1100),
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 80),
+                              child: const Center(
+                                child: Text(
+                                  "Adadas\n   Xin Chào",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 40,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
+                            )),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: Column(
+                    children: <Widget>[
+                      FadeInUp(
+                          duration: const Duration(milliseconds: 1300),
+                          child: Container(
+                            decoration: const BoxDecoration(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                TextFormField(
+                                  controller: _username,
+                                  keyboardType: TextInputType.text,
+                                  decoration: InputDecoration(
+                                      labelText: "Tài khoản",
+                                      hintText: "Sdt/email/username",
+                                      hintStyle: const TextStyle(color: Colors.black26),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      prefixIcon: const Icon(Icons.person)),
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                TextFormField(
+                                  controller: _password,
+                                  keyboardType: TextInputType.visiblePassword,
+                                  obscureText: true,
+                                  decoration: InputDecoration(
+                                      labelText: "Mật khẩu",
+                                      hintText: "password",
+                                      hintStyle: const TextStyle(color: Colors.black26),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      prefixIcon: const Icon(Icons.lock)),
+                                ),
+                              ],
                             ),
                           )),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: Column(
-                  children: <Widget>[
-                    FadeInUp(
-                        duration: const Duration(milliseconds: 1300),
-                        child: Container(
-                          decoration: const BoxDecoration(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              TextFormField(
-                                controller: _username,
-                                keyboardType: TextInputType.text,
-                                decoration: InputDecoration(
-                                    labelText: "Tài khoản",
-                                    hintText: "Sdt/email/username",
-                                    hintStyle: const TextStyle(color: Colors.black26),
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    prefixIcon: const Icon(Icons.person)),
-                              ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              TextFormField(
-                                controller: _password,
-                                keyboardType: TextInputType.visiblePassword,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                    labelText: "Mật khẩu",
-                                    hintText: "password",
-                                    hintStyle: const TextStyle(color: Colors.black26),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    prefixIcon: const Icon(Icons.lock)),
-                              ),
-                            ],
-                          ),
-                        )),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          FadeInUp(
-                            duration: const Duration(milliseconds: 1500),
-                            child: const Text("Quên mật khẩu?",
-                                style: TextStyle(
-                                  color: Color.fromRGBO(3, 15, 243, 0.973),
-                                )),
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            FadeInUp(
+                              duration: const Duration(milliseconds: 1500),
+                              child: TextButton(
+                                  onPressed: () {
+                                    Navigator.pushReplacementNamed(context,"/");
+                                  },
+                                  child: const Text("Quên mật khẩu?",
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(3, 15, 243, 0.973),
+                                      )),
+                              )
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 80,
-                    ),
-                    FadeInUp(
-                      duration: const Duration(milliseconds: 1400),
-                      child: SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: (){
-                            _clickLogin(context);
-                            },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color(0xFF6342E8), // Đặt màu nền
-                          ), child: const Text(
-                            'Đăng nhập',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                      const SizedBox(
+                        height: 80,
+                      ),
+                      FadeInUp(
+                        duration: const Duration(milliseconds: 1400),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: (){
+                              _clickLogin(context);
+                              },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color(0xFF6342E8), // Đặt màu nền
+                            ), child: const Text(
+                              'Đăng nhập',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          const SizedBox(
-                            height: 70,
-                          ),
-                          FadeInUp(
-                              duration: const Duration(milliseconds: 1500),
-                              child: const Text(
-                                "Bạn không có tài khoản?\t",
-                                style: TextStyle(color: Colors.grey),
-                              )),
-                          FadeInUp(
-                              duration: const Duration(milliseconds: 1500),
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(context, '/register');
-                                },
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            const SizedBox(
+                              height: 70,
+                            ),
+                            FadeInUp(
+                                duration: const Duration(milliseconds: 1500),
                                 child: const Text(
-                                  "Tạo tải khoản",
-                                  style: TextStyle(
-                                      color: Color(0xFF6342E8)),
-                                ),
-                              ))
-                        ],
+                                  "Bạn không có tài khoản?\t",
+                                  style: TextStyle(color: Colors.grey),
+                                )),
+                            FadeInUp(
+                                duration: const Duration(milliseconds: 1500),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/register');
+                                  },
+                                  child: const Text(
+                                    "Tạo tải khoản",
+                                    style: TextStyle(
+                                        color: Color(0xFF6342E8)),
+                                  ),
+                                ))
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              if (_isLoading)
-                Container(
-                  color: Colors.black.withOpacity(0.3),
-                  child: const Center(
-                    child: CircularProgressIndicator(),
+                    ],
                   ),
                 ),
-            ],
-          ),
-        ));
+                if (_isLoading)
+                  Container(
+                    color: Colors.black.withOpacity(0.3),
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+              ],
+            ),
+          )),
+    );
   }
 
   void _clickLogin(BuildContext context){

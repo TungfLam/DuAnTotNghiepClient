@@ -1,7 +1,14 @@
+import 'dart:convert';
+
 import 'package:appclient/Listview/MensProductList.dart';
 import 'package:appclient/Listview/PopularProductList.dart';
 import 'package:appclient/Listview/WomensProductList.dart';
+import 'package:appclient/models/apiRes.dart';
+import 'package:appclient/services/baseApi.dart';
+import 'package:appclient/services/firebaseAuthService.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -12,6 +19,90 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final FirebaseAuthService _authService = FirebaseAuthService();
+
+  Future<void> _checkLogin () async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? isLogin = prefs.getBool("isLogin");
+    final String? idUser = prefs.getString("idUser");
+    String deviceId = await _authService.getDeviceId(context);
+
+    if(isLogin!){
+      final response = await http.post(
+          Uri.parse("$BASE_API/api/cheklogin/$idUser"),
+          headers: <String , String>{
+            'Content-Type': 'application/json; charset=UTF-8'
+          },
+          body: jsonEncode(<String , String>{
+            'deviceId' : deviceId
+          })
+      );
+
+      if(response.statusCode == 200){
+        Map<String,dynamic> apiRes = jsonDecode(response.body);
+        ApiRes res = ApiRes.fromJson(apiRes);
+
+        if(res.err!){
+          // ignore: use_build_context_synchronously
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text("Thông báo"),
+                  content: Text("${res.msg}, đăng xuất"),
+                  actions: [
+                    TextButton(
+                        onPressed: () async {
+                          await prefs.clear();
+                          await Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("OK")
+                    )
+                  ],
+                );
+              }
+          );
+        }
+      }else{
+
+      }
+    }else{
+      // sử lý khi chưa đăng nhập
+    }
+  }
+
+  Future<bool> logoutUser (String idUser) async {
+    final response = await http.post(
+        Uri.parse("$BASE_API/api/logout/$idUser"),
+        headers: <String , String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        }
+    );
+
+    if(response.statusCode == 200){
+      Map<String,dynamic> apiRes = jsonDecode(response.body);
+      ApiRes res = ApiRes.fromJson(apiRes);
+
+      if(res.err!){
+        print("err : ${res.msg}");
+      }else{
+        return true;
+      }
+
+    }else{
+      print("err : lỗi api");
+    }
+    return false;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLogin();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
