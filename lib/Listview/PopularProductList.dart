@@ -25,11 +25,13 @@ class _PopularProductListState extends State<PopularProductList> {
 
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
+
     final response = await http.get(
       Uri.parse(
           'https://adadas.onrender.com/api/products/655ef3095e659702ab6c1d10/$page'),
       headers: {'Content-Type': 'application/json'},
     ); // Thay thế URL của API sản phẩm
+
 
     if (response.statusCode == 200) {
       final List<dynamic>? productData = jsonDecode(response.body);
@@ -47,6 +49,7 @@ class _PopularProductListState extends State<PopularProductList> {
       final response = await http.post(
         Uri.parse(
             'https://adadas.onrender.com/api/addFavorite/6524318746e12608b3558d74/$productId'),
+
         headers: {'Content-Type': 'application/json'},
       );
 

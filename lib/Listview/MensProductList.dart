@@ -27,7 +27,7 @@ class _MensProductListState extends State<MensProductList> {
   Future<void> fetchProducts() async {
     final response = await http.get(
       Uri.parse(
-          'https://adadas.onrender.com/api/products/655ef4523d0e29622dc02c6c/$page'),
+          '$BASE_API/api/products/655ef3095e659702ab6c1d10/$page'),
       headers: {'Content-Type': 'application/json'},
     ); // Thay thế URL của API sản phẩm
 
@@ -46,7 +46,7 @@ class _MensProductListState extends State<MensProductList> {
     try {
       final response = await http.post(
         Uri.parse(
-            'https://adadas.onrender.com/api/addFavorite/6549d3feffe41106e077bd42/$productId'),
+            '$BASE_API/api/addFavorite/6549d3feffe41106e077bd42/$productId'),
         headers: {'Content-Type': 'application/json'},
       );
 
