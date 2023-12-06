@@ -113,114 +113,129 @@ class _FavoriteState extends State<Favorite> {
                 itemBuilder: (context, index) {
                   if (index < products.length) {
                     final product = products[index];
-                    print(product.productId?.name);
-                    return GestureDetector(
-                      onTap: () {
-                        // Xử lý khi bạn click vào item
-                        print('Bạn đã click vào sản phẩm: ${product.sId}');
-                        // Navigator.pushNamed(context, '/detaiproduct');
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailFavoriteProduct(
-                              title: 'Chi tiết sản phẩm',
-                              productfvr: product,
-                              // Truyền đối tượng sản phẩm đã được chọn
-                            ),
-                          ),
-                        );
-                      },
-                      child: Card(
-                        child: Stack(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 4,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Image.memory(
-                                      base64Decode(product.productId?.image
-                                              ?.elementAt(0) ??
-                                          ''),
-                                      height: 200,
-                                      width: 180,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 6,
-                                  child: Container(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        0, 10, 10, 20),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          flex: 7,
-                                          child: Text(
-                                            product.productId?.name ??
-                                                "Unknown",
-                                            style: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xff6342E8)),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                '\đ${product.productId?.price ?? 'Unknown Price'}',
-                                                style: const TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Container(
-                                                  decoration: BoxDecoration(
-                                                      color: Color(0xff6342E8),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10))),
-                                                  padding: EdgeInsets.all(5),
-                                                  child: Icon(Icons.shopify_outlined,color: Colors.white,)),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Positioned(
-                              top: 0,
-                              right: 0,
-                              child: IconButton(
-                                icon: const Icon(Icons.close,
-                                    color: Colors.black),
-                                onPressed: () {
-                                  // Xử lý khi nút "x" được nhấn
-
-                                  if (product.sId != null) {
-                                    _removeItemFromFavorite(product.sId!);
-                                  } else {}
-                                },
+                    if (product.productId != null) {
+                      // Kiểm tra xem id product và product có khác null không
+                      print(product.productId?.name);
+                      return GestureDetector(
+                        onTap: () {
+                          // Xử lý khi bạn click vào item
+                          print('Bạn đã click vào sản phẩm: ${product.sId}');
+                          // Navigator.pushNamed(context, '/detaiproduct');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailFavoriteProduct(
+                                title: 'Chi tiết sản phẩm',
+                                productfvr: product,
+                                // Truyền đối tượng sản phẩm đã được chọn
                               ),
                             ),
-                          ],
+                          );
+                        },
+                        child: Card(
+                          child: Stack(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    flex: 4,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(10),
+                                      child: Image.network(
+                                        product.productId?.image
+                                                ?.elementAt(0) ??
+                                            '',
+                                        height: 200,
+                                        width: 180,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 6,
+                                    child: Container(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 10, 10, 20),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            flex: 7,
+                                            child: Text(
+                                              product.productId?.name ??
+                                                  "Unknown",
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xff6342E8)),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 4,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  '\đ${product.productId?.price ?? 'Unknown Price'}',
+                                                  style: const TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xff6342E8),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                10)),
+                                                  ),
+                                                  padding: EdgeInsets.all(5),
+                                                  child: Icon(
+                                                    Icons.shopify_outlined,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: IconButton(
+                                  icon: const Icon(Icons.close,
+                                      color: Colors.black),
+                                  onPressed: () {
+                                    // Xử lý khi nút "x" được nhấn
+                                    if (product.sId != null) {
+                                      _removeItemFromFavorite(product.sId!);
+                                    } else {
+                                      print(
+                                          'ProductId is null for product at index $index');
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    } else {
+                      print(
+                          'ProductId or product is null for product at index $index');
+                      return const SizedBox.shrink();
+                    }
                   } else {
                     if (mounted) {
                       return const Center(

@@ -6,6 +6,7 @@ import 'package:appclient/Screen/Login.dart';
 import 'package:appclient/Screen/LoginOrRegister.dart';
 import 'package:appclient/Screen/MyCart.dart';
 import 'package:appclient/Screen/MyHomePage.dart';
+import 'package:appclient/Screen/PayScreen.dart';
 import 'package:appclient/Screen/Register.dart';
 
 import 'package:appclient/Screen/billScreen.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
         '/find': (context) => const Find(title: ''),
         '/favorite': (context) => const Favorite(title: ''),
         '/detaiproduct': (context) => const DetailProduct(title: ''),
+        '/pay': (context) => const PayScreen(),
         // Đăng ký đường dẫn cho màn hình MyCart
       },
     );

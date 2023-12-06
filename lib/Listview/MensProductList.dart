@@ -25,7 +25,6 @@ class _MensProductListState extends State<MensProductList> {
 
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
-
     final response = await http.get(
       Uri.parse(
           '$BASE_API/api/products/655ef3095e659702ab6c1d10/$page'),
@@ -163,9 +162,8 @@ class _MensProductListState extends State<MensProductList> {
                                     width: double.infinity,
                                     padding: EdgeInsets.only(top: 10),
                                     child: product.image?.elementAt(1) != null
-                                        ? Image.memory(
-                                            base64Decode(
-                                                product.image!.elementAt(0)),
+                                        ? Image.network(
+                                            product.image!.elementAt(0),
                                             height: 200,
                                             width: 180,
                                             fit: BoxFit.cover,
