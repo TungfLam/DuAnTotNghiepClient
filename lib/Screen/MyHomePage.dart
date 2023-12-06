@@ -33,6 +33,9 @@ class _MyHomePageState extends State<MyHomePage> {
     String deviceId = await _authService.getDeviceId(context);
 
     if(isLogin == null){
+      setState(() {
+        _inout = "Đăng nhập";
+      });
       return;
     }
 

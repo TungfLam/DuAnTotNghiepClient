@@ -37,6 +37,7 @@ class _RegisterState extends State<RegisterScreen2> {
   File? _image;
   String latitude = 'Loading...';
   String longitude = 'Loading...';
+  String cityname = "";
 
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -50,6 +51,7 @@ class _RegisterState extends State<RegisterScreen2> {
   }
 
   Future<void> _getLocation() async {
+    await _determinePosition();
     try {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
@@ -57,10 +59,67 @@ class _RegisterState extends State<RegisterScreen2> {
         latitude = position.latitude.toString();
         longitude = position.longitude.toString();
         _addressCtrl.text = "lati : $latitude , long : $longitude";
+        print("lati : $latitude , long : $longitude");
+      });
+      await _getCityName();
+      setState(() {
+        _addressCtrl.text = cityname;
       });
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<void> _getCityName() async {
+    const apiKey = 'd56910dfca9e428ebde707a80dbcdae5';
+    const strTest ="https://api.opencagedata.com/geocode/v1/json?q=21.03404650972756+105.74876147588728&key=d56910dfca9e428ebde707a80dbcdae5";
+    final apiUrl = 'https://api.opencagedata.com/geocode/v1/json?q=$latitude+$longitude&key=$apiKey';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      if (response.statusCode == 200) {
+        final data = await json.decode(response.body);
+        final city = await data['results'][0]['formatted'];
+        setState(() {
+          cityname = city ?? 'Not Found';
+        });
+        print(cityname);
+      } else {
+        throw Exception('Failed to load city name');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition();
   }
 
   Future<void> _callRegister(BuildContext context , String phone , String fullname , String address , String email , String password) async{

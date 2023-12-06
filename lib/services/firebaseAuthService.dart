@@ -30,10 +30,10 @@ class FirebaseAuthService {
     await _auth.verifyPhoneNumber(
       phoneNumber: phone,
       verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
-        await _auth.currentUser!.reload();
-        if(_auth.currentUser == null){
-          await _auth.signInWithCredential(phoneAuthCredential);
-        }
+        // await _auth.currentUser!.reload();
+        // if(_auth.currentUser == null){
+        //   await _auth.signInWithCredential(phoneAuthCredential);
+        // }
         print("thanh cong");
       },
       verificationFailed: (err){

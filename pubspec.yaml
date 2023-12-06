@@ -46,7 +46,7 @@ dependencies:
   pinput: ^3.0.1
   image_picker: ^1.0.4
   email_validator: ^2.1.17
-  geolocator: ^7.6.0
+  geolocator: ^10.1.0
 
   firebase_core: ^2.23.0
   firebase_auth: ^4.15.0
