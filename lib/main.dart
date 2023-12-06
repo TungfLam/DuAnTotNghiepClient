@@ -4,11 +4,14 @@ import 'package:appclient/Screen/Favorite.dart';
 import 'package:appclient/Screen/Find.dart';
 import 'package:appclient/Screen/Login.dart';
 import 'package:appclient/Screen/LoginOrRegister.dart';
+import 'package:appclient/Screen/LoginSMS.dart';
 import 'package:appclient/Screen/MyCart.dart';
 import 'package:appclient/Screen/MyHomePage.dart';
 import 'package:appclient/Screen/Register.dart';
+import 'package:appclient/Screen/RegisterScreen2.dart';
 
 import 'package:appclient/Screen/billScreen.dart';
+import 'package:appclient/Screen/otp_screen.dart';
 import 'package:appclient/services/firebaseMessagingService.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -44,7 +47,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: RegisterScreen2.nameRegiterScree2, // Đường dẫn mặc định khi khởi chạy ứng dụng
 
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
@@ -57,7 +60,9 @@ class MyApp extends StatelessWidget {
         '/find': (context) => const Find(title: ''),
         '/favorite': (context) => const Favorite(title: ''),
         '/detaiproduct': (context) => const DetailProduct(title: ''),
-        // Đăng ký đường dẫn cho màn hình MyCart
+        Otp_Screen.nameOtp : (context) => const Otp_Screen(),
+        LoginSMS.nameLoginSMS : (context) => const LoginSMS(title: ""),
+        RegisterScreen2.nameRegiterScree2 : (context) => const RegisterScreen2(title: ""),
       },
     );
   }

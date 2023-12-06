@@ -1,18 +1,19 @@
+import 'package:appclient/Screen/otp_screen.dart';
+import 'package:appclient/models/toSendCode.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FirebaseAuthService {
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<User?> signUpWithEmail(String email , String password) async {
     try{
       UserCredential credential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       return credential.user;
     }catch(e){
-      print(e);
+      throw Exception(e);
     }
-    return null;
   }
 
   Future<User?> signInWithEmail(String email , String password) async{
@@ -20,24 +21,35 @@ class FirebaseAuthService {
       UserCredential credential = await _auth.signInWithEmailAndPassword(email: email, password: password);
       return credential.user;
     }catch(e){
-      print(e);
+      throw Exception(e);
     }
-    return null;
   }
 
-  Future<User?> signInWithPhone(String phone) async {
+  //
+  Future<void> signInWithPhone(String phone , bool isLogin , BuildContext context) async {
+    await _auth.verifyPhoneNumber(
+      phoneNumber: phone,
+      verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
+        await _auth.currentUser!.reload();
+        if(_auth.currentUser == null){
+          await _auth.signInWithCredential(phoneAuthCredential);
+        }
+        print("thanh cong");
+      },
+      verificationFailed: (err){
+        print("that bai");
+        throw Exception(err.message);
+      },
+      codeSent: (verificationId, [int? forceResendingToken]) {
+        toSendCode vphone = toSendCode(verificationId: verificationId , phone: phone , isLogin: isLogin);
+        Navigator.of(context).pushNamed(Otp_Screen.nameOtp , arguments: vphone);
+        print("send code");
+      },
+      codeAutoRetrievalTimeout: (verificationId) {
 
-    try{
-      // UserCredential credential = await _auth.signInWithPhoneNumber();
-    }catch(e){
-      print(e);
-    }
-
-    return null;
-  }
-
-  Future<User?> signUpWithPhone(String phone) async {
-
+      },
+      timeout: const Duration(seconds: 62)
+    );
   }
 
   Future<String> getDeviceId(BuildContext context) async {

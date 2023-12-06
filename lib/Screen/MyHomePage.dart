@@ -1,11 +1,15 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:appclient/Listview/MensProductList.dart';
 import 'package:appclient/Listview/PopularProductList.dart';
 import 'package:appclient/Listview/WomensProductList.dart';
+import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/apiRes.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:appclient/services/firebaseAuthService.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -20,6 +24,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final FirebaseAuthService _authService = FirebaseAuthService();
+  String _inout = "Đăng nhập";
 
   Future<void> _checkLogin () async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -27,7 +32,14 @@ class _MyHomePageState extends State<MyHomePage> {
     final String? idUser = prefs.getString("idUser");
     String deviceId = await _authService.getDeviceId(context);
 
-    if(isLogin!){
+    if(isLogin == null){
+      return;
+    }
+
+    if(isLogin){
+      setState(() {
+        _inout = "Đăng xuất";
+      });
       final response = await http.post(
           Uri.parse("$BASE_API/api/cheklogin/$idUser"),
           headers: <String , String>{
@@ -43,7 +55,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ApiRes res = ApiRes.fromJson(apiRes);
 
         if(res.err!){
-          // ignore: use_build_context_synchronously
           showDialog(
               context: context,
               barrierDismissible: false,
@@ -65,12 +76,16 @@ class _MyHomePageState extends State<MyHomePage> {
               }
           );
         }
-      }else{
-
       }
+
     }else{
       // sử lý khi chưa đăng nhập
+      setState(() {
+        _inout = "Đăng nhập";
+      });
     }
+
+
   }
 
   Future<bool> logoutUser (String idUser) async {
@@ -86,13 +101,12 @@ class _MyHomePageState extends State<MyHomePage> {
       ApiRes res = ApiRes.fromJson(apiRes);
 
       if(res.err!){
-        print("err : ${res.msg}");
+        showSnackBarErr(context, "${res.msg}");
       }else{
         return true;
       }
-
     }else{
-      print("err : lỗi api");
+      showSnackBarErr(context, "Lỗi Api");
     }
     return false;
   }
@@ -170,21 +184,21 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             // Nội dung của Tab 1
             Container(
-              padding: EdgeInsets.all(20),
-              child: PopularProductList(),
+              padding: const EdgeInsets.all(20),
+              child: const PopularProductList(),
             ),
             // Nội dung của Tab 2
             Container(
-              padding: EdgeInsets.all(20),
-              child: MensProductList(),
+              padding: const EdgeInsets.all(20),
+              child: const MensProductList(),
             ),
             // Nội dung của Tab 3
             Container(
-              padding: EdgeInsets.all(20),
-              child: WomensProductList(),
+              padding: const EdgeInsets.all(20),
+              child: const WomensProductList(),
             ),
             // Nội dung của Tab 4
-            Center(child: Text('Khuyến mãi')),
+            const Center(child: Text('Khuyến mãi')),
           ],
         ),
         // Định nghĩa thanh điều hướng bên phải với các tùy chọn điều hướng
@@ -346,14 +360,19 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                 child: ListTile(
-                  leading: const Icon(
-                      Icons.logout_outlined), // Thêm biểu tượng vào ListTile
-                  title: const Text(
-                    'Đăng xuất',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  leading: Icon((_inout == "Đăng xuất" ? Icons.logout_outlined : Icons.login_outlined)), // Thêm biểu tượng vào ListTile
+                  title: Text(
+                    _inout,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  onTap: () {
-                    // Xử lý khi người dùng chọn Tùy chọn 1
+                  onTap: () async {
+                    if(_inout == "Đăng xuất"){
+                      final SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.clear();
+                      await prefs.setBool("isLogin", false);
+                      FirebaseAuth.instance.signOut();
+                    }
+
                     Navigator.pushNamed(context, '/login');
                   },
                 ),

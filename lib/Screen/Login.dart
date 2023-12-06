@@ -1,5 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
+import 'package:appclient/Screen/LoginSMS.dart';
+import 'package:appclient/Widgets/buttomCustom.dart';
+import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/apiRes.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:appclient/services/firebaseAuthService.dart';
@@ -41,12 +46,7 @@ class _LoginState extends State<Login> {
       ApiRes res = ApiRes.fromJson(apiRes);
 
       if(res.err!){
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(res.msg!, style: const TextStyle(color: Colors.white) ),
-            backgroundColor: Colors.red,
-          ),
-        );
+        showSnackBarErr(context, res.msg!);
       }else{
         String deviceId = await _authService.getDeviceId(context);
         String token = await _messagingService.getToken();
@@ -59,20 +59,11 @@ class _LoginState extends State<Login> {
           await prefs.setString("role", res.role.toString());
           await prefs.setBool("isLogin", true);
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(res.msg!, style: const TextStyle(color: Colors.white) ),
-              backgroundColor: Colors.green,
-            ),
-          );
+          showSnackBar(context, res.msg!);
+
           await Navigator.pushReplacementNamed(context,"/");
         }else{
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Đăng nhập thất bại", style: TextStyle(color: Colors.white) ),
-              backgroundColor: Colors.red,
-            ),
-          );
+          showSnackBarErr(context, "Đăng nhập thất bại");
         }
       }
     }
@@ -98,11 +89,10 @@ class _LoginState extends State<Login> {
       ApiRes res = ApiRes.fromJson(apiRes);
 
       if(res.err!){
-        print("err : set Token thất bại : ${res.msg}");
+        showSnackBarErr(context, "Thất bại : ${res.msg}");
         return false;
       }else{
         if(res.msg == "đăng nhập thiết bị 2"){
-          // ignore: use_build_context_synchronously
           await showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -137,6 +127,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         // sự kiện người dùng nhấn nút back
@@ -231,78 +222,67 @@ class _LoginState extends State<Login> {
                                   keyboardType: TextInputType.text,
                                   decoration: InputDecoration(
                                       labelText: "Tài khoản",
-                                      hintText: "Sdt/email/username",
+                                      hintText: "Email/Username",
                                       hintStyle: const TextStyle(color: Colors.black26),
                                       border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
+                                        borderRadius:
+                                          BorderRadius.circular(10)),
                                       prefixIcon: const Icon(Icons.person)),
                                 ),
                                 const SizedBox(
-                                  height: 15,
+                                  height: 16,
                                 ),
                                 TextFormField(
                                   controller: _password,
                                   keyboardType: TextInputType.visiblePassword,
                                   obscureText: true,
                                   decoration: InputDecoration(
-                                      labelText: "Mật khẩu",
-                                      hintText: "password",
-                                      hintStyle: const TextStyle(color: Colors.black26),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      prefixIcon: const Icon(Icons.lock)),
+                                    labelText: "Mật khẩu",
+                                    hintText: "password",
+                                    hintStyle: const TextStyle(color: Colors.black26),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    prefixIcon: const Icon(Icons.lock)),
                                 ),
                               ],
                             ),
                           )),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            FadeInUp(
-                              duration: const Duration(milliseconds: 1500),
-                              child: TextButton(
-                                  onPressed: () {
-                                    Navigator.pushReplacementNamed(context,"/");
-                                  },
-                                  child: const Text("Quên mật khẩu?",
-                                      style: TextStyle(
-                                        color: Color.fromRGBO(3, 15, 243, 0.973),
-                                      )),
-                              )
-                            ),
-                          ],
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          FadeInUp(
+                            duration: const Duration(milliseconds: 1500),
+                            child: TextButton(
+                                onPressed: () {
+                                  Navigator.pushReplacementNamed(context,"/");
+                                },
+                                child: const Text("Quên mật khẩu?",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(3, 15, 243, 0.973),
+                                    )),
+                            )
+                          ),
+                        ],
                       ),
                       const SizedBox(
-                        height: 80,
+                        height: 48,
                       ),
                       FadeInUp(
                         duration: const Duration(milliseconds: 1400),
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: (){
-                              _clickLogin(context);
-                              },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color(0xFF6342E8), // Đặt màu nền
-                            ), child: const Text(
-                              'Đăng nhập',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
+                        child: CustomButton(text: "Dăng nhập", onPressed: (){
+                          _clickLogin(context);
+                        })
+                      ),
+                      const SizedBox(height: 16),
+                      FadeInUp(
+                        duration: const Duration(milliseconds: 1400),
+                        child: CustomButtonOutline(text: "Đăng nhập SMS", onPressed: (){
+                          Navigator.pushNamed(context, LoginSMS.nameLoginSMS);
+                        }),
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
@@ -310,7 +290,7 @@ class _LoginState extends State<Login> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             const SizedBox(
-                              height: 70,
+                              height: 40,
                             ),
                             FadeInUp(
                                 duration: const Duration(milliseconds: 1500),
