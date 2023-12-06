@@ -1,3 +1,4 @@
+import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -22,7 +23,7 @@ class _BillScreenState extends State<BillScreen> {
 
   // Hàm để gọi API và xử lý dữ liệu
   void layDuLieuDonHang() async {
-    final url = 'https://adadas.onrender.com/api/bill/6524318746e12608b3558d74';
+    const url = '$BASE_API/api/bill/6524318746e12608b3558d74';
 
     try {
       final response = await http.get(Uri.parse(url));

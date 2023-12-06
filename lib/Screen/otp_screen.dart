@@ -163,7 +163,7 @@ class _Otp_ScreenState extends State<Otp_Screen> {
         smsCode: otpc
     );
     await FirebaseAuth.instance.signInWithCredential(credential);
-    print("danh ky thanh cong");
+    print("dang nhap thanh cong");
   }
 }
 

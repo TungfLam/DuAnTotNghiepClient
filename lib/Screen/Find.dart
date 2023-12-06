@@ -28,7 +28,7 @@ class _FindState extends State<Find> {
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
 
-        'https://adadas.onrender.com/api/products/search?searchValues=$searchText')); // Thay thế URL của API sản phẩm
+        '$BASE_API/api/products/search?searchValues=$searchText')); // Thay thế URL của API sản phẩm
 
 
     print(searchText);

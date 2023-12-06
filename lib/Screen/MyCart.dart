@@ -25,11 +25,7 @@ class _MyCartState extends State<MyCart> {
   Future<void> fetchProducts() async {
     try {
       final response = await http.get(
-        Uri.parse(
-
-            'https://adadas.onrender.com/api/getListCart/6524318746e12608b3558d74'),
-
-      );
+        Uri.parse('$BASE_API/api/getListCart/6524318746e12608b3558d74'),);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -76,7 +72,7 @@ class _MyCartState extends State<MyCart> {
 
     try {
       final response = await http.post(
-        Uri.parse('https://adadas.onrender.com/api/addBill'),
+        Uri.parse('$BASE_API/api/addBill'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -101,7 +97,7 @@ class _MyCartState extends State<MyCart> {
   void _removeItemFromCart(String cartId) async {
     try {
       final response = await http.delete(
-        Uri.parse('https://adadas.onrender.com/api/deleteCart/$cartId'),
+        Uri.parse('$BASE_API/api/deleteCart/$cartId'),
         headers: {'Content-Type': 'application/json'},
       );
 

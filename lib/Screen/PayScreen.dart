@@ -1,5 +1,6 @@
 
 import 'package:appclient/models/productCartModel.dart';
+import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -18,7 +19,7 @@ class _PayScreenState extends State<PayScreen> {
   String _uriPay = '';
 
   Future<void> createPayment() async {
-    final apiUrl = 'https://adadas.onrender.com/order/create_payment_url/656f3ed50cf9116d0a07e0f8';
+    const apiUrl = '$BASE_API/order/create_payment_url/656f3ed50cf9116d0a07e0f8';
     final requestData = {
       "amount": 1000000,
       "language": "vi"
