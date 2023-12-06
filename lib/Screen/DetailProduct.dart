@@ -275,9 +275,8 @@ class _DetailProductState extends State<DetailProduct> {
                       });
                     },
                     itemBuilder: (context, index) {
-                      return Image.memory(
-                        base64Decode(
-                            widget.product?.image?.elementAt(index) ?? ''),
+                      return Image.network(          
+                            widget.product?.image?.elementAt(index) ?? '',
                         fit: BoxFit.cover,
                       );
                     },
@@ -356,45 +355,51 @@ class _DetailProductState extends State<DetailProduct> {
                             ],
                           ),
                         ),
-                        Container(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Container(
-                              margin: EdgeInsets.only(top: 10),
-                              width: 120,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  border:
-                                      Border.all(width: 1, color: Colors.grey),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  IconButton(
-                                    icon: Icon(Icons.remove),
-                                    onPressed: () {
-                                      decreaseQuantity(); // Call the decreaseQuantity function
-                                    },
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 10),
+                                  width: 120,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      border:
+                                          Border.all(width: 1, color: Colors.grey),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10))),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      IconButton(
+                                        icon: Icon(Icons.remove),
+                                        onPressed: () {
+                                          decreaseQuantity(); // Call the decreaseQuantity function
+                                        },
+                                      ),
+                                      Text(
+                                        quantity
+                                            .toString(), // Display the updated quantity
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.add),
+                                        onPressed: () {
+                                          increaseQuantity(); // Call the increaseQuantity function
+                                        },
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    quantity
-                                        .toString(), // Display the updated quantity
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.add),
-                                    onPressed: () {
-                                      increaseQuantity(); // Call the increaseQuantity function
-                                    },
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
-                          ),
+                            Text("Số lượng còn lại:")
+                          ],
                         ),
                         Container(
                           //descripsion

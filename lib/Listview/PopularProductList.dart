@@ -25,12 +25,11 @@ class _PopularProductListState extends State<PopularProductList> {
 
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
-    final response = await http.get(Uri.parse(
-
-        'https://adadas.onrender.com/api/products/655ef3095e659702ab6c1d10/$page'),
-        headers: {'Content-Type': 'application/json'},
-        ); // Thay thế URL của API sản phẩm
-        
+    final response = await http.get(
+      Uri.parse(
+          'https://adadas.onrender.com/api/products/655ef3095e659702ab6c1d10/$page'),
+      headers: {'Content-Type': 'application/json'},
+    ); // Thay thế URL của API sản phẩm
 
     if (response.statusCode == 200) {
       final List<dynamic>? productData = jsonDecode(response.body);
@@ -46,9 +45,8 @@ class _PopularProductListState extends State<PopularProductList> {
   Future<void> addFavorite(String productId) async {
     try {
       final response = await http.post(
-
-        Uri.parse('https://adadas.onrender.com/api/addFavorite/6524318746e12608b3558d74/$productId'),
-
+        Uri.parse(
+            'https://adadas.onrender.com/api/addFavorite/6524318746e12608b3558d74/$productId'),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -163,14 +161,23 @@ class _PopularProductListState extends State<PopularProductList> {
                                   Container(
                                     width: double.infinity,
                                     padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                                    child: Image.memory(
-                                      base64Decode(product.image
-                                              ?.elementAt(0) ??
-                                          'loading...'), // Giả sử danh sách ảnh là danh sách base64
+                                    // child: Image.memory(
+                                    //   base64Decode(product.image
+                                    //           ?.elementAt(0) ??
+                                    //       'loading...'), // Giả sử danh sách ảnh là danh sách base64
+                                    //   height: 200,
+                                    //   width: 180,
+                                    //   fit: BoxFit.cover,
+                                    // ),
+
+
+                                    child: Image.network(
+                                      '${product.image?.elementAt(0)}' ?? 'loading...',
                                       height: 200,
                                       width: 180,
                                       fit: BoxFit.cover,
                                     ),
+                                    
                                   ),
                                   Positioned(
                                     top: 5,
@@ -179,7 +186,6 @@ class _PopularProductListState extends State<PopularProductList> {
                                       icon:
                                           Icon(Icons.favorite_border_outlined),
                                       onPressed: () {
-
                                         addFavorite(product.sId!);
                                       },
                                     ),
