@@ -298,7 +298,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 leading: const Icon(
                     Icons.location_on_outlined), // Thêm biểu tượng vào ListTile
                 title: const Text(
-                  'Địa trỉ',
+                  'Địa chỉ',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {

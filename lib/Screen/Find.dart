@@ -28,7 +28,8 @@ class _FindState extends State<Find> {
   Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(
 
-        '$BASE_API/api/products/search?searchValues=$searchText')); // Thay thế URL của API sản phẩm
+        'https://adadas.onrender.com/api/products/search?searchValues=$searchText')); // Thay thế URL của API sản phẩm
+
 
     print(searchText);
 
@@ -88,7 +89,7 @@ class _FindState extends State<Find> {
             child: TextField(
               controller: TextEditingController(text: searchText),
               onChanged: (value) {
-                searchText=value;
+                searchText = value;
               },
               onSubmitted: (value) {
                 // Kiểm tra xem giá trị đã nhập có khác rỗng không trước khi gọi API
@@ -159,7 +160,7 @@ class _FindState extends State<Find> {
                       ],
                     ),
                     Expanded(
-                      //phải có gridview như này này
+                        //phải có gridview như này này
 
                         child: GridView.builder(
                       gridDelegate:
@@ -210,10 +211,9 @@ class _FindState extends State<Find> {
                                                 width: double.infinity,
                                                 padding:
                                                     EdgeInsets.only(top: 10),
-                                                child: Image.memory(
-                                                  base64Decode(product.image
-                                                          ?.elementAt(0) ??
-                                                      'loading...'), // Giả sử danh sách ảnh là danh sách base64
+                                                child: Image.network(
+                                                  product.image?.elementAt(0) ??
+                                                      'loading...', // Giả sử danh sách ảnh là danh sách base64
                                                   height: 200,
                                                   width: 180,
                                                 ),
@@ -277,8 +277,7 @@ class _FindState extends State<Find> {
                           }
                         }
                       },
-                    )
-                    )
+                    ))
                   ],
                 ),
               ),

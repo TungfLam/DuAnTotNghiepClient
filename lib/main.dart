@@ -7,6 +7,7 @@ import 'package:appclient/Screen/LoginOrRegister.dart';
 import 'package:appclient/Screen/LoginSMS.dart';
 import 'package:appclient/Screen/MyCart.dart';
 import 'package:appclient/Screen/MyHomePage.dart';
+import 'package:appclient/Screen/PayScreen.dart';
 import 'package:appclient/Screen/Register.dart';
 import 'package:appclient/Screen/RegisterScreen2.dart';
 
@@ -63,6 +64,8 @@ class MyApp extends StatelessWidget {
         Otp_Screen.nameOtp : (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS : (context) => const LoginSMS(title: ""),
         RegisterScreen2.nameRegiterScree2 : (context) => const RegisterScreen2(title: ""),
+        '/pay': (context) => const PayScreen(),
+        // Đăng ký đường dẫn cho màn hình MyCart
       },
     );
   }

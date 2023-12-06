@@ -7,7 +7,7 @@ import 'package:appclient/models/productModel.dart';
 import 'package:flutter/material.dart';
 
 class DetailFavoriteProduct extends StatefulWidget {
-  const DetailFavoriteProduct({Key? key, required this.title,this.productfvr})
+  const DetailFavoriteProduct({Key? key, required this.title, this.productfvr})
       : super(key: key);
   final String title;
   final ListFavorite? productfvr;
@@ -268,9 +268,9 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
                       });
                     },
                     itemBuilder: (context, index) {
-                      return Image.memory(
-                        base64Decode(
-                            widget.productfvr?.productId?.image?.elementAt(index) ?? ''),
+                      return Image.network(
+                        widget.productfvr?.productId?.image?.elementAt(index) ??
+                            '',
                         fit: BoxFit.cover,
                       );
                     },
