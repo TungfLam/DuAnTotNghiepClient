@@ -40,10 +40,16 @@ class _DetailProductState extends State<DetailProduct> {
 
   Future<void> fetchProductList() async {
     try {
-      final response = await http.read(
+      // final response = await http.read(
+      //   Uri.parse(
+
+      //     '$BASE_API/api/getListAll_deltail/${widget.product?.sId}',
+
+      //   ),
+              final response = await http.read(
         Uri.parse(
 
-          '$BASE_API/api/getListAll_deltail/${widget.product?.sId}',
+          'https://adadas.onrender.com/api/getListAll_deltail/${widget.product?.sId}',
 
         ),
         headers: {'Content-Type': 'application/json'},
@@ -74,10 +80,14 @@ class _DetailProductState extends State<DetailProduct> {
   void addToCart(String productId, int quantity) async {
     try {
       if (_selectedProductListSize != null) {
-        final response = await http.post(
+        // final response = await http.post(
+        //   Uri.parse(
+
+        //       '$BASE_API/api/addCart/6524318746e12608b3558d74/$productId'),
+                      final response = await http.post(
           Uri.parse(
 
-              '$BASE_API/api/addCart/6524318746e12608b3558d74/$productId'),
+              'https://adadas.onrender.com/api/addCart/6524318746e12608b3558d74/$productId'),
 
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({'quantity': quantity}),
@@ -460,6 +470,7 @@ class _DetailProductState extends State<DetailProduct> {
                                       'idsizecolor : ${_selectedProductListSize?.sId}');
                                   addToCart(_selectedProductListSize?.sId ?? '',
                                       quantity);
+                                      print('id product: ${_selectedProductListSize?.sId}');
                                 } else {
                                   // Hiển thị thông báo khi quantity <= 0 hoặc không có kích thước/màu được chọn
                                   if (quantity <= 0) {
