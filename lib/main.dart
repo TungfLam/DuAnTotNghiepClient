@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      initialRoute: RegisterScreen2.nameRegiterScree2, // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
         Otp_Screen.nameOtp : (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS : (context) => const LoginSMS(title: ""),
         RegisterScreen2.nameRegiterScree2 : (context) => const RegisterScreen2(title: ""),
-        '/pay': (context) => const PayScreen(),
+        '/pay': (context) => const PayScreen(productId: '', title: '', totalAmount: 0,),
         // Đăng ký đường dẫn cho màn hình MyCart
       },
     );

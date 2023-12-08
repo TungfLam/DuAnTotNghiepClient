@@ -1,3 +1,4 @@
+import 'package:appclient/Screen/PayScreen.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -24,8 +25,12 @@ class _MyCartState extends State<MyCart> {
 
   Future<void> fetchProducts() async {
     try {
+      // final response = await http.get(
+      //   Uri.parse('$BASE_API/api/getListCart/6524318746e12608b3558d74'),);
       final response = await http.get(
-        Uri.parse('$BASE_API/api/getListCart/6524318746e12608b3558d74'),);
+        Uri.parse(
+            'https://adadas.onrender.com/api/getListCart/6524318746e12608b3558d74'),
+      );
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -152,9 +157,9 @@ class _MyCartState extends State<MyCart> {
                         children: [
                           Text('kính cỡ: ${product.productId?.sizeId?.name}'),
                           Text('Màu sắc: ${product.productId?.colorId?.name}'),
-                          Text('Đơn giá: đ${product.productId?.product?.price}'),
+                          Text(
+                              'Đơn giá: đ${product.productId?.product?.price}'),
                           Text('Số lượng: ${product.quantity}'),
-                          
                         ],
                       )
                     ],
@@ -192,14 +197,15 @@ class _MyCartState extends State<MyCart> {
                         if (product.sId != null) {
                           if (isVnPaySelected) {
                             // Xử lý thanh toán VNPAY
-                            Navigator.pushNamed(
+                            Navigator.push(
                               context,
-                              '/pay',
-                              arguments: {
-                                'product': product,
-                              },
+                              MaterialPageRoute(
+                                builder: (context) => PayScreen(
+                                  productId: product.sId!,title: '',totalAmount: (product.productId?.product?.price)! * (product.quantity ?? 0),
+                                ),
+                              ),
                             );
-                            print('thanh toán vnpay');
+                            print('thanh toán vnpay: ${product!.sId}');
                           } else {
                             // Xử lý thanh toán khác
                             addBillApiCall(product.sId!, 2);

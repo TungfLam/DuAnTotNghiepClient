@@ -7,7 +7,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class PayScreen extends StatefulWidget {
-  const PayScreen({Key? key}) : super(key: key);
+  final String productId;
+  final int totalAmount;
+  const PayScreen({Key? key, required this.productId, required String title,required this.totalAmount}) : super(key: key);
 
   @override
   State<PayScreen> createState() => _PayScreenState();
@@ -17,11 +19,13 @@ class _PayScreenState extends State<PayScreen> {
   late final WebViewController _controller;
   late Future<void> _createPaymentFuture;
   String _uriPay = '';
+  
 
   Future<void> createPayment() async {
-    const apiUrl = '$BASE_API/order/create_payment_url/656f3ed50cf9116d0a07e0f8';
+    // const apiUrl = '$BASE_API/order/create_payment_url/$idcart';
+    final apiUrl = 'https://adadas.onrender.com/order/create_payment_url/${widget.productId}';
     final requestData = {
-      "amount": 1000000,
+      "amount": widget.totalAmount,
       "language": "vi"
       
     };
@@ -71,7 +75,8 @@ class _PayScreenState extends State<PayScreen> {
   @override
   void initState() {
     super.initState();
-
+    print('ProductId from MyCart: ${widget.productId}');
+    print('tổng tiền: ${widget.totalAmount}');
     _createPaymentFuture = createPayment();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -80,15 +85,6 @@ class _PayScreenState extends State<PayScreen> {
 
   @override
   Widget build(BuildContext context) {
-        final Map<String, dynamic>? arguments =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-
-    if (arguments != null) {
-      final ListCart product = arguments['product'];
-      print('id cart: ${product.sId}');
-
-      // Sử dụng dữ liệu tại đây để hiển thị hoặc thực hiện các thao tác cần thiết
-    }
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text('Thanh toán')),
