@@ -40,10 +40,12 @@ class _RegisterState extends State<Register> {
       ApiRes res = ApiRes.fromJson(apiRes);
 
       if(res.err!){
-        return false;
+        if(res.msg! == "Số điện thoại chưa đăng ký"){
+          return true;
+        }
       }
     }
-    return true;
+    return false;
   }
 
   @override

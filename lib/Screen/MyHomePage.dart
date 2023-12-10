@@ -30,6 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final bool? isLogin = prefs.getBool("isLogin");
     final String? idUser = prefs.getString("idUser");
+    await prefs.setBool("isDone", true);
     String deviceId = await _authService.getDeviceId(context);
 
     if(isLogin == null){
@@ -87,7 +88,6 @@ class _MyHomePageState extends State<MyHomePage> {
         _inout = "Đăng nhập";
       });
     }
-
 
   }
 
@@ -371,6 +371,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   onTap: () async {
                     if(_inout == "Đăng xuất"){
                       final SharedPreferences prefs = await SharedPreferences.getInstance();
+                      String? idUser = prefs.getString("idUser");
+                      await logoutUser(idUser!);
                       prefs.clear();
                       await prefs.setBool("isLogin", false);
                       FirebaseAuth.instance.signOut();

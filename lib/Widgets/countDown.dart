@@ -20,7 +20,9 @@ class _countDownState extends State<countDown> {
     for(int i = countX ; i >= 0 ; i--){
       await Future.delayed(const Duration(milliseconds: 1000) , () {
         count = i;
-        setState(() {});
+        if(mounted){
+          setState(() {});
+        }
       });
     }
   }

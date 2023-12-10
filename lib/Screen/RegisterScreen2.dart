@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:appclient/Widgets/buttomCustom.dart';
+import 'package:appclient/Widgets/getLocationButtonn.dart';
 import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/apiRes.dart';
 import 'package:appclient/services/baseApi.dart';
@@ -15,6 +16,8 @@ import 'package:animate_do/animate_do.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterScreen2 extends StatefulWidget {
   const RegisterScreen2({Key? key, required this.title}) : super(key: key);
@@ -31,6 +34,7 @@ class _RegisterState extends State<RegisterScreen2> {
   final FirebaseAuthService authService = FirebaseAuthService();
   final TextEditingController _fullnameCtrl = TextEditingController();
   final TextEditingController _addressCtrl = TextEditingController();
+  final TextEditingController _specificAddress = TextEditingController();
   final TextEditingController _emailCtrl = TextEditingController();
   final TextEditingController _passwordCtrl = TextEditingController();
   final TextEditingController _rePasswordCtrl = TextEditingController();
@@ -38,19 +42,86 @@ class _RegisterState extends State<RegisterScreen2> {
   String latitude = 'Loading...';
   String longitude = 'Loading...';
   String cityname = "";
+  var image;
+  bool passwordChange = false;
+
+  Future<void> _callAddAddress (BuildContext context , String idUser) async {
+    final response = await http.post(
+      Uri.parse("$BASE_API/api/address"),
+      headers: <String , String> {
+        'Content-Type': 'application/json; charset=UTF-8'
+      },
+      body: jsonEncode(<String , String> {
+        'idUser' : idUser,
+        'address' : _addressCtrl.text.trim(),
+        'specificAddres' : _specificAddress.text.trim()
+      })
+    );
+
+    if(response.statusCode == 200){
+      Map<String , dynamic> apiRes = jsonDecode(response.body);
+      ApiRes res = ApiRes.fromJson(apiRes);
+
+      if(res.err!){
+        showSnackBarErr(context, res.msg!);
+      }
+    }else{
+      showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
+    }
+  }
+
+  Future<void> _callRegister(BuildContext context , String phone , String fullname , String email , String password) async{
+    String deviceId = await _authService.getDeviceId(context);
+    String token = await _messagingService.getToken();
+
+    final request = http.MultipartRequest('POST', Uri.parse("$BASE_API/api/users"));
+
+    if(image != null){
+      final File file = File(image!.path);
+      request.files.add(
+          http.MultipartFile.fromBytes('image', file.readAsBytesSync() , filename: image!.name)
+      );
+    }
+    request.fields['Phone'] = phone;
+    request.fields['Fullname'] = fullname;
+    request.fields['Email'] = email;
+    request.fields['Password'] = password;
+    request.fields['Token'] = token;
+    request.fields['DeviceId'] = deviceId;
+
+    final response = await request.send();
+
+    if(response.statusCode == 200){
+      final res = ApiRes.fromJson(jsonDecode(await response.stream.bytesToString()));
+      if(res.err!){
+        showSnackBarErr(context, res.msg!);
+      }else{
+        await _callAddAddress(context, res.idUser!);
+        showSnackBar(context, res.msg!);
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("idUser", res.idUser.toString());
+        await prefs.setString("role", res.role.toString());
+        await prefs.setBool("isLogin", true);
+
+        await Navigator.pushReplacementNamed(context,"/");
+      }
+    }else{
+      showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
+    }
+  }
 
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    image = await picker.pickImage(source: ImageSource.gallery);
     
     if(image != null){
       setState(() {
-        _image = File(image.path);
+        _image = File(image!.path);
       });
     }
   }
 
-  Future<void> _getLocation() async {
+    Future<void> _getLocation() async {
     await _determinePosition();
     try {
       Position position = await Geolocator.getCurrentPosition(
@@ -59,7 +130,6 @@ class _RegisterState extends State<RegisterScreen2> {
         latitude = position.latitude.toString();
         longitude = position.longitude.toString();
         _addressCtrl.text = "lati : $latitude , long : $longitude";
-        print("lati : $latitude , long : $longitude");
       });
       await _getCityName();
       setState(() {
@@ -71,9 +141,9 @@ class _RegisterState extends State<RegisterScreen2> {
   }
 
   Future<void> _getCityName() async {
-    const apiKey = 'd56910dfca9e428ebde707a80dbcdae5';
-    const strTest ="https://api.opencagedata.com/geocode/v1/json?q=21.03404650972756+105.74876147588728&key=d56910dfca9e428ebde707a80dbcdae5";
-    final apiUrl = 'https://api.opencagedata.com/geocode/v1/json?q=$latitude+$longitude&key=$apiKey';
+
+    const apiKey = 'fYfBOiPvOSBAI4T2A2JyFPdga7OPBzJhTYzz93V7';
+    final apiUrl = 'https://rsapi.goong.io/Geocode?latlng=$latitude,$longitude&api_key=$apiKey';
 
     try {
       final response = await http.get(Uri.parse(apiUrl),
@@ -83,19 +153,19 @@ class _RegisterState extends State<RegisterScreen2> {
       );
       if (response.statusCode == 200) {
         final data = await json.decode(response.body);
-        final city = await data['results'][0]['formatted'];
+        final city = await data['results'][0]['address'];
         setState(() {
           cityname = city ?? 'Not Found';
         });
         print(cityname);
       } else {
+        showSnackBarErr(context, "Không thể định vị được bạn");
         throw Exception('Failed to load city name');
       }
     } catch (e) {
       print(e);
     }
   }
-
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -113,49 +183,17 @@ class _RegisterState extends State<RegisterScreen2> {
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      await showDialogUilt(context, "Thông báo", "Vui lòng cấp quyền truy cập vị trí để sử dụng tính năng này", (){
+        openAppSettings();
+      });
+      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
     }
     return await Geolocator.getCurrentPosition();
   }
 
-  Future<void> _callRegister(BuildContext context , String phone , String fullname , String address , String email , String password) async{
-    String deviceId = await _authService.getDeviceId(context);
-    String token = await _messagingService.getToken();
-
-    final response = await http.post(
-        Uri.parse("$BASE_API/api/users"),
-        headers: <String , String>{
-          'Content-Type': 'application/json; charset=UTF-8'
-        },
-        body: jsonEncode(<String , String>{
-          'Phone' : phone,
-          'Fullname' : fullname,
-          'Address' : address,
-          'Eamil' : email,
-          'Password' : password,
-          'Token' : token,
-          'DeviceId' : deviceId
-        })
-    );
-
-    if(response.statusCode == 200){
-      ApiRes res = ApiRes.fromJson(jsonDecode(response.body));
-
-      if(res.err!){
-        showSnackBarErr(context, res.msg!);
-      }else{
-        showSnackBar(context, res.msg!);
-      }
-    }else{
-      showSnackBarErr(context, "Lỗi server");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-
-    // final phone = ModalRoute.of(context)!.settings.arguments as String;
+    final phone = ModalRoute.of(context)!.settings.arguments as String;
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -246,7 +284,7 @@ class _RegisterState extends State<RegisterScreen2> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
+                          children: [
                             TextFormField(
                               controller: _fullnameCtrl,
                               keyboardType: TextInputType.text,
@@ -259,15 +297,14 @@ class _RegisterState extends State<RegisterScreen2> {
                                 prefixIcon: const Icon(Icons.person_outline)),
                             ),
                             const SizedBox(height: 16),
+                            btnGetLocation(addressCtrl: _addressCtrl , getLocation: _getLocation),
+                            const SizedBox(height: 16),
                             TextFormField(
-                              onTap: (){
-                                _getLocation();
-                              },
-                              controller: _addressCtrl,
+                              controller: _specificAddress,
                               keyboardType: TextInputType.text,
                               decoration: InputDecoration(
-                                  labelText: "Địa chỉ",
-                                  hintText: "Address",
+                                  labelText: "Địa chỉ cụ thể",
+                                  hintText: "Số nhà , số Đường , Xã/Phường",
                                   border: OutlineInputBorder(
                                       borderRadius:
                                       BorderRadius.circular(10)),
@@ -285,6 +322,17 @@ class _RegisterState extends State<RegisterScreen2> {
                             ),
                             TextFormField(
                               controller: _emailCtrl,
+                              onChanged: (text) {
+                                if(text.isNotEmpty){
+                                  setState(() {
+                                    passwordChange = true;
+                                  });
+                                }else{
+                                  setState(() {
+                                    passwordChange = false;
+                                  });
+                                }
+                              },
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
                                   labelText: "Email",
@@ -297,6 +345,7 @@ class _RegisterState extends State<RegisterScreen2> {
                             const SizedBox(height: 16),
                             TextFormField(
                               controller: _passwordCtrl,
+                              enabled: passwordChange,
                               keyboardType: TextInputType.visiblePassword,
                               decoration: InputDecoration(
                                   labelText: "Mật khẩu",
@@ -309,6 +358,7 @@ class _RegisterState extends State<RegisterScreen2> {
                             const SizedBox(height: 16),
                             TextFormField(
                               controller: _rePasswordCtrl,
+                              enabled: passwordChange,
                               keyboardType: TextInputType.visiblePassword,
                               decoration: InputDecoration(
                                   labelText: "Nhập lại mật khẩu",
@@ -324,7 +374,7 @@ class _RegisterState extends State<RegisterScreen2> {
                     FadeInUp(
                       duration: const Duration(milliseconds: 900),
                       child: CustomButton(text: "Lưu", onPressed: () async {
-                          _clickSave(context , "");
+                          _clickSave(context , phone);
                         })
                     ),
                   ],
@@ -341,15 +391,17 @@ class _RegisterState extends State<RegisterScreen2> {
     String email = _emailCtrl.text.trim();
     String password = _passwordCtrl.text.trim();
     String rePassword = _rePasswordCtrl.text.trim();
+    String specificAddress = _specificAddress.text.trim();
 
     if(fullname.isEmpty || fullname == ""){
       showSnackBarErr(context, "Vui lòng nhập họ và tên");
     }else if(address.isEmpty || address == ""){
       showSnackBarErr(context, "Vui lòng nhập địa chỉ");
+    }else if(specificAddress.isEmpty || specificAddress == ""){
+      showSnackBarErr(context, "Vui lòng nhập địa chỉ cụ thể");
     }else if(fullname.length >= 22){
       showSnackBarErr(context, "Họ và tên không dài hơn 22 ký tự");
-    }else{
-
+    } else{
       if(phone.startsWith("+84")){
         phone = phone.substring(3);
       }
@@ -367,10 +419,10 @@ class _RegisterState extends State<RegisterScreen2> {
         }else if(password.length < 8){
           showSnackBarErr(context, "Mật khẩu phải ít nhất 8 ký tự");
         }else{
-          _callRegister(context ,phone , fullname , address , email , password);
+          _callRegister(context ,phone , fullname , email , password);
         }
       }else{
-        _callRegister(context ,phone , fullname , address , "" , "");
+        _callRegister(context ,phone , fullname , "" , "");
       }
     }
 

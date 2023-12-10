@@ -1,8 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:appclient/Screen/otp_screen.dart';
+import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/toSendCode.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -25,7 +29,6 @@ class FirebaseAuthService {
     }
   }
 
-  //
   Future<void> signInWithPhone(String phone , bool isLogin , BuildContext context) async {
     await _auth.verifyPhoneNumber(
       phoneNumber: phone,
@@ -34,21 +37,29 @@ class FirebaseAuthService {
         // if(_auth.currentUser == null){
         //   await _auth.signInWithCredential(phoneAuthCredential);
         // }
-        print("thanh cong");
       },
-      verificationFailed: (err){
-        print("that bai");
+      verificationFailed: (err) async {
+        print("that bai r");
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.clear();
         throw Exception(err.message);
       },
       codeSent: (verificationId, [int? forceResendingToken]) {
         toSendCode vphone = toSendCode(verificationId: verificationId , phone: phone , isLogin: isLogin);
         Navigator.of(context).pushNamed(Otp_Screen.nameOtp , arguments: vphone);
-        print("send code");
       },
-      codeAutoRetrievalTimeout: (verificationId) {
+      codeAutoRetrievalTimeout: (verificationId) async {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        bool? isDone = prefs.getBool("isDone");
+        print("time out ");
+        if(isDone == null || !isDone){
+          Navigator.pop(context);
+          showSnackBarErr(context, "Mã OTP đã hêt hạn");
+          prefs.clear();
+        }
 
       },
-      timeout: const Duration(seconds: 62)
+      timeout: const Duration(seconds: 12)
     );
   }
 
