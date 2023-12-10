@@ -28,7 +28,7 @@ class _PopularProductListState extends State<PopularProductList> {
 
     final response = await http.get(
       Uri.parse(
-          'https://adadas.onrender.com/api/products/655ef3095e659702ab6c1d10/$page'),
+          'https://adadas.onrender.com/api/products/6573359c00c9d30fb93fddc4/$page'),
       headers: {'Content-Type': 'application/json'},
     ); // Thay thế URL của API sản phẩm
 
