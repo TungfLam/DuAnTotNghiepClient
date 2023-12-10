@@ -58,3 +58,30 @@ class CustomButtonOutline extends StatelessWidget{
     );
   }
 }
+
+class CustomButtonGPS extends StatelessWidget{
+  final String text;
+  final VoidCallback onPressed;
+  const CustomButtonGPS({super.key , required this.text, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+
+      height: 60,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+            side: const BorderSide(
+                width: 1,
+                color: Color(0xFF6342E8)
+            ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8)
+          )
+        ),
+        child: const Icon(Icons.gps_fixed_outlined),
+      ),
+    );
+  }
+}

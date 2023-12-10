@@ -6,6 +6,8 @@ import 'package:appclient/Widgets/buttomCustom.dart';
 import 'package:appclient/Widgets/countDown.dart';
 import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/toSendCode.dart';
+import 'package:appclient/services/firebaseAuthService.dart';
+import 'package:appclient/services/firebaseMessagingService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
@@ -22,6 +24,8 @@ class Otp_Screen extends StatefulWidget{
 
 // ignore: camel_case_types
 class _Otp_ScreenState extends State<Otp_Screen> {
+  // final FirebaseAuthService _authService = FirebaseAuthService();
+  // final FirebaseMessagingService _messagingService = FirebaseMessagingService();
   String? otpCode;
 
   @override
@@ -154,16 +158,20 @@ class _Otp_ScreenState extends State<Otp_Screen> {
     );
     await FirebaseAuth.instance.signInWithCredential(credential);
     Navigator.of(context).pushNamed(RegisterScreen2.nameRegiterScree2 , arguments: phone);
-    print("danh ky thanh cong");
+    print("danh ky sdt thanh cong");
   }
 
   Future<void> verifyOtpSignIn(BuildContext context , String verificationId, String otpc) async {
-    PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationId,
-        smsCode: otpc
-    );
-    await FirebaseAuth.instance.signInWithCredential(credential);
-    print("dang nhap thanh cong");
+    try{
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: verificationId,
+          smsCode: otpc
+      );
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      await Navigator.pushReplacementNamed(context,"/");
+    }catch(e){
+      showSnackBarErr(context, "Xác minh otp thât bại");
+    }
   }
 }
 

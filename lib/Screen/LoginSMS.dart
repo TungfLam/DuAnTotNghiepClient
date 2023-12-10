@@ -29,7 +29,7 @@ class _LoginState extends State<LoginSMS> {
   final TextEditingController _phone = TextEditingController();
   bool _isLoading = false;
 
-  Future<void> _callLogin(BuildContext context , String phone) async{
+  Future<void> _callLoginPhone(BuildContext context , String phone) async{
     final response = await http.post(
         Uri.parse("$BASE_API/api/usersloginphone"),
         headers: <String , String>{
@@ -58,62 +58,23 @@ class _LoginState extends State<LoginSMS> {
           await prefs.setString("role", res.role.toString());
           await prefs.setBool("isLogin", true);
 
-          showSnackBar(context, res.msg!);
-
-          await Navigator.pushReplacementNamed(context,"/");
+          if(phone.startsWith("0")){
+            phone = phone.substring(1);
+          }else if(phone.startsWith("+84")){
+            phone = phone.substring(3);
+          }
+          phone = "+84$phone";
+          await _authService.signInWithPhone(phone, true, context);
         }else{
           showSnackBarErr(context, "Đăng nhập thất bại");
         }
       }
+    }else {
+      showSnackBarErr(context, "Lỗi server,vui lòng thử lại sau");
     }
     setState(() {
       _isLoading = false;
     });
-  }
-
-  Future<bool> setToken(BuildContext context , String idUser , String token , String deviceId) async {
-    final response = await http.put(
-        Uri.parse("$BASE_API/api/setoken/$idUser"),
-        headers: <String , String>{
-          'Content-Type': 'application/json; charset=UTF-8'
-        },
-        body: jsonEncode(<String , String>{
-          'token' : token,
-          'deviceId' : deviceId,
-        })
-    );
-
-    if(response.statusCode == 200){
-      Map<String , dynamic> apiRes = jsonDecode(response.body);
-      ApiRes res = ApiRes.fromJson(apiRes);
-
-      if(res.err!){
-        showSnackBarErr(context, "thất bại : ${res.msg}");
-        return false;
-      }else{
-        if(res.msg == "đăng nhập thiết bị 2"){
-          await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text("Thông báo"),
-                  content: const Text("Tài khoản đã đăng nhập ở nơi khác , tiếp tục"),
-                  actions: [
-                    TextButton(
-                        onPressed: (){
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text("OK")
-                    )
-                  ],
-                );
-              }
-          );
-        }
-        return true;
-      }
-    }
-    return false;
   }
 
   @override
@@ -287,14 +248,18 @@ class _LoginState extends State<LoginSMS> {
 
   void _clickLogin(BuildContext context){
     String sPhone = _phone.text;
+    String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+    RegExp regExp = RegExp(pattern);
 
     if(sPhone.isEmpty){
-     showSnackBarErr(context, "Vui lòng nhập tài khoản");
+      showSnackBarErr(context, "Vui lòng nhập số điện thoại");
+    }else if(!regExp.hasMatch(sPhone)) {
+      showSnackBarErr(context, "Số điện thoại không đúng định dạng");
     }else{
       setState(() {
         _isLoading = true;
       });
-      _callLogin(context, sPhone);
+      _callLoginPhone(context, sPhone);
     }
   }
 }
