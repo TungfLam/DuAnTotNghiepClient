@@ -107,11 +107,11 @@ class _PopularProductListState extends State<PopularProductList> {
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                 const PopupMenuItem<String>(
                   value: 'Sort Down',
-                  child: Text('lớn đến bé'),
+                  child: Text('bé đến lớn'),
                 ),
                 const PopupMenuItem<String>(
                   value: 'Sort Up',
-                  child: Text('bé đến lớn'),
+                  child: Text('lớn đến bé'),
                 ),
               ],
               child: Icon(Icons.filter_list), // Biểu tượng sắp xếp xuống
@@ -163,7 +163,7 @@ class _PopularProductListState extends State<PopularProductList> {
                                 children: [
                                   Container(
                                     width: double.infinity,
-                                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                  
                                     // child: Image.memory(
                                     //   base64Decode(product.image
                                     //           ?.elementAt(0) ??
@@ -174,11 +174,14 @@ class _PopularProductListState extends State<PopularProductList> {
                                     // ),
 
 
-                                    child: Image.network(
-                                      '${product.image?.elementAt(0)}' ?? 'loading...',
-                                      height: 200,
-                                      width: 180,
-                                      fit: BoxFit.cover,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      child: Image.network(
+                                        '${product.image?.elementAt(0)}' ?? 'loading...',
+                                        height: 200,
+                                        width: 180,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                     
                                   ),
@@ -215,7 +218,7 @@ class _PopularProductListState extends State<PopularProductList> {
                               child: Container(
                                 padding: EdgeInsets.only(bottom: 10),
                                 child: Text(
-                                  '\$${product.price ?? 'Unknown Price'}',
+                                  '\đ${product.price ?? 'Unknown Price'}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Color.fromARGB(255, 105, 105, 105),

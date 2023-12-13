@@ -1,22 +1,27 @@
 import 'dart:convert';
-import 'package:appclient/models/productFvoriteModel.dart';
-import 'package:appclient/models/productSizeColor.dart';
+
 import 'package:appclient/services/baseApi.dart';
-import 'package:http/http.dart' as http;
-import 'package:appclient/models/productModel.dart';
 import 'package:flutter/material.dart';
 
-class DetailFavoriteProduct extends StatefulWidget {
-  const DetailFavoriteProduct({Key? key, required this.title, this.productfvr})
+import 'package:http/http.dart' as http;
+
+import 'package:appclient/models/productFvoriteModel.dart';
+import 'package:appclient/models/productModel.dart';
+import 'package:appclient/models/productSizeColor.dart';
+
+class DetailFavariteProduct extends StatefulWidget {
+  const DetailFavariteProduct(
+      {Key? key, required this.title, this.product, this.productfvr})
       : super(key: key);
   final String title;
+  final productModel? product;
   final ListFavorite? productfvr;
 
   @override
-  State<DetailFavoriteProduct> createState() => _DetailFavoriteProductState();
+  State<DetailFavariteProduct> createState() => _DetailFavariteProductState();
 }
 
-class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
+class _DetailFavariteProductState extends State<DetailFavariteProduct> {
   String _selectedSize = '';
   String _selectedColor = ''; // Biến lưu kích thước đã chọn
   List<ProductListSize> productList = [];
@@ -26,7 +31,8 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
   int quantity = 0;
   int _selectedImageIndex = 0;
   ProductListSize? _selectedProductListSize;
-  final ip = '192.168.45.105';
+  String? _selectedProductListSizeId;
+  int selectedQuantity = 1;
 
   @override
   void initState() {
@@ -34,11 +40,342 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
     fetchProductList();
   }
 
+  void incrementQuantity() {
+    productList.forEach((productListSize) {
+      if (_selectedSize == productListSize.sizeId?.name &&
+          _selectedColor == productListSize.colorId?.name) {
+        setState(() {
+          maxQuantity = productListSize.quantity!;
+          if (selectedQuantity < maxQuantity) {
+            selectedQuantity++;
+          }
+        });
+      }
+    });
+  }
+
+  void decrementQuantity() {
+    if (selectedQuantity > 1) {
+      setState(() {
+        selectedQuantity--;
+      });
+    }
+  }
+
+  void updateSizeList() {
+    sizeList.clear();
+    productList.forEach((productListSize) {
+      if (productListSize.colorId?.name == _selectedColor) {
+        sizeList.add('${productListSize.sizeId?.name}');
+      }
+    });
+  }
+
+ void _showSizeColorModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return Container(
+            // Nội dung của ModalBottomSheet ở đây
+            padding: EdgeInsets.fromLTRB(20, 35, 20, 20),
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: [
+                    Expanded(
+                        flex: 2,
+                        child: Container(
+                          width: 40,
+                          height: 80,
+                          child: Image.network(
+                            widget.productfvr?.productId?.image?.elementAt(0) ?? '',
+                            fit: BoxFit.cover,
+                          ),
+                        )),
+                    Expanded(
+                      flex: 6,
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.productfvr?.productId?.name ?? 'Unknown Product Name',
+                            ),
+                            Text(
+                              '\đ${widget.productfvr?.productId?.price ?? 0.00}',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                Text("Màu sắc"),
+                Container(
+                  height: 35,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: colorList
+                        .toSet()
+                        .length, // Sử dụng toSet() để loại bỏ các màu sắc trùng lặp
+                    itemBuilder: (context, index) {
+                      String uniqueColor = colorList.toSet().elementAt(index);
+                      // Lấy màu sắc duy nhất từ danh sách không trùng lặp
+
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedColor = uniqueColor;
+                            selectedQuantity = 1;
+
+                            // Khi chọn màu sắc mới, cập nhật danh sách kích thước tương ứng
+                            updateSizeList();
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            color: _selectedColor == uniqueColor
+                                ? Color(0xFF6342E8)
+                                : Colors.grey[300],
+                          ),
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+                          height: 30,
+                          child: Center(
+                            child: Text(
+                              uniqueColor,
+                              style: TextStyle(
+                                color: _selectedColor == uniqueColor
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Text("Size"),
+                Container(
+                  height: 40,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: sizeList
+                        .toSet()
+                        .length, // Sử dụng toSet() để loại bỏ các kích thước trùng lặp
+                    itemBuilder: (context, index) {
+                      String uniqueSize = sizeList.toSet().elementAt(index);
+                      // Lấy kích thước duy nhất từ danh sách không trùng lặp
+
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedSize = uniqueSize;
+                            selectedQuantity = 1;
+                          });
+                        },
+                        child: Container(
+                          width: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            color: _selectedSize == uniqueSize
+                                ? Color(0xFF6342E8)
+                                : Colors.grey[300],
+                          ),
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+                          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          child: Center(
+                            child: Text(
+                              uniqueSize,
+                              style: TextStyle(
+                                color: _selectedSize == uniqueSize
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Số lượng"),
+                    Container(
+                      height: 40,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey, width: 1),
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                      child: StatefulBuilder(
+                        builder: (context, setState) {
+                          return Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    decrementQuantity();
+                                  });
+                                },
+                                icon: Icon(Icons.remove),
+                              ),
+                              Text(
+                                selectedQuantity.toString(),
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    incrementQuantity();
+                                  });
+                                },
+                                icon: Icon(Icons.add),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        if (_selectedSize.isNotEmpty &&
+                            _selectedColor.isNotEmpty) {
+                          productList.forEach((productListSize) {
+                            if (_selectedSize == productListSize.sizeId?.name &&
+                                _selectedColor ==
+                                    productListSize.colorId?.name) {
+                              setState(() {
+                                maxQuantity = productListSize.quantity!;
+                                _selectedProductListSizeId =
+                                    productListSize.sId;
+                              });
+                            }
+                          });
+
+                          print('Selected Size: $_selectedSize');
+                          print('Selected Color: $_selectedColor');
+                          print(
+                              'Selected ProductListSizeId: $_selectedProductListSizeId');
+
+                          // Thử thêm vào giỏ hàng
+                          bool addToCartSuccess = await addToCart(
+                              '$_selectedProductListSizeId', selectedQuantity);
+
+                          if (addToCartSuccess) {
+                            // Nếu thêm vào giỏ hàng thành công, hiển thị thông báo và cung cấp tùy chọn chuyển đến giỏ hàng
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Center(child: Text('Thông Báo')),
+                                  content: Text(
+                                      'Sản phẩm đã được thêm vào giỏ hàng.'),
+                                  actions: <Widget>[
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text('Đóng'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            // Điều hướng đến màn hình giỏ hàng
+                                            Navigator.of(context)
+                                                .pop(); // Đóng hộp thoại hiện tại trước khi điều hướng
+                                            Navigator.pushNamed(context,
+                                                '/mycart'); // Thay đổi '/cart' bằng định tuyến thích hợp
+                                          },
+                                          child: Text('Đến Giỏ Hàng'),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                          // ... (các xử lý khác nếu cần)
+                        } else {
+                          // Hiển thị thông báo nếu chưa chọn size hoặc color
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Center(child: Text('Xin Lỗi')),
+                                content: Text(
+                                    'Vui lòng chọn kích thước và màu sắc.'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Đóng'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.shopping_cart,
+                        color: Colors.white,
+                      ), // Icon tùy chọn
+                      label: const Text(
+                        'Thêm vào giỏ hàng',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF6342E8),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+      },
+    );
+  }
+
   Future<void> fetchProductList() async {
     try {
+      // final response = await http.read(
+      //   Uri.parse(
+
+      //     '$BASE_API/api/getListAll_deltail/${widget.product?.sId}',
+
+      //   ),
       final response = await http.read(
         Uri.parse(
-          '$BASE_API/api/getListAll_deltail/${widget.productfvr?.productId?.sId}',
+          'https://adadas.onrender.com/api/getListAll_deltail/${widget.productfvr?.productId?.sId}',
         ),
         headers: {'Content-Type': 'application/json'},
       );
@@ -52,200 +389,49 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
               data.map((item) => ProductListSize.fromJson(item)).toList();
         });
       }
-
+      sizeList.clear();
+      colorList.clear();
       productList.forEach((productListSize) {
         print('Quantity: ${productListSize.quantity}');
         print('Quantity: ${productListSize.sizeId?.name}');
         print('idsizecolor : ${productListSize.sId}');
         sizeList.add('${productListSize.sizeId?.name}');
         colorList.add('${productListSize.colorId?.name}');
+        if (_selectedSize == productListSize.sizeId?.name &&
+            _selectedColor == productListSize.colorId?.name) {
+          setState(() {
+            maxQuantity = productListSize.quantity!;
+            _selectedProductListSizeId = productListSize.sId;
+          });
+        }
       });
     } catch (error) {
       print('Error fetching product list: $error');
     }
   }
 
-  void addToCart(String productId, int quantity) async {
+  Future<bool> addToCart(String productId, int quantity) async {
     try {
-      if (_selectedProductListSize != null) {
-        final response = await http.post(
-          Uri.parse(
-              '$BASE_API/api/addCart/6524318746e12608b3558d74/$productId'),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({'quantity': quantity}),
-        );
+      final response = await http.post(
+        Uri.parse(
+            'https://adadas.onrender.com/api/addCart/6524318746e12608b3558d74/$productId'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'quantity': quantity}),
+      );
 
-        if (response.statusCode == 200) {
-          // Xử lý khi thành công
-          print('Added to cart successfully!');
-        } else {
-          // Xử lý khi không thành công
-          print('Failed to add to cart. Status code: ${response.statusCode}');
-        }
+      if (response.statusCode == 200) {
+        // Xử lý khi thành công
+        print('Added to cart successfully!');
+        return true; // Trả về true nếu thành công
       } else {
-        print('No size and color selected');
+        // Xử lý khi không thành công
+        print('Failed to add to cart. Status code: ${response.statusCode}');
+        return false; // Trả về false nếu không thành công
       }
     } catch (error) {
       // Xử lý khi có lỗi
       print('Error adding to cart: $error');
-    }
-  }
-
-  void updateMaxQuantity() {
-    if (_selectedSize.isNotEmpty && _selectedColor.isNotEmpty) {
-      _selectedProductListSize = productList.firstWhere(
-        (productListSize) =>
-            productListSize.sizeId?.name == _selectedSize &&
-            productListSize.colorId?.name == _selectedColor,
-      );
-      maxQuantity = _selectedProductListSize?.quantity ?? 0;
-    } else {
-      maxQuantity = 0;
-    }
-  }
-
-  void updateSizeList() {
-    sizeList.clear();
-    colorList.clear();
-
-    productList.forEach((productListSize) {
-      sizeList.add('${productListSize.sizeId?.name}');
-    });
-
-    // Cập nhật danh sách màu dựa trên kích thước đã chọn
-    if (_selectedSize.isNotEmpty) {
-      productList
-          .where((productListSize) =>
-              productListSize.sizeId?.name == _selectedSize)
-          .forEach((selectedProductSize) {
-        if (selectedProductSize.colorId != null) {
-          colorList.add('${selectedProductSize.colorId?.name}');
-        }
-      });
-    }
-
-    updateMaxQuantity();
-  }
-
-  List<String> getUniqueSizes() {
-    Set<String> uniqueSizes = Set();
-    List<String> result = [];
-
-    productList.forEach((productListSize) {
-      uniqueSizes.add(productListSize.sizeId?.name ?? '');
-    });
-
-    result.addAll(uniqueSizes);
-    return result;
-  }
-
-  Widget _buildSizeOption(String size) {
-    bool isSelected = _selectedSize == size;
-    if (isSelected) {
-      _selectedSize = size;
-      _selectedColor = ''; // Xóa màu đã chọn khi kích thước bị hủy chọn
-      _selectedProductListSize = productList.firstWhere(
-        (productListSize) => productListSize.sizeId?.name == _selectedSize,
-      );
-    }
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          if (isSelected) {
-            _selectedSize = '';
-            _selectedColor = ''; // Xóa màu đã chọn khi kích thước bị hủy chọn
-          } else {
-            _selectedSize = size;
-          }
-          print('Kích thước đã chọn: $_selectedSize');
-          updateSizeList(); // Cập nhật danh sách màu khi kích thước được chọn
-        });
-      },
-      child: Container(
-        width: 47,
-        height: 47,
-        margin: EdgeInsets.all(8),
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isSelected ? Color(0xFF6342E8) : Color(0xFFF1F4FB),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Text(
-            size,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildColorOption(String color) {
-    bool isSelected = _selectedColor == color;
-    if (isSelected) {
-      _selectedColor = color;
-      _selectedProductListSize = productList.firstWhere(
-        (productListSize) =>
-            productListSize.sizeId?.name == _selectedSize &&
-            productListSize.colorId?.name == _selectedColor,
-      );
-      updateMaxQuantity(); // Gọi hàm để cập nhật số lượng khi màu được chọn
-    }
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          if (isSelected) {
-            _selectedColor = '';
-          } else {
-            _selectedColor = color;
-            quantity = 0; // Đặt lại quantity thành 0 khi chọn màu mới
-          }
-          print('Màu đã chọn: $_selectedColor');
-        });
-      },
-      child: Container(
-        width: 100,
-        height: 47,
-        margin: EdgeInsets.all(8),
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isSelected ? Color(0xFF6342E8) : Color(0xFFF1F4FB),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Text(
-            color,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Initialize the quantity with 1
-
-  void increaseQuantity() {
-    if (_selectedProductListSize != null &&
-        _selectedProductListSize?.quantity != null &&
-        quantity < _selectedProductListSize!.quantity!) {
-      setState(() {
-        quantity++;
-      });
-    }
-  }
-
-  void decreaseQuantity() {
-    if (quantity > 0) {
-      // Make sure quantity doesn't go below 1
-      setState(() {
-        quantity--;
-      });
+      return false; // Trả về false nếu có lỗi
     }
   }
 
@@ -257,7 +443,7 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
           Column(
             children: <Widget>[
               Expanded(
-                flex: 4,
+                flex: 7,
                 child: Container(
                   color: Color.fromARGB(255, 198, 198, 198),
                   child: PageView.builder(
@@ -269,8 +455,7 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
                     },
                     itemBuilder: (context, index) {
                       return Image.network(
-                        widget.productfvr?.productId?.image?.elementAt(index) ??
-                            '',
+                        widget.productfvr?.productId?.image?.elementAt(index) ?? '',
                         fit: BoxFit.cover,
                       );
                     },
@@ -278,7 +463,7 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
                 ),
               ),
               Expanded(
-                flex: 6,
+                flex: 5,
                 child: SingleChildScrollView(
                   child: Container(
                     padding: EdgeInsets.all(20),
@@ -306,7 +491,7 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
                               Expanded(
                                 flex: 3,
                                 child: Text(
-                                  '\$${widget.productfvr?.productId?.price ?? 0.00}',
+                                  '\đ${widget.productfvr?.productId?.price ?? 0.00}',
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 20,
@@ -350,46 +535,6 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
                           ),
                         ),
                         Container(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Container(
-                              margin: EdgeInsets.only(top: 10),
-                              width: 120,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  border:
-                                      Border.all(width: 1, color: Colors.grey),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  IconButton(
-                                    icon: Icon(Icons.remove),
-                                    onPressed: () {
-                                      decreaseQuantity(); // Call the decreaseQuantity function
-                                    },
-                                  ),
-                                  Text(
-                                    quantity
-                                        .toString(), // Display the updated quantity
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.add),
-                                    onPressed: () {
-                                      increaseQuantity(); // Call the increaseQuantity function
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
                           //descripsion
                           width: double.infinity,
                           padding: EdgeInsets.only(top: 10),
@@ -410,71 +555,40 @@ class _DetailFavoriteProductState extends State<DetailFavoriteProduct> {
                             ],
                           ),
                         ),
-                        Container(
-                          //size
-                          width: double.infinity,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "select size",
-                                style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold),
-                              ),
-                              Row(
-                                children: _selectedSize.isEmpty
-                                    ? getUniqueSizes().map((size) {
-                                        return _buildSizeOption(size);
-                                      }).toList()
-                                    : colorList.map((color) {
-                                        return _buildColorOption(color);
-                                      }).toList(),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 50),
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                // Xử lý khi nút được nhấn
-                                if (_selectedProductListSize != null) {
-                                  print(
-                                      'idsizecolor : ${_selectedProductListSize?.sId}');
-
-                                  addToCart(
-                                      _selectedProductListSize?.sId ?? '', 1);
-                                } else {
-                                  print('No size and color selected');
-                                }
-
-                                // call api add cart
-                              },
-                              icon: const Icon(
-                                Icons.shopping_cart,
-                                color: Colors.white,
-                              ), // Icon tùy chọn
-                              label: const Text(
-                                'ADD TO CART',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    const Color(0xFF6342E8), // Đặt màu nền
-                              ),
-                            ),
-                          ),
-                        )
                       ],
                     ),
                   ),
                 ),
               ),
+              Expanded(
+                  flex: 2,
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(20, 30, 20, 20),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          _showSizeColorModal(context);
+                        },
+                        icon: const Icon(
+                          Icons.shopping_cart,
+                          color: Colors.white,
+                        ), // Icon tùy chọn
+                        label: const Text(
+                          'Thêm vào giỏ hàng',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color(0xFF6342E8), // Đặt màu nền
+                        ),
+                      ),
+                    ),
+                  ))
             ],
           ),
           Positioned(

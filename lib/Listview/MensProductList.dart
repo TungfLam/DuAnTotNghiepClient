@@ -27,7 +27,7 @@ class _MensProductListState extends State<MensProductList> {
   Future<void> fetchProducts() async {
     final response = await http.get(
       Uri.parse(
-          '$BASE_API/api/products/6573359c00c9d30fb93fddc4/$page'),
+          'https://adadas.onrender.com/api/products/655ef4523d0e29622dc02c6c/$page'),
       headers: {'Content-Type': 'application/json'},
     ); // Thay thế URL của API sản phẩm
 
@@ -46,7 +46,7 @@ class _MensProductListState extends State<MensProductList> {
     try {
       final response = await http.post(
         Uri.parse(
-            '$BASE_API/api/addFavorite/6549d3feffe41106e077bd42/$productId'),
+            'https://adadas.onrender.com/api/addFavorite/6549d3feffe41106e077bd42/$productId'),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -160,15 +160,17 @@ class _MensProductListState extends State<MensProductList> {
                                 children: [
                                   Container(
                                     width: double.infinity,
-                                    padding: EdgeInsets.only(top: 10),
-                                    child: product.image?.elementAt(1) != null
-                                        ? Image.network(
-                                            product.image!.elementAt(0),
-                                            height: 200,
-                                            width: 180,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Placeholder(), // You can use a placeholder or any other widget
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      child: product.image?.elementAt(0) != null
+                                          ? Image.network(
+                                              product.image!.elementAt(0),
+                                              height: 200,
+                                              width: 180,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Placeholder(),
+                                    ), // You can use a placeholder or any other widget
                                   ),
                                   Positioned(
                                     top: 5,
