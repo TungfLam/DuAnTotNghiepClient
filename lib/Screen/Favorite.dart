@@ -21,28 +21,33 @@ class _FavoriteState extends State<Favorite> {
   List<ListFavorite> products = []; // Danh sách sản phẩm từ API
 
   Future<void> fetchFavoritesProducts() async {
-    final response = await http.get(Uri.parse(
-        '$BASE_API/api/getListFavorite/6524318746e12608b3558d74')); // Thay thế URL của API sản phẩm
-    if (response.statusCode == 200) {
-      try {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'https://adadas.onrender.com/api/getListFavorite/6524318746e12608b3558d74'),
+      );
+
+      if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
 
         if (responseData.containsKey('listFavorite') &&
-            responseData['listFavorite'] is Map) {
-          final Map<String, dynamic> favoriteData =
-              responseData['listFavorite'] as Map<String, dynamic>;
+            responseData['listFavorite'] is List) {
+          final List<dynamic> favoriteData =
+              responseData['listFavorite'] as List<dynamic>;
 
           setState(() {
-            products = [ListFavorite.fromJson(favoriteData)];
+            products = favoriteData
+                .map((favorite) => ListFavorite.fromJson(favorite))
+                .toList();
           });
         } else {
-          print('Invalid data format: listFavorite is not a Map');
+          print('Invalid data format: listFavorite is not a List');
         }
-      } catch (e) {
-        print('Error parsing JSON: $e');
+      } else {
+        print('Request failed with status: ${response.statusCode}');
       }
-    } else {
-      print('Request failed with status: ${response.statusCode}');
+    } catch (e) {
+      print('Error fetching favorites: $e');
     }
   }
 
@@ -124,7 +129,7 @@ class _FavoriteState extends State<Favorite> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => DetailFavoriteProduct(
+                              builder: (context) => DetailFavariteProduct(
                                 title: 'Chi tiết sản phẩm',
                                 productfvr: product,
                                 // Truyền đối tượng sản phẩm đã được chọn
