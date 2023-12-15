@@ -30,57 +30,59 @@ class _MyCartState extends State<MyCart> {
     final bool? isLogin = prefs.getBool("isLogin");
     final String? idUser = prefs.getString("idUser");
     if (isLogin != null) {
-      print("người dùng đã login");
-    } else {
-      Navigator.pushNamed(context, '/login');
+      if (isLogin == true) {
+        print("người dùng đã login");
+      } else if (isLogin == false) {
+        Navigator.pushNamed(context, '/login');
+      }
     }
 
     if (idUser != null) {
       print("user id là: $idUser");
 
       try {
-      // final response = await http.get(
-      //   Uri.parse('$BASE_API/api/getListCart/6524318746e12608b3558d74'),);
+        // final response = await http.get(
+        //   Uri.parse('$BASE_API/api/getListCart/6524318746e12608b3558d74'),);
 
-      final response = await http.get(
-        Uri.parse('https://adadas.onrender.com/api/getListCart/$idUser'),
-      );
+        final response = await http.get(
+          Uri.parse('https://adadas.onrender.com/api/getListCart/$idUser'),
+        );
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        // In ra dữ liệu JSON để kiểm tra cấu trúc
-        print('JSON Data: $responseData');
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> responseData = jsonDecode(response.body);
+          // In ra dữ liệu JSON để kiểm tra cấu trúc
+          print('JSON Data: $responseData');
 
-        if (responseData.containsKey('listCart')) {
-          final dynamic listCartData = responseData['listCart'];
+          if (responseData.containsKey('listCart')) {
+            final dynamic listCartData = responseData['listCart'];
 
-          if (listCartData is List) {
-            setState(() {
-              products =
-                  listCartData.map((item) => ListCart.fromJson(item)).toList();
-              print(products.length);
-            });
-          } else if (listCartData is Map<String, dynamic>) {
-            // Xử lý trường hợp listCart là Map, có thể là một sản phẩm duy nhất
-            setState(() {
-              products = [ListCart.fromJson(listCartData)];
-              print(products.length);
-            });
+            if (listCartData is List) {
+              setState(() {
+                products = listCartData
+                    .map((item) => ListCart.fromJson(item))
+                    .toList();
+                print(products.length);
+              });
+            } else if (listCartData is Map<String, dynamic>) {
+              // Xử lý trường hợp listCart là Map, có thể là một sản phẩm duy nhất
+              setState(() {
+                products = [ListCart.fromJson(listCartData)];
+                print(products.length);
+              });
+            } else {
+              print('Invalid data format for listCart');
+            }
           } else {
-            print('Invalid data format for listCart');
+            print('Key listCart not found in JSON response');
           }
         } else {
-          print('Key listCart not found in JSON response');
+          print('Request failed with status: ${response.statusCode}');
         }
-      } else {
-        print('Request failed with status: ${response.statusCode}');
+      } catch (e) {
+        print('Error during API call: $e');
       }
-    } catch (e) {
-      print('Error during API call: $e');
-    }
     }
     //
-    
   }
 
   Future<void> addBillApiCall(String idcart, int payment) async {

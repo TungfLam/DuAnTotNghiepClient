@@ -570,16 +570,16 @@ class _DetailProductState extends State<DetailProduct> {
                       height: 50,
                       child: ElevatedButton.icon(
                         onPressed: () async {
-                          
                           final SharedPreferences prefs =
                               await SharedPreferences.getInstance();
                           final bool? isLogin = prefs.getBool("isLogin");
                           final String? idUser = prefs.getString("idUser");
                           if (isLogin != null) {
-                            print("người dùng đã login");
-                            _showSizeColorModal(context);
-                          } else {
-                            Navigator.pushNamed(context, '/login');
+                            if (isLogin == true) {
+                              print("người dùng đã login");
+                            } else if (isLogin == false) {
+                              Navigator.pushNamed(context, '/login');
+                            }
                           }
                         },
                         icon: const Icon(
