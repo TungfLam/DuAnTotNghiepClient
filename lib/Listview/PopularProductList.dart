@@ -32,7 +32,10 @@ class _PopularProductListState extends State<PopularProductList> {
     final bool? isLogin = prefs.getBool("isLogin");
     final String? idUser = prefs.getString("idUser");
     if (isLogin != null) {
-      print("người dùng đã login");
+      if (isLogin == true) {
+        print("người dùng đã login");
+      }
+      
     }
 
     if (idUser != null) {

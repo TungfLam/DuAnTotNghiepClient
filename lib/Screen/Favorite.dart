@@ -26,9 +26,11 @@ class _FavoriteState extends State<Favorite> {
     final bool? isLogin = prefs.getBool("isLogin");
     final String? idUser = prefs.getString("idUser");
     if (isLogin != null) {
-      print("người dùng đã login");
-    } else {
-      Navigator.pushNamed(context, '/login');
+      if (isLogin == true) {
+        print("người dùng đã login");
+      } else if (isLogin == false) {
+        Navigator.pushNamed(context, '/login');
+      }
     }
 
     if (idUser != null) {
