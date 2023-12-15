@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:appclient/models/productFvoriteModel.dart';
 import 'package:appclient/models/productModel.dart';
 import 'package:appclient/models/productSizeColor.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailProduct extends StatefulWidget {
   const DetailProduct(
@@ -568,8 +569,18 @@ class _DetailProductState extends State<DetailProduct> {
                       width: double.infinity,
                       height: 50,
                       child: ElevatedButton.icon(
-                        onPressed: () {
-                          _showSizeColorModal(context);
+                        onPressed: () async {
+                          
+                          final SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          final bool? isLogin = prefs.getBool("isLogin");
+                          final String? idUser = prefs.getString("idUser");
+                          if (isLogin != null) {
+                            print("người dùng đã login");
+                            _showSizeColorModal(context);
+                          } else {
+                            Navigator.pushNamed(context, '/login');
+                          }
                         },
                         icon: const Icon(
                           Icons.shopping_cart,

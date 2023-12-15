@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:appclient/models/productCartModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyCart extends StatefulWidget {
   const MyCart({Key? key, required this.title}) : super(key: key);
@@ -24,12 +25,25 @@ class _MyCartState extends State<MyCart> {
   bool isVnPaySelected = false;
 
   Future<void> fetchProducts() async {
-    try {
+    //lấy id user
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? isLogin = prefs.getBool("isLogin");
+    final String? idUser = prefs.getString("idUser");
+    if (isLogin != null) {
+      print("người dùng đã login");
+    } else {
+      Navigator.pushNamed(context, '/login');
+    }
+
+    if (idUser != null) {
+      print("user id là: $idUser");
+
+      try {
       // final response = await http.get(
       //   Uri.parse('$BASE_API/api/getListCart/6524318746e12608b3558d74'),);
+
       final response = await http.get(
-        Uri.parse(
-            'https://adadas.onrender.com/api/getListCart/6524318746e12608b3558d74'),
+        Uri.parse('https://adadas.onrender.com/api/getListCart/$idUser'),
       );
 
       if (response.statusCode == 200) {
@@ -64,6 +78,9 @@ class _MyCartState extends State<MyCart> {
     } catch (e) {
       print('Error during API call: $e');
     }
+    }
+    //
+    
   }
 
   Future<void> addBillApiCall(String idcart, int payment) async {
@@ -201,7 +218,11 @@ class _MyCartState extends State<MyCart> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => PayScreen(
-                                  productId: product.sId!,title: '',totalAmount: (product.productId?.product?.price)! * (product.quantity ?? 0),
+                                  productId: product.sId!,
+                                  title: '',
+                                  totalAmount:
+                                      (product.productId?.product?.price)! *
+                                          (product.quantity ?? 0),
                                 ),
                               ),
                             );

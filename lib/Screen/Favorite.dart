@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:appclient/models/productModel.dart';
 import 'package:appclient/Screen/DetailFavariteProduct.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Favorite extends StatefulWidget {
   const Favorite({Key? key, required this.title}) : super(key: key);
@@ -21,33 +22,45 @@ class _FavoriteState extends State<Favorite> {
   List<ListFavorite> products = []; // Danh sách sản phẩm từ API
 
   Future<void> fetchFavoritesProducts() async {
-    try {
-      final response = await http.get(
-        Uri.parse(
-            'https://adadas.onrender.com/api/getListFavorite/6524318746e12608b3558d74'),
-      );
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? isLogin = prefs.getBool("isLogin");
+    final String? idUser = prefs.getString("idUser");
+    if (isLogin != null) {
+      print("người dùng đã login");
+    } else {
+      Navigator.pushNamed(context, '/login');
+    }
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
+    if (idUser != null) {
+      print("user id là: $idUser");
 
-        if (responseData.containsKey('listFavorite') &&
-            responseData['listFavorite'] is List) {
-          final List<dynamic> favoriteData =
-              responseData['listFavorite'] as List<dynamic>;
+      try {
+        final response = await http.get(
+          Uri.parse('https://adadas.onrender.com/api/getListFavorite/$idUser'),
+        );
 
-          setState(() {
-            products = favoriteData
-                .map((favorite) => ListFavorite.fromJson(favorite))
-                .toList();
-          });
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+          if (responseData.containsKey('listFavorite') &&
+              responseData['listFavorite'] is List) {
+            final List<dynamic> favoriteData =
+                responseData['listFavorite'] as List<dynamic>;
+
+            setState(() {
+              products = favoriteData
+                  .map((favorite) => ListFavorite.fromJson(favorite))
+                  .toList();
+            });
+          } else {
+            print('Invalid data format: listFavorite is not a List');
+          }
         } else {
-          print('Invalid data format: listFavorite is not a List');
+          print('Request failed with status: ${response.statusCode}');
         }
-      } else {
-        print('Request failed with status: ${response.statusCode}');
+      } catch (e) {
+        print('Error fetching favorites: $e');
       }
-    } catch (e) {
-      print('Error fetching favorites: $e');
     }
   }
 
