@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:appclient/models/productCartModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyCart extends StatefulWidget {
   const MyCart({Key? key, required this.title}) : super(key: key);
@@ -24,46 +25,64 @@ class _MyCartState extends State<MyCart> {
   bool isVnPaySelected = false;
 
   Future<void> fetchProducts() async {
-    try {
-      // final response = await http.get(
-      //   Uri.parse('$BASE_API/api/getListCart/6524318746e12608b3558d74'),);
-      final response = await http.get(
-        Uri.parse(
-            'https://adadas.onrender.com/api/getListCart/6524318746e12608b3558d74'),
-      );
+    //lấy id user
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? isLogin = prefs.getBool("isLogin");
+    final String? idUser = prefs.getString("idUser");
+    if (isLogin != null) {
+      if (isLogin == true) {
+        print("người dùng đã login");
+      } else if (isLogin == false) {
+        Navigator.pushNamed(context, '/login');
+      }
+    }
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        // In ra dữ liệu JSON để kiểm tra cấu trúc
-        print('JSON Data: $responseData');
+    if (idUser != null) {
+      print("user id là: $idUser");
 
-        if (responseData.containsKey('listCart')) {
-          final dynamic listCartData = responseData['listCart'];
+      try {
+        // final response = await http.get(
+        //   Uri.parse('$BASE_API/api/getListCart/6524318746e12608b3558d74'),);
 
-          if (listCartData is List) {
-            setState(() {
-              products =
-                  listCartData.map((item) => ListCart.fromJson(item)).toList();
-              print(products.length);
-            });
-          } else if (listCartData is Map<String, dynamic>) {
-            // Xử lý trường hợp listCart là Map, có thể là một sản phẩm duy nhất
-            setState(() {
-              products = [ListCart.fromJson(listCartData)];
-              print(products.length);
-            });
+        final response = await http.get(
+          Uri.parse('https://adadas.onrender.com/api/getListCart/$idUser'),
+        );
+
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> responseData = jsonDecode(response.body);
+          // In ra dữ liệu JSON để kiểm tra cấu trúc
+          print('JSON Data: $responseData');
+
+          if (responseData.containsKey('listCart')) {
+            final dynamic listCartData = responseData['listCart'];
+
+            if (listCartData is List) {
+              setState(() {
+                products = listCartData
+                    .map((item) => ListCart.fromJson(item))
+                    .toList();
+                print(products.length);
+              });
+            } else if (listCartData is Map<String, dynamic>) {
+              // Xử lý trường hợp listCart là Map, có thể là một sản phẩm duy nhất
+              setState(() {
+                products = [ListCart.fromJson(listCartData)];
+                print(products.length);
+              });
+            } else {
+              print('Invalid data format for listCart');
+            }
           } else {
-            print('Invalid data format for listCart');
+            print('Key listCart not found in JSON response');
           }
         } else {
-          print('Key listCart not found in JSON response');
+          print('Request failed with status: ${response.statusCode}');
         }
-      } else {
-        print('Request failed with status: ${response.statusCode}');
+      } catch (e) {
+        print('Error during API call: $e');
       }
-    } catch (e) {
-      print('Error during API call: $e');
     }
+    //
   }
 
   Future<void> addBillApiCall(String idcart, int payment) async {
@@ -201,7 +220,11 @@ class _MyCartState extends State<MyCart> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => PayScreen(
-                                  productId: product.sId!,title: '',totalAmount: (product.productId?.product?.price)! * (product.quantity ?? 0),
+                                  productId: product.sId!,
+                                  title: '',
+                                  totalAmount:
+                                      (product.productId?.product?.price)! *
+                                          (product.quantity ?? 0),
                                 ),
                               ),
                             );

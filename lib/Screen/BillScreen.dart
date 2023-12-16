@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:appclient/models/productBillModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BillScreen extends StatefulWidget {
   const BillScreen({Key? key}) : super(key: key);
@@ -25,34 +26,45 @@ class _BillScreenState extends State<BillScreen> {
   void layDuLieuDonHang() async {
     // const url = '$BASE_API/api/bill/6524318746e12608b3558d74';
     const url = 'https://adadas.onrender.com/api/bill/6524318746e12608b3558d74';
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? isLogin = prefs.getBool("isLogin");
+    final String? idUser = prefs.getString("idUser");
+    if (isLogin != null) {
+      print("người dùng đã login");
+    } else {
+      Navigator.pushNamed(context, '/login');
+    }
 
-    try {
-      final response = await http.get(Uri.parse(url));
+    if (idUser != null) {
+      print("user id là: $idUser");
+      try {
+        final response = await http.get(Uri.parse(url));
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> duLieuPhanHoi = json.decode(response.body);
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> duLieuPhanHoi = json.decode(response.body);
 
-        // Kiểm tra trạng thái và xử lý dữ liệu nếu trạng thái là 1
-        if (duLieuPhanHoi['status'] == 1) {
-          final danhSachDuLieu = duLieuPhanHoi['data'] as List<dynamic>;
+          // Kiểm tra trạng thái và xử lý dữ liệu nếu trạng thái là 1
+          if (duLieuPhanHoi['status'] == 1) {
+            final danhSachDuLieu = duLieuPhanHoi['data'] as List<dynamic>;
 
-          // Chuyển đổi dữ liệu từ JSON thành danh sách các đối tượng Data
-          danhSachDonHang =
-              danhSachDuLieu.map((duLieu) => Data.fromJson(duLieu)).toList();
+            // Chuyển đổi dữ liệu từ JSON thành danh sách các đối tượng Data
+            danhSachDonHang =
+                danhSachDuLieu.map((duLieu) => Data.fromJson(duLieu)).toList();
 
-          // Force widget rebuild để hiển thị dữ liệu mới
-          setState(() {});
+            // Force widget rebuild để hiển thị dữ liệu mới
+            setState(() {});
+          } else {
+            // Xử lý trạng thái khác 1 nếu cần thiết
+            print('Trạng thái không phải là 1');
+          }
         } else {
-          // Xử lý trạng thái khác 1 nếu cần thiết
-          print('Trạng thái không phải là 1');
+          // Xử lý lỗi nếu có
+          print('Lỗi: ${response.statusCode}');
         }
-      } else {
+      } catch (e) {
         // Xử lý lỗi nếu có
-        print('Lỗi: ${response.statusCode}');
+        print('Lỗi: $e');
       }
-    } catch (e) {
-      // Xử lý lỗi nếu có
-      print('Lỗi: $e');
     }
   }
 

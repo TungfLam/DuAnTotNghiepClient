@@ -9,6 +9,8 @@ import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class PopularProductList extends StatefulWidget {
   const PopularProductList({super.key});
 
@@ -25,13 +27,26 @@ class _PopularProductListState extends State<PopularProductList> {
 
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
+    // check người dùng đã login hay chưa
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? isLogin = prefs.getBool("isLogin");
+    final String? idUser = prefs.getString("idUser");
+    if (isLogin != null) {
+      if (isLogin == true) {
+        print("người dùng đã login");
+      }
+      
+    }
 
+    if (idUser != null) {
+      print("user id là: $idUser");
+    }
+    //
     final response = await http.get(
       Uri.parse(
           'https://adadas.onrender.com/api/products/6573359c00c9d30fb93fddc4/$page'),
       headers: {'Content-Type': 'application/json'},
     ); // Thay thế URL của API sản phẩm
-
 
     if (response.statusCode == 200) {
       final List<dynamic>? productData = jsonDecode(response.body);
@@ -49,7 +64,6 @@ class _PopularProductListState extends State<PopularProductList> {
       final response = await http.post(
         Uri.parse(
             'https://adadas.onrender.com/api/addFavorite/6524318746e12608b3558d74/$productId'),
-
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -163,7 +177,7 @@ class _PopularProductListState extends State<PopularProductList> {
                                 children: [
                                   Container(
                                     width: double.infinity,
-                                  
+
                                     // child: Image.memory(
                                     //   base64Decode(product.image
                                     //           ?.elementAt(0) ??
@@ -173,17 +187,16 @@ class _PopularProductListState extends State<PopularProductList> {
                                     //   fit: BoxFit.cover,
                                     // ),
 
-
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10.0),
                                       child: Image.network(
-                                        '${product.image?.elementAt(0)}' ?? 'loading...',
+                                        '${product.image?.elementAt(0)}' ??
+                                            'loading...',
                                         height: 200,
                                         width: 180,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
-                                    
                                   ),
                                   Positioned(
                                     top: 5,
