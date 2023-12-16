@@ -2,11 +2,13 @@ import 'package:appclient/Screen/BannerScreen.dart';
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
 import 'package:appclient/Screen/Find.dart';
+import 'package:appclient/Screen/Location.dart';
 import 'package:appclient/Screen/Login.dart';
 import 'package:appclient/Screen/LoginOrRegister.dart';
 import 'package:appclient/Screen/LoginSMS.dart';
 import 'package:appclient/Screen/MyCart.dart';
 import 'package:appclient/Screen/MyHomePage.dart';
+import 'package:appclient/Screen/Notification.dart';
 import 'package:appclient/Screen/PayScreen.dart';
 import 'package:appclient/Screen/Register.dart';
 import 'package:appclient/Screen/RegisterScreen2.dart';
@@ -28,7 +30,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseMessagingService().initNotifications();
   await Permission.notification.isDenied.then((value) {
-    if(value){
+    if (value) {
       Permission.notification.request();
     }
   });
@@ -61,10 +63,17 @@ class MyApp extends StatelessWidget {
         '/find': (context) => const Find(title: ''),
         '/favorite': (context) => const Favorite(title: ''),
         '/detaiproduct': (context) => const DetailProduct(title: ''),
-        Otp_Screen.nameOtp : (context) => const Otp_Screen(),
-        LoginSMS.nameLoginSMS : (context) => const LoginSMS(title: ""),
-        RegisterScreen2.nameRegiterScree2 : (context) => const RegisterScreen2(title: ""),
-        '/pay': (context) => const PayScreen(productId: '', title: '', totalAmount: 0,),
+        Otp_Screen.nameOtp: (context) => const Otp_Screen(),
+        LoginSMS.nameLoginSMS: (context) => const LoginSMS(title: ""),
+        RegisterScreen2.nameRegiterScree2: (context) =>
+            const RegisterScreen2(title: ""),
+        '/pay': (context) => const PayScreen(
+              productId: '',
+              title: '',
+              totalAmount: 0,
+            ),
+        '/notification': (context) => const NotificationScreen(),
+        '/location': (context) => const LocationScreen(),
         // Đăng ký đường dẫn cho màn hình MyCart
       },
     );
