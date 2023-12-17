@@ -26,39 +26,36 @@ class _MyHomePageState extends State<MyHomePage> {
   final FirebaseAuthService _authService = FirebaseAuthService();
   String _inout = "Đăng nhập";
 
-  Future<void> _checkLogin () async {
+  Future<void> _checkLogin() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final bool? isLogin = prefs.getBool("isLogin");
     final String? idUser = prefs.getString("idUser");
     await prefs.setBool("isDone", true);
     String deviceId = await _authService.getDeviceId(context);
 
-    if(isLogin == null){
+    if (isLogin == null) {
       setState(() {
         _inout = "Đăng nhập";
       });
       return;
     }
 
-    if(isLogin){
+    if (isLogin) {
       setState(() {
         _inout = "Đăng xuất";
       });
       final response = await http.post(
           Uri.parse("$BASE_API/api/cheklogin/$idUser"),
-          headers: <String , String>{
+          headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8'
           },
-          body: jsonEncode(<String , String>{
-            'deviceId' : deviceId
-          })
-      );
+          body: jsonEncode(<String, String>{'deviceId': deviceId}));
 
-      if(response.statusCode == 200){
-        Map<String,dynamic> apiRes = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> apiRes = jsonDecode(response.body);
         ApiRes res = ApiRes.fromJson(apiRes);
 
-        if(res.err!){
+        if (res.err!) {
           showDialog(
               context: context,
               barrierDismissible: false,
@@ -70,45 +67,40 @@ class _MyHomePageState extends State<MyHomePage> {
                     TextButton(
                         onPressed: () async {
                           await prefs.clear();
-                          await Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+                          await Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/login', (Route<dynamic> route) => false);
                           Navigator.of(context).pop();
                         },
-                        child: const Text("OK")
-                    )
+                        child: const Text("OK"))
                   ],
                 );
-              }
-          );
+              });
         }
       }
-
-    }else{
+    } else {
       // sử lý khi chưa đăng nhập
       setState(() {
         _inout = "Đăng nhập";
       });
     }
-
   }
 
-  Future<bool> logoutUser (String idUser) async {
-    final response = await http.post(
-        Uri.parse("$BASE_API/api/logout/$idUser"),
-        headers: <String , String>{
+  Future<bool> logoutUser(String idUser) async {
+    final response = await http.post(Uri.parse("$BASE_API/api/logout/$idUser"),
+        headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8'
-        }
-    );
+        });
 
-    if(response.statusCode == 200){
-      Map<String,dynamic> apiRes = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> apiRes = jsonDecode(response.body);
       ApiRes res = ApiRes.fromJson(apiRes);
 
-      if(res.err!){
+      if (res.err!) {
         showSnackBarErr(context, "${res.msg}");
-      }else{
+      } else {
         return true;
       }
-    }else{
+    } else {
       showSnackBarErr(context, "Lỗi Api");
     }
     return false;
@@ -136,6 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: const Icon(Icons.notifications_outlined),
               onPressed: () {
                 // Xử lý khi người dùng nhấn vào biểu tượng thông báo
+                Navigator.pushNamed(context, '/notification');
               },
             ),
             IconButton(
@@ -302,6 +295,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
+                  Navigator.pushNamed(context, '/location');
                   // Xử lý khi người dùng chọn Tùy chọn 1
                 },
               ),
@@ -363,14 +357,17 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                 child: ListTile(
-                  leading: Icon((_inout == "Đăng xuất" ? Icons.logout_outlined : Icons.login_outlined)), // Thêm biểu tượng vào ListTile
+                  leading: Icon((_inout == "Đăng xuất"
+                      ? Icons.logout_outlined
+                      : Icons.login_outlined)), // Thêm biểu tượng vào ListTile
                   title: Text(
                     _inout,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   onTap: () async {
-                    if(_inout == "Đăng xuất"){
-                      final SharedPreferences prefs = await SharedPreferences.getInstance();
+                    if (_inout == "Đăng xuất") {
+                      final SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
                       String? idUser = prefs.getString("idUser");
                       await logoutUser(idUser!);
                       prefs.clear();
