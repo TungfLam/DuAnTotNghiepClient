@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
         Otp_Screen.nameOtp : (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS : (context) => const LoginSMS(title: ""),
         RegisterScreen2.nameRegiterScree2 : (context) => const RegisterScreen2(title: ""),
-        '/pay': (context) => const PayScreen(productId: '', title: '', totalAmount: 0,),
+        '/pay': (context) => const PayScreen(userid: '',  idcart: [], totalAmount: 0, title: '',),
         // Đăng ký đường dẫn cho màn hình MyCart
       },
     );
