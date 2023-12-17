@@ -56,6 +56,9 @@ class _LoginState extends State<LoginSMS> {
           final SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString("idUser", res.idUser.toString());
           await prefs.setString("role", res.role.toString());
+          await prefs.setString("avata", res.avata.toString());
+          await prefs.setString("phone", res.phone.toString());
+          await prefs.setString("email", res.email.toString());
           await prefs.setBool("isLogin", true);
 
           if(phone.startsWith("0")){

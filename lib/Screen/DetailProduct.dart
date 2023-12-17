@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:appclient/Widgets/buttomCustom.dart';
+import 'package:appclient/models/comment.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 
@@ -27,6 +29,7 @@ class _DetailProductState extends State<DetailProduct> {
   List<ProductListSize> productList = [];
   List<String> sizeList = [];
   List<String> colorList = [];
+  List<Comment> arrComment = [];
   int maxQuantity = 0;
   int quantity = 0;
   int _selectedImageIndex = 0;
@@ -125,9 +128,7 @@ class _DetailProductState extends State<DetailProduct> {
                   height: 35,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: colorList
-                        .toSet()
-                        .length, // Sử dụng toSet() để loại bỏ các màu sắc trùng lặp
+                    itemCount: colorList.toSet().length, // Sử dụng toSet() để loại bỏ các màu sắc trùng lặp
                     itemBuilder: (context, index) {
                       String uniqueColor = colorList.toSet().elementAt(index);
                       // Lấy màu sắc duy nhất từ danh sách không trùng lặp
@@ -379,8 +380,7 @@ class _DetailProductState extends State<DetailProduct> {
         ),
         headers: {'Content-Type': 'application/json'},
       );
-      print(widget.product?.sId);
-      // Xử lý dữ liệu response ở đây
+
       final List<dynamic> data = json.decode(response)['productListSize'];
 
       if (mounted) {
@@ -389,12 +389,14 @@ class _DetailProductState extends State<DetailProduct> {
               data.map((item) => ProductListSize.fromJson(item)).toList();
         });
       }
+
       sizeList.clear();
       colorList.clear();
+
       productList.forEach((productListSize) {
-        print('Quantity: ${productListSize.quantity}');
-        print('Quantity: ${productListSize.sizeId?.name}');
-        print('idsizecolor : ${productListSize.sId}');
+        // print('Quantity: ${productListSize.quantity}');
+        // print('Quantity: ${productListSize.sizeId?.name}');
+        // print('idsizecolor : ${productListSize.sId}');
         sizeList.add('${productListSize.sizeId?.name}');
         colorList.add('${productListSize.colorId?.name}');
         if (_selectedSize == productListSize.sizeId?.name &&
@@ -435,172 +437,156 @@ class _DetailProductState extends State<DetailProduct> {
     }
   }
 
+  Future<void> getComment() async {
+    final response = await http.get(
+      Uri.parse("$BASE_API/comment/65785ed034b7645148ab9f0a")
+    );
+
+    if(response.statusCode == 200){
+
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
+        alignment: Alignment.bottomCenter,
         children: <Widget>[
-          Column(
-            children: <Widget>[
-              Expanded(
-                flex: 7,
-                child: Container(
-                  color: Color.fromARGB(255, 198, 198, 198),
-                  child: PageView.builder(
-                    itemCount: widget.product?.image?.length ?? 0,
-                    onPageChanged: (index) {
-                      setState(() {
-                        _selectedImageIndex = index;
-                      });
-                    },
-                    itemBuilder: (context, index) {
-                      return Image.network(
-                        widget.product?.image?.elementAt(index) ?? '',
-                        fit: BoxFit.cover,
-                      );
-                    },
+          SizedBox(
+            width: double.infinity,
+            height: double.infinity,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    height: 400,
+                    color: const Color.fromARGB(255, 198, 198, 198),
+                    child: PageView.builder(
+                      itemCount: widget.product?.image?.length ?? 0,
+                      onPageChanged: (index){
+                        setState(() {
+                          _selectedImageIndex = index;
+                        });
+                      },
+                      itemBuilder: (context , index){
+                        return Image.network(
+                          widget.product?.image?.elementAt(index) ?? "",
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ),
-              Expanded(
-                flex: 5,
-                child: SingleChildScrollView(
-                  child: Container(
-                    padding: EdgeInsets.all(20),
+
+                  Container(
+                    padding: const EdgeInsets.all(20),
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       // borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 7,
-                                child: Text(
-                                  widget.product?.name ??
-                                      'Unknown Product Name',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Text(
-                                  '\$${widget.product?.price ?? 0.00}',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              )
-                            ],
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              widget.product?.name ??
+                                  'Unknown Product Name',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '\$${widget.product?.price ?? 0.00}',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          ],
                         ),
-                        Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                                size: 15,
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                                size: 15,
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                                size: 15,
-                              ),
-                              Icon(
-                                Icons.star_half,
-                                color: Colors.yellow,
-                                size: 15,
-                              ),
-                              Icon(
-                                Icons.star_border_outlined,
-                                color: Colors.yellow,
-                                size: 15,
-                              ),
-                            ],
-                          ),
+
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Icon(
+                              Icons.star,
+                              color: Colors.yellow,
+                              size: 15,
+                            ),
+                            Icon(
+                              Icons.star,
+                              color: Colors.yellow,
+                              size: 15,
+                            ),
+                            Icon(
+                              Icons.star,
+                              color: Colors.yellow,
+                              size: 15,
+                            ),
+                            Icon(
+                              Icons.star_half,
+                              color: Colors.yellow,
+                              size: 15,
+                            ),
+                            Icon(
+                              Icons.star_border_outlined,
+                              color: Colors.yellow,
+                              size: 15,
+                            ),
+                          ],
                         ),
+
                         Container(
-                          //descripsion
                           width: double.infinity,
-                          padding: EdgeInsets.only(top: 10),
+                          padding: const EdgeInsets.only(top: 16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Descripsion: ",
+                              const Text("Descripsion: ",
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),
-                              Text(
-                                widget.product?.description ??
-                                    'Unknown Product Name',
-                                style:
-                                    TextStyle(fontSize: 14, color: Colors.grey),
+                              Text(widget.product?.description ??
+                                  'Unknown Product Name',
+                                style: const TextStyle(fontSize: 14, color: Colors.grey),
                               )
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                  flex: 2,
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(20, 30, 20, 20),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          _showSizeColorModal(context);
-                        },
-                        icon: const Icon(
-                          Icons.shopping_cart,
-                          color: Colors.white,
-                        ), // Icon tùy chọn
-                        label: const Text(
-                          'Thêm vào giỏ hàng',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Column(
+                            children: [
+                              CustomButtonOutline(text: "Đánh giá sảnh phẩn", onPressed: (){}),
+                            ],
                           ),
                         ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color(0xFF6342E8), // Đặt màu nền
-                        ),
-                      ),
-                    ),
-                  ))
-            ],
+
+                        // Column(
+                        //   children: listComment,
+                        // ),
+
+                      ]
+                    )
+                  ),
+                ],
+              ),
+            ),
           ),
           Positioned(
-            top: 50,
-            left: 20,
+            top: 40,
+            left: 16,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,
               ),
               child: IconButton(
-                icon: Icon(Icons.arrow_back),
+                icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   // Xử lý khi nhấn nút back
                   Navigator.pop(context);
@@ -609,21 +595,49 @@ class _DetailProductState extends State<DetailProduct> {
             ),
           ),
           Positioned(
-            top: 50,
-            right: 20,
+            top: 40,
+            right: 16,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,
               ),
               child: IconButton(
-                icon: Icon(Icons.favorite_border_outlined),
+                icon: const Icon(Icons.favorite_border_outlined),
                 onPressed: () {
                   // Xử lý khi nhấn nút favorite
                 },
               ),
             ),
           ),
+          Positioned(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              child: SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    _showSizeColorModal(context);
+                  },
+                  icon: const Icon(
+                    Icons.shopping_cart,
+                    color: Colors.white,
+                  ),
+                  label: const Text(
+                    'Thêm vào giỏ hàng',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF6342E8),
+                  ),
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );

@@ -28,10 +28,9 @@ class _PopularProductListState extends State<PopularProductList> {
 
     final response = await http.get(
       Uri.parse(
-          'https://adadas.onrender.com/api/products/6573359c00c9d30fb93fddc4/$page'),
+          'https://adadas.onrender.com/api/products/655ef4523d0e29622dc02c6c/$page'),
       headers: {'Content-Type': 'application/json'},
     ); // Thay thế URL của API sản phẩm
-
 
     if (response.statusCode == 200) {
       final List<dynamic>? productData = jsonDecode(response.body);
@@ -81,8 +80,8 @@ class _PopularProductListState extends State<PopularProductList> {
       children: [
         Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10),
+            const Padding(
+              padding: EdgeInsets.only(right: 10),
               child: Text('Lọc & sắp xếp',
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
@@ -142,8 +141,7 @@ class _PopularProductListState extends State<PopularProductList> {
                     MaterialPageRoute(
                       builder: (context) => DetailProduct(
                         title: 'Chi tiết sản phẩm',
-                        product:
-                            product, // Truyền đối tượng sản phẩm đã được chọn
+                        product: product, // Truyền đối tượng sản phẩm đã được chọn
                       ),
                     ),
                   );
@@ -163,7 +161,7 @@ class _PopularProductListState extends State<PopularProductList> {
                                 children: [
                                   Container(
                                     width: double.infinity,
-                                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                                     // child: Image.memory(
                                     //   base64Decode(product.image
                                     //           ?.elementAt(0) ??
@@ -187,7 +185,7 @@ class _PopularProductListState extends State<PopularProductList> {
                                     right: 5,
                                     child: IconButton(
                                       icon:
-                                          Icon(Icons.favorite_border_outlined),
+                                          const Icon(Icons.favorite_border_outlined),
                                       onPressed: () {
                                         addFavorite(product.sId!);
                                       },
@@ -199,7 +197,7 @@ class _PopularProductListState extends State<PopularProductList> {
                             Expanded(
                               flex: 1,
                               child: Container(
-                                padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
+                                padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
                                 child: Text(
                                   product.name ?? 'Unknown',
                                   style: const TextStyle(
@@ -213,7 +211,7 @@ class _PopularProductListState extends State<PopularProductList> {
                             Expanded(
                               flex: 1,
                               child: Container(
-                                padding: EdgeInsets.only(bottom: 10),
+                                padding: const EdgeInsets.only(bottom: 10),
                                 child: Text(
                                   '\$${product.price ?? 'Unknown Price'}',
                                   style: const TextStyle(
@@ -232,7 +230,7 @@ class _PopularProductListState extends State<PopularProductList> {
               );
             } else {
               if (mounted) {
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               }
