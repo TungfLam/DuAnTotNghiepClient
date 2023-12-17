@@ -63,17 +63,16 @@ class MyApp extends StatelessWidget {
         '/find': (context) => const Find(title: ''),
         '/favorite': (context) => const Favorite(title: ''),
         '/detaiproduct': (context) => const DetailProduct(title: ''),
-        Otp_Screen.nameOtp: (context) => const Otp_Screen(),
-        LoginSMS.nameLoginSMS: (context) => const LoginSMS(title: ""),
-        RegisterScreen2.nameRegiterScree2: (context) =>
-            const RegisterScreen2(title: ""),
-        '/pay': (context) => const PayScreen(
-              productId: '',
-              title: '',
-              totalAmount: 0,
-            ),
+
+        Otp_Screen.nameOtp : (context) => const Otp_Screen(),
+        LoginSMS.nameLoginSMS : (context) => const LoginSMS(title: ""),
+        RegisterScreen2.nameRegiterScree2 : (context) => const RegisterScreen2(title: ""),
+        '/pay': (context) => const PayScreen(userid: '',  idcart: [], totalAmount: 0, title: '',),
+
+
         '/notification': (context) => const NotificationScreen(),
         '/location': (context) => const LocationScreen(),
+
         // Đăng ký đường dẫn cho màn hình MyCart
       },
     );
