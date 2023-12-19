@@ -15,6 +15,7 @@ import 'package:appclient/Screen/RegisterScreen2.dart';
 import 'package:appclient/Screen/billAllScreen.dart';
 
 import 'package:appclient/Screen/otp_screen.dart';
+import 'package:appclient/Screen/profile.dart';
 import 'package:appclient/services/firebaseMessagingService.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -50,7 +51,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/profile', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
@@ -72,6 +73,8 @@ class MyApp extends StatelessWidget {
 
         '/notification': (context) => const NotificationScreen(),
         '/location': (context) => const LocationScreen(),
+
+         '/profile': (context) => const profileScreen(),
 
         // Đăng ký đường dẫn cho màn hình MyCart
       },
