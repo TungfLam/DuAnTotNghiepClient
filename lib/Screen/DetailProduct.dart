@@ -577,6 +577,7 @@ class _DetailProductState extends State<DetailProduct> {
                           if (isLogin != null) {
                             if (isLogin == true) {
                               print("người dùng đã login");
+                              _showSizeColorModal(context);
                             } else if (isLogin == false) {
                               Navigator.pushNamed(context, '/login');
                             }

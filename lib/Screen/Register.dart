@@ -26,7 +26,7 @@ class _RegisterState extends State<Register> {
 
   Future<bool> _chekPhone(BuildContext context , String phone) async{
     final response = await http.post(
-        Uri.parse("$BASE_API/api/usersloginphone"),
+        Uri.parse("https://adadas.onrender.com/api/usersloginphone"),
         headers: <String , String>{
           'Content-Type': 'application/json; charset=UTF-8'
         },
@@ -36,14 +36,19 @@ class _RegisterState extends State<Register> {
     );
 
     if(response.statusCode == 200){
+      print("200");
       Map<String , dynamic> apiRes = jsonDecode(response.body);
       ApiRes res = ApiRes.fromJson(apiRes);
 
       if(res.err!){
+        print("check");
         if(res.msg! == "Số điện thoại chưa đăng ký"){
+          print("thanh cong");
           return true;
         }
       }
+    }else{
+      print("err sv : ${response.statusCode}");
     }
     return false;
   }
