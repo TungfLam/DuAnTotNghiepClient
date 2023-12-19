@@ -4,11 +4,12 @@ class ApiRes {
   bool? err;
   String? idUser;
   String? role;
+  String? fullname;
   String? avata;
   String? phone;
   String? email;
 
-  ApiRes({this.msg, this.err , this.idUser , this.role , this.avata , this.phone , this.email});
+  ApiRes({this.msg, this.err , this.idUser , this.role , this.avata , this.phone , this.email , this.fullname});
 
   ApiRes.fromJson(Map<String, dynamic> json) {
     msg = json['msg'];
@@ -18,6 +19,7 @@ class ApiRes {
     avata = json['avata'];
     phone = json['phone'];
     email = json['email'];
+    fullname = json['fullname'];
   }
 
   Map<String, dynamic> toJson() {
@@ -29,6 +31,7 @@ class ApiRes {
     data['avata'] = this.avata;
     data['phone'] = this.phone;
     data['email'] = this.email;
+    data['fullname'] = this.fullname;
     return data;
   }
 }

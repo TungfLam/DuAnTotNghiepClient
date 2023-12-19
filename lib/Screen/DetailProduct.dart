@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:appclient/Widgets/buttomCustom.dart';
+import 'package:appclient/Widgets/itemComment.dart';
 import 'package:appclient/models/comment.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class _DetailProductState extends State<DetailProduct> {
   List<ProductListSize> productList = [];
   List<String> sizeList = [];
   List<String> colorList = [];
-  List<Comment> arrComment = [];
+  List arrComment = [];
   int maxQuantity = 0;
   int quantity = 0;
   int _selectedImageIndex = 0;
@@ -41,6 +42,12 @@ class _DetailProductState extends State<DetailProduct> {
   void initState() {
     super.initState();
     fetchProductList();
+    // arrComment.add(Comment(sId: "6558d4bcc1ab8c3f98265386" , productId: "65785ed034b7645148ab9f0a",
+    //   userId: "6524318746e12608b3558d74",comment: "em dep lam2",rating: 4 ,date: "123456" , images: ["$BASE_API/avatas/6524318746e12608b3558d74_images.jpg" , "$BASE_API/avatas/6524318746e12608b3558d74_images.jpg" ]));
+    // setState(() {
+    //
+    // });
+      getComment();
   }
 
   void incrementQuantity() {
@@ -439,11 +446,16 @@ class _DetailProductState extends State<DetailProduct> {
 
   Future<void> getComment() async {
     final response = await http.get(
-      Uri.parse("$BASE_API/comment/65785ed034b7645148ab9f0a")
+      Uri.parse("$BASE_API/api/comment/65785ed034b7645148ab9f0a")
     );
 
     if(response.statusCode == 200){
+      final data = await json.decode(response.body);
+      arrComment = data;
+      print(arrComment[0]['_id']);
+      setState(() {
 
+      });
     }
   }
 
@@ -558,17 +570,24 @@ class _DetailProductState extends State<DetailProduct> {
 
                         Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.only(top: 16),
-                          child: Column(
-                            children: [
-                              CustomButtonOutline(text: "Đánh giá sảnh phẩn", onPressed: (){}),
-                            ],
-                          ),
+                          margin: const EdgeInsets.only(top: 8),
+                          alignment: Alignment.centerLeft,
+                          child: const Text(
+                            "Đáng giá",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold
+                            ),
+                          )
                         ),
-
-                        // Column(
-                        //   children: listComment,
-                        // ),
+                        
+                        Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.only(top: 8),
+                          child: Column(
+                            children: arrComment.map((e) => itemComment(item: e)).toList(),
+                          ),
+                        )
 
                       ]
                     )
