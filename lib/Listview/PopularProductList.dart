@@ -9,6 +9,8 @@ import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 class PopularProductList extends StatefulWidget {
   const PopularProductList({super.key});
 
@@ -25,7 +27,6 @@ class _PopularProductListState extends State<PopularProductList> {
 
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
-
     final response = await http.get(
       Uri.parse(
           'https://adadas.onrender.com/api/products/655ef4523d0e29622dc02c6c/$page'),
@@ -48,7 +49,6 @@ class _PopularProductListState extends State<PopularProductList> {
       final response = await http.post(
         Uri.parse(
             'https://adadas.onrender.com/api/addFavorite/6524318746e12608b3558d74/$productId'),
-
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -141,7 +141,8 @@ class _PopularProductListState extends State<PopularProductList> {
                     MaterialPageRoute(
                       builder: (context) => DetailProduct(
                         title: 'Chi tiết sản phẩm',
-                        product: product, // Truyền đối tượng sản phẩm đã được chọn
+                        product:
+                            product, // Truyền đối tượng sản phẩm đã được chọn
                       ),
                     ),
                   );
@@ -161,31 +162,23 @@ class _PopularProductListState extends State<PopularProductList> {
                                 children: [
                                   Container(
                                     width: double.infinity,
-                                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                                    // child: Image.memory(
-                                    //   base64Decode(product.image
-                                    //           ?.elementAt(0) ??
-                                    //       'loading...'), // Giả sử danh sách ảnh là danh sách base64
-                                    //   height: 200,
-                                    //   width: 180,
-                                    //   fit: BoxFit.cover,
-                                    // ),
-
-
-                                    child: Image.network(
-                                      '${product.image?.elementAt(0)}' ?? 'loading...',
-                                      height: 200,
-                                      width: 180,
-                                      fit: BoxFit.cover,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      child: Image.network(
+                                        '${product.image?.elementAt(0)}' ??
+                                            'loading...',
+                                        height: 200,
+                                        width: 180,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
-                                    
                                   ),
                                   Positioned(
                                     top: 5,
                                     right: 5,
                                     child: IconButton(
-                                      icon:
-                                          const Icon(Icons.favorite_border_outlined),
+                                      icon: const Icon(
+                                          Icons.favorite_border_outlined),
                                       onPressed: () {
                                         addFavorite(product.sId!);
                                       },
@@ -197,7 +190,8 @@ class _PopularProductListState extends State<PopularProductList> {
                             Expanded(
                               flex: 1,
                               child: Container(
-                                padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 0, 10, 5),
                                 child: Text(
                                   product.name ?? 'Unknown',
                                   style: const TextStyle(
@@ -213,7 +207,7 @@ class _PopularProductListState extends State<PopularProductList> {
                               child: Container(
                                 padding: const EdgeInsets.only(bottom: 10),
                                 child: Text(
-                                  '\$${product.price ?? 'Unknown Price'}',
+                                  '${NumberFormat.decimalPattern().format(product.price ?? 'Unknown Price')} đ',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Color.fromARGB(255, 105, 105, 105),

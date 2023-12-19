@@ -25,11 +25,21 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final FirebaseAuthService _authService = FirebaseAuthService();
   String _inout = "Đăng nhập";
+  String anhdd = '';
+  String mail = '';
 
   Future<void> _checkLogin() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final bool? isLogin = prefs.getBool("isLogin");
     final String? idUser = prefs.getString("idUser");
+    final String? avarta = prefs.getString("avata");
+    final String? email = prefs.getString("email");
+    print('$email');
+    print('$avarta');
+
+    anhdd = avarta!;
+    mail = email!;
+
     await prefs.setBool("isDone", true);
     String deviceId = await _authService.getDeviceId(context);
 
@@ -165,7 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
           backgroundColor: Colors.white,
-          bottom: const TabBar(
+          bottom: TabBar(
             // Thanh TabBar ở đây
             tabs: [
               Tab(text: 'Phổ biến'),
@@ -198,11 +208,12 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
         // Định nghĩa thanh điều hướng bên phải với các tùy chọn điều hướng
+
         endDrawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              const DrawerHeader(
+              DrawerHeader(
                 decoration: BoxDecoration(
                   color:
                       Colors.white, // Đặt màu nền của thanh điều hướng bên phải
@@ -216,7 +227,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Image(
                           height: 60,
                           width: 60,
-                          image: AssetImage('lib/images/img2.jpg'),
+                          image: NetworkImage('$BASE_API$anhdd'),
                         ),
                       ),
                     ),
@@ -234,7 +245,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                         Text(
-                          'email người dùng @mail.com',
+                          mail,
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
@@ -277,7 +288,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               ListTile(
                 leading: const Icon(
-                    Icons.shopify_sharp), // Thêm biểu tượng vào ListTile
+                    Icons.blinds_closed_outlined), // Thêm biểu tượng vào ListTile
                 title: const Text(
                   'Đơn hàng',
                   style: TextStyle(fontWeight: FontWeight.bold),

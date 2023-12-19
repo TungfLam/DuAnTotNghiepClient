@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:appclient/models/productFvoriteModel.dart';
 import 'package:appclient/models/productModel.dart';
 import 'package:appclient/models/productSizeColor.dart';
+import 'package:intl/intl.dart';
 
 class DetailFavariteProduct extends StatefulWidget {
   const DetailFavariteProduct(
@@ -108,7 +109,7 @@ class _DetailFavariteProductState extends State<DetailFavariteProduct> {
                               widget.productfvr?.productId?.name ?? 'Unknown Product Name',
                             ),
                             Text(
-                              '\đ${widget.productfvr?.productId?.price ?? 0.00}',
+                              '${NumberFormat.decimalPattern().format( widget.productfvr?.productId?.price ?? 0.00)} đ',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -491,7 +492,7 @@ class _DetailFavariteProductState extends State<DetailFavariteProduct> {
                               Expanded(
                                 flex: 3,
                                 child: Text(
-                                  '\đ${widget.productfvr?.productId?.price ?? 0.00}',
+                                  '${NumberFormat.decimalPattern().format( widget.productfvr?.productId?.price ?? 0.00)} đ',
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 20,
