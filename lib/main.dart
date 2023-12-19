@@ -12,8 +12,8 @@ import 'package:appclient/Screen/Notification.dart';
 import 'package:appclient/Screen/PayScreen.dart';
 import 'package:appclient/Screen/Register.dart';
 import 'package:appclient/Screen/RegisterScreen2.dart';
+import 'package:appclient/Screen/billAllScreen.dart';
 
-import 'package:appclient/Screen/billScreen.dart';
 import 'package:appclient/Screen/otp_screen.dart';
 import 'package:appclient/services/firebaseMessagingService.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const Login(title: ''),
         '/loginorregister': (context) => const LoginOrRegisterScreen(title: ''),
         '/mycart': (context) => const MyCart(title: ''),
-        '/bill': (context) => const BillScreen(),
+        '/bill': (context) => const BillAllScreen(),
         '/find': (context) => const Find(title: ''),
         '/favorite': (context) => const Favorite(title: ''),
         '/detaiproduct': (context) => const DetailProduct(title: ''),

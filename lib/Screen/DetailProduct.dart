@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:appclient/models/productFvoriteModel.dart';
 import 'package:appclient/models/productModel.dart';
 import 'package:appclient/models/productSizeColor.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailProduct extends StatefulWidget {
@@ -39,6 +40,7 @@ class _DetailProductState extends State<DetailProduct> {
   void initState() {
     super.initState();
     fetchProductList();
+    
   }
 
   void incrementQuantity() {
@@ -109,7 +111,7 @@ class _DetailProductState extends State<DetailProduct> {
                               widget.product?.name ?? 'Unknown Product Name',
                             ),
                             Text(
-                              '\đ${widget.product?.price ?? 0.00}',
+                              '${NumberFormat.decimalPattern().format( widget.product?.price ?? 0.00)} đ',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -215,6 +217,7 @@ class _DetailProductState extends State<DetailProduct> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Text('Số lượng còn lại: $maxQuantity'),
                     Text("Số lượng"),
                     Container(
                       height: 40,
@@ -492,7 +495,7 @@ class _DetailProductState extends State<DetailProduct> {
                               Expanded(
                                 flex: 3,
                                 child: Text(
-                                  '\$${widget.product?.price ?? 0.00}',
+                                  '${NumberFormat.decimalPattern().format( widget.product?.price ?? 0.00)} đ',
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 20,

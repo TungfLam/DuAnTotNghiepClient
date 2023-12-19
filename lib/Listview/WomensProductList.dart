@@ -9,6 +9,8 @@ import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 class WomensProductList extends StatefulWidget {
   const WomensProductList({super.key});
 
@@ -218,7 +220,7 @@ class _WomensProductListState extends State<WomensProductList> {
                               child: Container(
                                 padding: EdgeInsets.only(bottom: 10),
                                 child: Text(
-                                  '\đ${product.price ?? 'Unknown Price'}',
+                                  '${NumberFormat.decimalPattern().format( product.price ?? 'Unknown Price')} đ',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Color.fromARGB(255, 105, 105, 105),
