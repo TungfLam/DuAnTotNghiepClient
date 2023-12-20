@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:appclient/models/productModel.dart';
 import 'package:appclient/Screen/DetailFavariteProduct.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Favorite extends StatefulWidget {
   const Favorite({Key? key, required this.title}) : super(key: key);
@@ -21,28 +22,47 @@ class _FavoriteState extends State<Favorite> {
   List<ListFavorite> products = []; // Danh sách sản phẩm từ API
 
   Future<void> fetchFavoritesProducts() async {
-    final response = await http.get(Uri.parse(
-        '$BASE_API/api/getListFavorite/6524318746e12608b3558d74')); // Thay thế URL của API sản phẩm
-    if (response.statusCode == 200) {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? isLogin = prefs.getBool("isLogin");
+    final String? idUser = prefs.getString("idUser");
+    if (isLogin != null) {
+      if (isLogin == true) {
+        print("người dùng đã login");
+      } else if (isLogin == false) {
+        Navigator.pushNamed(context, '/login');
+      }
+    }
+
+    if (idUser != null) {
+      print("user id là: $idUser");
+
       try {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        final response = await http.get(
+          Uri.parse('https://adadas.onrender.com/api/getListFavorite/$idUser'),
+        );
 
-        if (responseData.containsKey('listFavorite') &&
-            responseData['listFavorite'] is Map) {
-          final Map<String, dynamic> favoriteData =
-              responseData['listFavorite'] as Map<String, dynamic>;
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> responseData = jsonDecode(response.body);
 
-          setState(() {
-            products = [ListFavorite.fromJson(favoriteData)];
-          });
+          if (responseData.containsKey('listFavorite') &&
+              responseData['listFavorite'] is List) {
+            final List<dynamic> favoriteData =
+                responseData['listFavorite'] as List<dynamic>;
+
+            setState(() {
+              products = favoriteData
+                  .map((favorite) => ListFavorite.fromJson(favorite))
+                  .toList();
+            });
+          } else {
+            print('Invalid data format: listFavorite is not a List');
+          }
         } else {
-          print('Invalid data format: listFavorite is not a Map');
+          print('Request failed with status: ${response.statusCode}');
         }
       } catch (e) {
-        print('Error parsing JSON: $e');
+        print('Error fetching favorites: $e');
       }
-    } else {
-      print('Request failed with status: ${response.statusCode}');
     }
   }
 
@@ -124,7 +144,7 @@ class _FavoriteState extends State<Favorite> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => DetailFavoriteProduct(
+                              builder: (context) => DetailFavariteProduct(
                                 title: 'Chi tiết sản phẩm',
                                 productfvr: product,
                                 // Truyền đối tượng sản phẩm đã được chọn

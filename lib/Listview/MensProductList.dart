@@ -9,6 +9,8 @@ import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 class MensProductList extends StatefulWidget {
   const MensProductList({super.key});
 
@@ -160,14 +162,17 @@ class _MensProductListState extends State<MensProductList> {
                                 children: [
                                   Container(
                                     width: double.infinity,
-                                    padding: EdgeInsets.only(top: 10),
+                                    
                                     child: product.image?.elementAt(1) != null
-                                        ? Image.network(
-                                            product.image!.elementAt(0),
-                                            height: 200,
-                                            width: 180,
-                                            fit: BoxFit.cover,
-                                          )
+                                        ? ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Image.network(
+                                              product.image!.elementAt(0),
+                                              height: 200,
+                                              width: 180,
+                                              fit: BoxFit.cover,
+                                            ),
+                                        )
                                         : Placeholder(), // You can use a placeholder or any other widget
                                   ),
                                   Positioned(
@@ -205,7 +210,7 @@ class _MensProductListState extends State<MensProductList> {
                               child: Container(
                                 padding: EdgeInsets.only(bottom: 10),
                                 child: Text(
-                                  '\$${product.price ?? 'Unknown Price'}',
+                                  '${NumberFormat.decimalPattern().format( product.price ?? 'Unknown Price')} đ',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Color.fromARGB(255, 105, 105, 105),

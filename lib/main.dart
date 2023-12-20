@@ -3,17 +3,20 @@ import 'package:appclient/Screen/BannerScreen.dart';
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
 import 'package:appclient/Screen/Find.dart';
+import 'package:appclient/Screen/Location.dart';
 import 'package:appclient/Screen/Login.dart';
 import 'package:appclient/Screen/LoginOrRegister.dart';
 import 'package:appclient/Screen/LoginSMS.dart';
 import 'package:appclient/Screen/MyCart.dart';
 import 'package:appclient/Screen/MyHomePage.dart';
+import 'package:appclient/Screen/Notification.dart';
 import 'package:appclient/Screen/PayScreen.dart';
 import 'package:appclient/Screen/Register.dart';
 import 'package:appclient/Screen/RegisterScreen2.dart';
+import 'package:appclient/Screen/billAllScreen.dart';
 
-import 'package:appclient/Screen/billScreen.dart';
 import 'package:appclient/Screen/otp_screen.dart';
+import 'package:appclient/Screen/profile.dart';
 import 'package:appclient/services/firebaseMessagingService.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -29,7 +32,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseMessagingService().initNotifications();
   await Permission.notification.isDenied.then((value) {
-    if(value){
+    if (value) {
       Permission.notification.request();
     }
   });
@@ -58,15 +61,21 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const Login(title: ''),
         '/loginorregister': (context) => const LoginOrRegisterScreen(title: ''),
         '/mycart': (context) => const MyCart(title: ''),
-        '/bill': (context) => const BillScreen(),
+        '/bill': (context) => const BillAllScreen(),
         '/find': (context) => const Find(title: ''),
         '/favorite': (context) => const Favorite(title: ''),
         '/detaiproduct': (context) => const DetailProduct(title: ''),
+
         Otp_Screen.nameOtp : (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS : (context) => const LoginSMS(title: ""),
         RegisterScreen2.nameRegiterScree2 : (context) => const RegisterScreen2(title: ""),
+
         AllComment.nameComment : (context) => AllComment(),
-        '/pay': (context) => const PayScreen(productId: '', title: '', totalAmount: 0,),
+        '/pay': (context) => const PayScreen(userid: '',  idcart: [], totalAmount: 0, title: '',),
+        '/notification': (context) => const NotificationScreen(),
+        '/location': (context) => const LocationScreen(),
+
+         '/profile': (context) => const profileScreen(),
         // Đăng ký đường dẫn cho màn hình MyCart
       },
     );

@@ -1,9 +1,12 @@
 import 'package:appclient/Screen/PayScreen.dart';
+import 'package:appclient/models/productBillModel.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:appclient/models/productCartModel.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyCart extends StatefulWidget {
   const MyCart({Key? key, required this.title}) : super(key: key);
@@ -22,48 +25,77 @@ class _MyCartState extends State<MyCart> {
     'Thanh toán VNPAY'
   ];
   bool isVnPaySelected = false;
+  List<bool> selectedProducts = [];
+  int totalAmount = 0;
+  late String userid;
+  // late ListCart product;
 
   Future<void> fetchProducts() async {
-    try {
-      // final response = await http.get(
-      //   Uri.parse('$BASE_API/api/getListCart/6524318746e12608b3558d74'),);
-      final response = await http.get(
-        Uri.parse(
-            'https://adadas.onrender.com/api/getListCart/6524318746e12608b3558d74'),
-      );
+    //lấy id user
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? isLogin = prefs.getBool("isLogin");
+    final String? idUser = prefs.getString("idUser");
+    if (isLogin != null) {
+      if (isLogin == true) {
+        print("người dùng đã login");
+      } else if (isLogin == false) {
+        Navigator.pushNamed(context, '/login');
+      }
+    }else  {
+        Navigator.pushNamed(context, '/login');
+      }
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        // In ra dữ liệu JSON để kiểm tra cấu trúc
-        print('JSON Data: $responseData');
+    if (idUser != null) {
+      print("user id là: $idUser");
+      setState(() {
+        userid = idUser;
+      });
 
-        if (responseData.containsKey('listCart')) {
-          final dynamic listCartData = responseData['listCart'];
+      try {
+        // final response = await http.get(
+        //   Uri.parse('$BASE_API/api/getListCart/6524318746e12608b3558d74'),);
 
-          if (listCartData is List) {
-            setState(() {
-              products =
-                  listCartData.map((item) => ListCart.fromJson(item)).toList();
-              print(products.length);
-            });
-          } else if (listCartData is Map<String, dynamic>) {
-            // Xử lý trường hợp listCart là Map, có thể là một sản phẩm duy nhất
-            setState(() {
-              products = [ListCart.fromJson(listCartData)];
-              print(products.length);
-            });
+        final response = await http.get(
+          Uri.parse('https://adadas.onrender.com/api/getListCart/$idUser'),
+        );
+
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> responseData = jsonDecode(response.body);
+          // In ra dữ liệu JSON để kiểm tra cấu trúc
+          print('JSON Data: $responseData');
+
+          if (responseData.containsKey('listCart')) {
+            final dynamic listCartData = responseData['listCart'];
+
+            if (listCartData is List) {
+              setState(() {
+                products = listCartData
+                    .map((item) => ListCart.fromJson(item))
+                    .toList();
+                print(products.length);
+                selectedProducts =
+                    List.generate(products.length, (index) => false);
+              });
+            } else if (listCartData is Map<String, dynamic>) {
+              // Xử lý trường hợp listCart là Map, có thể là một sản phẩm duy nhất
+              setState(() {
+                products = [ListCart.fromJson(listCartData)];
+                print(products.length);
+              });
+            } else {
+              print('Invalid data format for listCart');
+            }
           } else {
-            print('Invalid data format for listCart');
+            print('Key listCart not found in JSON response');
           }
         } else {
-          print('Key listCart not found in JSON response');
+          print('Request failed with status: ${response.statusCode}');
         }
-      } else {
-        print('Request failed with status: ${response.statusCode}');
+      } catch (e) {
+        print('Error during API call: $e');
       }
-    } catch (e) {
-      print('Error during API call: $e');
     }
+    //
   }
 
   Future<void> addBillApiCall(String idcart, int payment) async {
@@ -118,6 +150,16 @@ class _MyCartState extends State<MyCart> {
     }
   }
 
+  void updateTotalAmount() {
+    totalAmount = 0;
+    for (int i = 0; i < products.length; i++) {
+      if (selectedProducts[i]) {
+        totalAmount += (products[i].productId?.product?.price)! *
+            (products[i].quantity ?? 0);
+      }
+    }
+  }
+
   void _showProductDetailsModal(BuildContext context, ListCart product) {
     showModalBottomSheet(
       context: context,
@@ -158,7 +200,7 @@ class _MyCartState extends State<MyCart> {
                           Text('kính cỡ: ${product.productId?.sizeId?.name}'),
                           Text('Màu sắc: ${product.productId?.colorId?.name}'),
                           Text(
-                              'Đơn giá: đ${product.productId?.product?.price}'),
+                              'Đơn giá: ${NumberFormat.decimalPattern().format( product.productId?.product?.price)} đ'),
                           Text('Số lượng: ${product.quantity}'),
                         ],
                       )
@@ -197,14 +239,18 @@ class _MyCartState extends State<MyCart> {
                         if (product.sId != null) {
                           if (isVnPaySelected) {
                             // Xử lý thanh toán VNPAY
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PayScreen(
-                                  productId: product.sId!,title: '',totalAmount: (product.productId?.product?.price)! * (product.quantity ?? 0),
-                                ),
-                              ),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => PayScreen(
+                            //       productId: product.sId!,
+                            //       title: '',
+                            //       totalAmount:
+                            //           (product.productId?.product?.price)! *
+                            //               (product.quantity ?? 0),
+                            //     ),
+                            //   ),
+                            // );
                             print('thanh toán vnpay: ${product!.sId}');
                           } else {
                             // Xử lý thanh toán khác
@@ -237,10 +283,159 @@ class _MyCartState extends State<MyCart> {
     );
   }
 
+  void _showSelectedProductsModal() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return SingleChildScrollView(
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    for (int i = 0; i < products.length; i++)
+                      if (selectedProducts[i])
+                        _buildProductDetailsWidget(products[i]),
+                    Container(
+                      width: double.infinity,
+                      child: DropdownButton<String>(
+                        hint: Text('phương thức thanh toán'),
+                        value: selectedPaymentMethod.isNotEmpty
+                            ? selectedPaymentMethod
+                            : null,
+                        onChanged: (String? newPaymentMethod) {
+                          setState(() {
+                            selectedPaymentMethod = newPaymentMethod!;
+                            isVnPaySelected =
+                                selectedPaymentMethod == 'Thanh toán VNPAY';
+                          });
+                        },
+                        items: paymentMethods.map((String paymentMethod) {
+                          return DropdownMenuItem<String>(
+                            value: paymentMethod,
+                            child: Text(paymentMethod),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Tổng tiền: đ$totalAmount',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            print('Tổng tiền: $totalAmount');
+                            print(
+                                'phương thức tt đã chọn: $selectedPaymentMethod');
+
+                            if (isVnPaySelected) {
+                              List<String> selectedCartIds =
+                                  getSelectedCartIds();
+                              print(
+                                  'những sản phẩm được chọn: $selectedCartIds');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PayScreen(
+                                      // productId: product.sId!,
+                                      userid: userid,
+                                      idcart: selectedCartIds,
+                                      title: '',
+                                      totalAmount: totalAmount),
+                                ),
+                              );
+                              print('userid là: $userid');
+                              print('selectedCartIds là: $selectedCartIds');
+                              print('totalAmount là: $totalAmount');
+                            } else {
+                              // Xử lý thanh toán khác
+                              // addBillApiCall(product.sId!, 2);
+                            }
+                          },
+                          child: const Text(
+                            'Thanh toán',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            primary: const Color(0xFF6342E8),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildProductDetailsWidget(ListCart product) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 5),
+      width: double.infinity,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.only(right: 10),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    product.productId?.product?.image?.elementAt(0) ?? "",
+                    height: 70,
+                    width: 70,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.productId?.product?.name ?? "Unknown",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 10,
+                        color: Color(0xff6342E8),
+                      ),
+                    ),
+                    Text(
+                        '${product.productId?.sizeId?.name}/${product.productId?.colorId?.name}'),
+                    Text('Số lượng: ${product.quantity}'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     fetchProducts();
+    selectedProducts = List.generate(products.length, (index) => false);
+    yourFunctionToProcessSelectedCarts();
   }
 
   void increaseQuantity(int quantity, int maxQuantity) {
@@ -257,6 +452,25 @@ class _MyCartState extends State<MyCart> {
         quantity--;
       });
     }
+  }
+
+  List<String> getSelectedCartIds() {
+    List<String> selectedCartIds = [];
+    for (int i = 0; i < selectedProducts.length; i++) {
+      if (selectedProducts[i]) {
+        String idcartselect = "${products[i].sId}";
+        selectedCartIds.add(idcartselect ?? '');
+      }
+    }
+    return selectedCartIds;
+  }
+
+  void yourFunctionToProcessSelectedCarts() {
+    updateTotalAmount();
+    List<String> selectedCartIds = getSelectedCartIds();
+    // Tiếp tục xử lý danh sách selectedCartIds theo nhu cầu của bạn
+    print('Selected Cart IDs: $selectedCartIds');
+    // Gọi API hoặc thực hiện các công việc khác với danh sách đã chọn
   }
 
   @override
@@ -316,16 +530,32 @@ class _MyCartState extends State<MyCart> {
                               Row(
                                 children: [
                                   Expanded(
+                                    flex: 1,
+                                    child: Checkbox(
+                                      value: selectedProducts[index],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedProducts[index] = value!;
+                                          yourFunctionToProcessSelectedCarts();
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Expanded(
                                     flex: 4,
                                     child: Container(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Image.network(
-                                        product.productId?.product?.image
-                                                ?.elementAt(0) ??
-                                            "",
-                                        height: 200,
-                                        width: 180,
-                                        fit: BoxFit.cover,
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 10, 10, 10),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.network(
+                                          product.productId?.product?.image
+                                                  ?.elementAt(0) ??
+                                              "",
+                                          height: 200,
+                                          width: 180,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -392,6 +622,22 @@ class _MyCartState extends State<MyCart> {
                                           Expanded(
                                             flex: 3,
                                             child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  'Số lượng: ${product.quantity! ?? ''}',
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 3,
+                                            child: Row(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               mainAxisAlignment:
@@ -399,7 +645,7 @@ class _MyCartState extends State<MyCart> {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  '\đ${product.productId?.product?.price ?? ''}',
+                                                  '${NumberFormat.decimalPattern().format( product.productId?.product?.price ?? '')} đ',
                                                   style: const TextStyle(
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.bold,
@@ -448,6 +694,42 @@ class _MyCartState extends State<MyCart> {
                   }
                   return null;
                 },
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(20),
+              color: Colors.white,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Tổng tiền: ${NumberFormat.decimalPattern().format(totalAmount)} đ',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Xử lý khi nút Mua Hàng được nhấn
+                      print('Tổng tiền: ${NumberFormat.decimalPattern().format(totalAmount)} đ');
+                      _showSelectedProductsModal();
+                    },
+                    child: const Text(
+                      'Mua Hàng',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      primary: const Color(0xFF6342E8),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

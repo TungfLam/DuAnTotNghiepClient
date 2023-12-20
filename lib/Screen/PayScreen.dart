@@ -1,4 +1,3 @@
-
 import 'package:appclient/models/productCartModel.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +6,16 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class PayScreen extends StatefulWidget {
-  final String productId;
   final int totalAmount;
-  const PayScreen({Key? key, required this.productId, required String title,required this.totalAmount}) : super(key: key);
+  final List<String> idcart;
+  final String userid;
+  const PayScreen(
+      {Key? key,
+      required String title,
+      required this.totalAmount,
+      required this.idcart,
+      required this.userid})
+      : super(key: key);
 
   @override
   State<PayScreen> createState() => _PayScreenState();
@@ -19,32 +25,30 @@ class _PayScreenState extends State<PayScreen> {
   late final WebViewController _controller;
   late Future<void> _createPaymentFuture;
   String _uriPay = '';
-  
 
   Future<void> createPayment() async {
     // const apiUrl = '$BASE_API/order/create_payment_url/$idcart';
-    final apiUrl = 'https://adadas.onrender.com/order/create_payment_url/${widget.productId}';
+    final apiUrl =
+        'https://adadas.onrender.com/order/create_payment_url/${widget.userid}';
     final requestData = {
+      "idCart": widget.idcart,
       "amount": widget.totalAmount,
       "language": "vi"
-      
     };
     final headers = {
       'Content-Type': 'application/json',
-      'Cookie': 'connect.sid=s%3A3hNpXbYJMrNPbnnjAl2Ep55ls4e3KN32.GTs8EHnEKqKK3SliELQ58JLAurSd1f0nWCtelkZFuBY'
+      'Cookie':
+          'connect.sid=s%3AGOomxkPMZ7_8pNTgL7RxMaHQHJ93Vli8.v9IC4cc1ExSIjV3tZTjQkwF1%2Bz83TynXg5Q6qgRoI%2FE'
     };
 
     try {
-      
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: headers,
         body: jsonEncode(requestData),
       );
 
-      
       if (response.statusCode == 200) {
-        
         final responseData = jsonDecode(response.body);
         final vnpUrl = responseData['vnpUrl'];
 
@@ -62,12 +66,10 @@ class _PayScreenState extends State<PayScreen> {
         }
         print('API Response: $responseData');
       } else {
-        
         print('API Request failed with status: ${response.statusCode}');
         print('Response body: ${response.body}');
       }
     } catch (error) {
-      
       print('Error during API call: $error');
     }
   }
@@ -75,8 +77,9 @@ class _PayScreenState extends State<PayScreen> {
   @override
   void initState() {
     super.initState();
-    print('ProductId from MyCart: ${widget.productId}');
+    // print('ProductId from MyCart: ${widget.productId}');
     print('tổng tiền: ${widget.totalAmount}');
+    print('id cart: ${widget.idcart}');
     _createPaymentFuture = createPayment();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -87,7 +90,20 @@ class _PayScreenState extends State<PayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('Thanh toán')),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+            // Xử lý khi người dùng nhấn nút back
+          },
+        ),
+        title: const Text(
+          'Thanh toán',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        actions: const [],
       ),
       body: FutureBuilder(
         future: _createPaymentFuture,
