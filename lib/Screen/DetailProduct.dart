@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import 'package:appclient/models/productFvoriteModel.dart';
 import 'package:appclient/models/productModel.dart';
 import 'package:appclient/models/productSizeColor.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailProduct extends StatefulWidget {
   const DetailProduct(
@@ -120,7 +121,7 @@ class _DetailProductState extends State<DetailProduct> {
                               widget.product?.name ?? 'Unknown Product Name',
                             ),
                             Text(
-                              '\đ${widget.product?.price ?? 0.00}',
+                              '${NumberFormat.decimalPattern().format( widget.product?.price ?? 0.00)} đ',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -512,7 +513,7 @@ class _DetailProductState extends State<DetailProduct> {
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              '\$${widget.product?.price ?? 0.00}',
+                              '${NumberFormat.decimalPattern().format( widget.product?.price ?? 0.00)} đ',
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -617,18 +618,28 @@ class _DetailProductState extends State<DetailProduct> {
           ),
           Positioned(
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.fromLTRB(20, 30, 20, 20),
               child: SizedBox(
                 width: double.infinity,
-                height: 48,
+                height: 50,
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    _showSizeColorModal(context);
+                  onPressed: () async {
+                    final SharedPreferences prefs = await SharedPreferences.getInstance();
+                    final bool? isLogin = prefs.getBool("isLogin");
+                    final String? idUser = prefs.getString("idUser");
+                    if (isLogin != null) {
+                      if (isLogin == true) {
+                        print("người dùng đã login");
+                        _showSizeColorModal(context);
+                      } else if (isLogin == false) {
+                        Navigator.pushNamed(context, '/login');
+                      }
+                    }
                   },
                   icon: const Icon(
                     Icons.shopping_cart,
                     color: Colors.white,
-                  ),
+                  ), // Icon tùy chọn
                   label: const Text(
                     'Thêm vào giỏ hàng',
                     style: TextStyle(
@@ -637,11 +648,12 @@ class _DetailProductState extends State<DetailProduct> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6342E8),
+                    backgroundColor:
+                    const Color(0xFF6342E8), // Đặt màu nền
                   ),
                 ),
               ),
-            ),
+            )
           )
         ],
       ),
