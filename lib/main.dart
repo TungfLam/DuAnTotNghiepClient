@@ -52,7 +52,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
+
       initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
+
 
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
@@ -65,6 +67,7 @@ class MyApp extends StatelessWidget {
         '/find': (context) => const Find(title: ''),
         '/favorite': (context) => const Favorite(title: ''),
         '/detaiproduct': (context) => const DetailProduct(title: ''),
+
 
         Otp_Screen.nameOtp : (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS : (context) => const LoginSMS(title: ""),
