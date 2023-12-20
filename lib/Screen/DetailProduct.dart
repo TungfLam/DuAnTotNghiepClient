@@ -1,5 +1,10 @@
 import 'dart:convert';
 
+import 'package:appclient/Screen/AllComment.dart';
+import 'package:appclient/Widgets/buttomCustom.dart';
+import 'package:appclient/Widgets/itemComment.dart';
+import 'package:appclient/Widgets/showStar.dart';
+import 'package:appclient/models/comment.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 
@@ -29,6 +34,7 @@ class _DetailProductState extends State<DetailProduct> {
   List<ProductListSize> productList = [];
   List<String> sizeList = [];
   List<String> colorList = [];
+  List arrComment = [];
   int maxQuantity = 0;
   int quantity = 0;
   int _selectedImageIndex = 0;
@@ -40,7 +46,12 @@ class _DetailProductState extends State<DetailProduct> {
   void initState() {
     super.initState();
     fetchProductList();
-    
+    // arrComment.add(Comment(sId: "6558d4bcc1ab8c3f98265386" , productId: "65785ed034b7645148ab9f0a",
+    //   userId: "6524318746e12608b3558d74",comment: "em dep lam2",rating: 4 ,date: "123456" , images: ["$BASE_API/avatas/6524318746e12608b3558d74_images.jpg" , "$BASE_API/avatas/6524318746e12608b3558d74_images.jpg" ]));
+    // setState(() {
+    //
+    // });
+      getComment();
   }
 
   void incrementQuantity() {
@@ -112,7 +123,7 @@ class _DetailProductState extends State<DetailProduct> {
                             ),
                             Text(
                               '${NumberFormat.decimalPattern().format( widget.product?.price ?? 0.00)} đ',
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold),
@@ -128,9 +139,7 @@ class _DetailProductState extends State<DetailProduct> {
                   height: 35,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: colorList
-                        .toSet()
-                        .length, // Sử dụng toSet() để loại bỏ các màu sắc trùng lặp
+                    itemCount: colorList.toSet().length, // Sử dụng toSet() để loại bỏ các màu sắc trùng lặp
                     itemBuilder: (context, index) {
                       String uniqueColor = colorList.toSet().elementAt(index);
                       // Lấy màu sắc duy nhất từ danh sách không trùng lặp
@@ -217,7 +226,6 @@ class _DetailProductState extends State<DetailProduct> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Số lượng còn lại: $maxQuantity'),
                     Text("Số lượng"),
                     Container(
                       height: 40,
@@ -383,8 +391,7 @@ class _DetailProductState extends State<DetailProduct> {
         ),
         headers: {'Content-Type': 'application/json'},
       );
-      print(widget.product?.sId);
-      // Xử lý dữ liệu response ở đây
+
       final List<dynamic> data = json.decode(response)['productListSize'];
 
       if (mounted) {
@@ -393,12 +400,14 @@ class _DetailProductState extends State<DetailProduct> {
               data.map((item) => ProductListSize.fromJson(item)).toList();
         });
       }
+
       sizeList.clear();
       colorList.clear();
+
       productList.forEach((productListSize) {
-        print('Quantity: ${productListSize.quantity}');
-        print('Quantity: ${productListSize.sizeId?.name}');
-        print('idsizecolor : ${productListSize.sId}');
+        // print('Quantity: ${productListSize.quantity}');
+        // print('Quantity: ${productListSize.sizeId?.name}');
+        // print('idsizecolor : ${productListSize.sId}');
         sizeList.add('${productListSize.sizeId?.name}');
         colorList.add('${productListSize.colorId?.name}');
         if (_selectedSize == productListSize.sizeId?.name &&
@@ -439,183 +448,152 @@ class _DetailProductState extends State<DetailProduct> {
     }
   }
 
+  Future<void> getComment() async {
+    final response = await http.get(
+      Uri.parse("$BASE_API/api/comment/65785ed034b7645148ab9f0a?count=4")
+    );
+
+    if(response.statusCode == 200){
+      final data = await json.decode(response.body);
+      arrComment = data;
+      print(arrComment[0]['_id']);
+      setState(() {
+
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
+        alignment: Alignment.bottomCenter,
         children: <Widget>[
-          Column(
-            children: <Widget>[
-              Expanded(
-                flex: 7,
-                child: Container(
-                  color: Color.fromARGB(255, 198, 198, 198),
-                  child: PageView.builder(
-                    itemCount: widget.product?.image?.length ?? 0,
-                    onPageChanged: (index) {
-                      setState(() {
-                        _selectedImageIndex = index;
-                      });
-                    },
-                    itemBuilder: (context, index) {
-                      return Image.network(
-                        widget.product?.image?.elementAt(index) ?? '',
-                        fit: BoxFit.cover,
-                      );
-                    },
+          SizedBox(
+            width: double.infinity,
+            height: double.infinity,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    height: 400,
+                    color: const Color.fromARGB(255, 198, 198, 198),
+                    child: PageView.builder(
+                      itemCount: widget.product?.image?.length ?? 0,
+                      onPageChanged: (index){
+                        setState(() {
+                          _selectedImageIndex = index;
+                        });
+                      },
+                      itemBuilder: (context , index){
+                        return Image.network(
+                          widget.product?.image?.elementAt(index) ?? "",
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ),
-              Expanded(
-                flex: 5,
-                child: SingleChildScrollView(
-                  child: Container(
-                    padding: EdgeInsets.all(20),
+
+                  Container(
+                    padding: const EdgeInsets.all(20),
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       // borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 7,
-                                child: Text(
-                                  widget.product?.name ??
-                                      'Unknown Product Name',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Text(
-                                  '${NumberFormat.decimalPattern().format( widget.product?.price ?? 0.00)} đ',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              )
-                            ],
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              widget.product?.name ??
+                                  'Unknown Product Name',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '${NumberFormat.decimalPattern().format( widget.product?.price ?? 0.00)} đ',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          ],
                         ),
+
+                        showStar(countStar: 5),
+
                         Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                                size: 15,
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                                size: 15,
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                                size: 15,
-                              ),
-                              Icon(
-                                Icons.star_half,
-                                color: Colors.yellow,
-                                size: 15,
-                              ),
-                              Icon(
-                                Icons.star_border_outlined,
-                                color: Colors.yellow,
-                                size: 15,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          //descripsion
                           width: double.infinity,
-                          padding: EdgeInsets.only(top: 10),
+                          padding: const EdgeInsets.only(top: 16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Descripsion: ",
+                              const Text("Descripsion: ",
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
+                                    fontSize: 17, fontWeight: FontWeight.bold),
                               ),
-                              Text(
-                                widget.product?.description ??
-                                    'Unknown Product Name',
-                                style:
-                                    TextStyle(fontSize: 14, color: Colors.grey),
+                              Text(widget.product?.description ??
+                                  'Unknown Product Name',
+                                style: const TextStyle(fontSize: 15, color: Colors.grey),
                               )
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                  flex: 2,
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(20, 30, 20, 20),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton.icon(
-                        onPressed: () async {
-                          final SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          final bool? isLogin = prefs.getBool("isLogin");
-                          final String? idUser = prefs.getString("idUser");
-                          if (isLogin != null) {
-                            if (isLogin == true) {
-                              print("người dùng đã login");
-                              _showSizeColorModal(context);
-                            } else if (isLogin == false) {
-                              Navigator.pushNamed(context, '/login');
-                            }
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.shopping_cart,
-                          color: Colors.white,
-                        ), // Icon tùy chọn
-                        label: const Text(
-                          'Thêm vào giỏ hàng',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+
+                        Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.only(top: 8),
+                          alignment: Alignment.centerLeft,
+                          child: const Text(
+                            "Đáng giá",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold
+                            ),
+                          )
+                        ),
+                        
+                        Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.only(top: 8),
+                          child: Column(
+                            children: arrComment.map((e) => itemComment(item: e)).toList(),
                           ),
                         ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color(0xFF6342E8), // Đặt màu nền
+
+                        const SizedBox(height: 8),
+                        InkWell(
+                          onTap: (){
+                            Navigator.pushNamed(context, AllComment.nameComment);
+                          },
+                          child: const Text(
+                            "Xem tất cả bình luận",
+                            style: TextStyle(
+                              fontSize: 18
+                            ),
+                          )
                         ),
-                      ),
-                    ),
-                  ))
-            ],
+                        const SizedBox(height: 56)
+                      ]
+                    )
+                  ),
+                ],
+              ),
+            ),
           ),
           Positioned(
-            top: 50,
-            left: 20,
+            top: 40,
+            left: 16,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,
               ),
               child: IconButton(
-                icon: Icon(Icons.arrow_back),
+                icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   // Xử lý khi nhấn nút back
                   Navigator.pop(context);
@@ -624,21 +602,60 @@ class _DetailProductState extends State<DetailProduct> {
             ),
           ),
           Positioned(
-            top: 50,
-            right: 20,
+            top: 40,
+            right: 16,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,
               ),
               child: IconButton(
-                icon: Icon(Icons.favorite_border_outlined),
+                icon: const Icon(Icons.favorite_border_outlined),
                 onPressed: () {
                   // Xử lý khi nhấn nút favorite
                 },
               ),
             ),
           ),
+          Positioned(
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
+              child: SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    final SharedPreferences prefs = await SharedPreferences.getInstance();
+                    final bool? isLogin = prefs.getBool("isLogin");
+                    final String? idUser = prefs.getString("idUser");
+                    if (isLogin != null) {
+                      if (isLogin == true) {
+                        print("người dùng đã login");
+                        _showSizeColorModal(context);
+                      } else if (isLogin == false) {
+                        Navigator.pushNamed(context, '/login');
+                      }
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.shopping_cart,
+                    color: Colors.white,
+                  ), // Icon tùy chọn
+                  label: const Text(
+                    'Thêm vào giỏ hàng',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                    const Color(0xFF6342E8), // Đặt màu nền
+                  ),
+                ),
+              ),
+            )
+          )
         ],
       ),
     );

@@ -4,12 +4,12 @@ class ApiRes {
   bool? err;
   String? idUser;
   String? role;
-  String? avata;
   String? fullname;
+  String? avata;
   String? phone;
   String? email;
 
-  ApiRes({this.msg,this.err,this.idUser,this.role,this.avata,this.phone,this.email,this.fullname});
+  ApiRes({this.msg, this.err , this.idUser , this.role , this.avata , this.phone , this.email , this.fullname});
 
   ApiRes.fromJson(Map<String, dynamic> json) {
     msg = json['msg'];

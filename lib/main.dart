@@ -1,3 +1,4 @@
+import 'package:appclient/Screen/AllComment.dart';
 import 'package:appclient/Screen/BannerScreen.dart';
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
@@ -51,7 +52,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      initialRoute: '/bill', // Đường dẫn mặc định khi khởi chạy ứng dụng
+
+      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
+
 
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
@@ -64,19 +67,19 @@ class MyApp extends StatelessWidget {
         '/find': (context) => const Find(title: ''),
         '/favorite': (context) => const Favorite(title: ''),
         '/detaiproduct': (context) => const DetailProduct(title: ''),
-        Otp_Screen.nameOtp: (context) => const Otp_Screen(),
-        LoginSMS.nameLoginSMS: (context) => const LoginSMS(title: ""),
-        RegisterScreen2.nameRegiterScree2: (context) =>
-            const RegisterScreen2(title: ""),
-        '/pay': (context) => const PayScreen(
-              userid: '',
-              idcart: [],
-              totalAmount: 0,
-              title: '',
-            ),
+
+
+        Otp_Screen.nameOtp : (context) => const Otp_Screen(),
+        LoginSMS.nameLoginSMS : (context) => const LoginSMS(title: ""),
+        RegisterScreen2.nameRegiterScree2 : (context) => const RegisterScreen2(title: ""),
+
+        AllComment.nameComment : (context) => AllComment(),
+        '/pay': (context) => const PayScreen(userid: '',  idcart: [], totalAmount: 0, title: '',),
         '/notification': (context) => const NotificationScreen(),
         '/location': (context) => const LocationScreen(),
-        '/profile': (context) => const profileScreen(),
+
+         '/profile': (context) => const profileScreen(),
+        // Đăng ký đường dẫn cho màn hình MyCart
       },
     );
   }
