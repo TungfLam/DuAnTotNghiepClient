@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import 'package:appclient/models/productFvoriteModel.dart';
 import 'package:appclient/models/productModel.dart';
 import 'package:appclient/models/productSizeColor.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailProduct extends StatefulWidget {
@@ -122,7 +123,7 @@ class _DetailProductState extends State<DetailProduct> {
                             ),
                             Text(
                               '${NumberFormat.decimalPattern().format( widget.product?.price ?? 0.00)} đ',
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold),
@@ -618,7 +619,7 @@ class _DetailProductState extends State<DetailProduct> {
           ),
           Positioned(
             child: Container(
-              padding: EdgeInsets.fromLTRB(20, 30, 20, 20),
+              padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
               child: SizedBox(
                 width: double.infinity,
                 height: 50,
