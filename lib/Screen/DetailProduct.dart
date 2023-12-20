@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:appclient/Screen/AllComment.dart';
 import 'package:appclient/Widgets/buttomCustom.dart';
 import 'package:appclient/Widgets/itemComment.dart';
+import 'package:appclient/Widgets/showStar.dart';
 import 'package:appclient/models/comment.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
@@ -446,7 +448,7 @@ class _DetailProductState extends State<DetailProduct> {
 
   Future<void> getComment() async {
     final response = await http.get(
-      Uri.parse("$BASE_API/api/comment/65785ed034b7645148ab9f0a")
+      Uri.parse("$BASE_API/api/comment/65785ed034b7645148ab9f0a?count=4")
     );
 
     if(response.statusCode == 200){
@@ -506,7 +508,7 @@ class _DetailProductState extends State<DetailProduct> {
                                   'Unknown Product Name',
                               style: const TextStyle(
                                   color: Colors.black,
-                                  fontSize: 15,
+                                  fontSize: 17,
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
@@ -519,36 +521,7 @@ class _DetailProductState extends State<DetailProduct> {
                           ],
                         ),
 
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                              size: 15,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                              size: 15,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                              size: 15,
-                            ),
-                            Icon(
-                              Icons.star_half,
-                              color: Colors.yellow,
-                              size: 15,
-                            ),
-                            Icon(
-                              Icons.star_border_outlined,
-                              color: Colors.yellow,
-                              size: 15,
-                            ),
-                          ],
-                        ),
+                        showStar(countStar: 5),
 
                         Container(
                           width: double.infinity,
@@ -558,11 +531,11 @@ class _DetailProductState extends State<DetailProduct> {
                             children: [
                               const Text("Descripsion: ",
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
+                                    fontSize: 17, fontWeight: FontWeight.bold),
                               ),
                               Text(widget.product?.description ??
                                   'Unknown Product Name',
-                                style: const TextStyle(fontSize: 14, color: Colors.grey),
+                                style: const TextStyle(fontSize: 15, color: Colors.grey),
                               )
                             ],
                           ),
@@ -587,8 +560,21 @@ class _DetailProductState extends State<DetailProduct> {
                           child: Column(
                             children: arrComment.map((e) => itemComment(item: e)).toList(),
                           ),
-                        )
+                        ),
 
+                        const SizedBox(height: 8),
+                        InkWell(
+                          onTap: (){
+                            Navigator.pushNamed(context, AllComment.nameComment);
+                          },
+                          child: const Text(
+                            "Xem tất cả bình luận",
+                            style: TextStyle(
+                              fontSize: 18
+                            ),
+                          )
+                        ),
+                        const SizedBox(height: 56)
                       ]
                     )
                   ),

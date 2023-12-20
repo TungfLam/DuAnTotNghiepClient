@@ -1,3 +1,4 @@
+import 'package:appclient/Screen/AllComment.dart';
 import 'package:appclient/Screen/BannerScreen.dart';
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
         Otp_Screen.nameOtp : (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS : (context) => const LoginSMS(title: ""),
         RegisterScreen2.nameRegiterScree2 : (context) => const RegisterScreen2(title: ""),
+        AllComment.nameComment : (context) => AllComment(),
         '/pay': (context) => const PayScreen(productId: '', title: '', totalAmount: 0,),
         // Đăng ký đường dẫn cho màn hình MyCart
       },
