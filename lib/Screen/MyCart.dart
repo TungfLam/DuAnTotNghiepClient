@@ -41,9 +41,9 @@ class _MyCartState extends State<MyCart> {
       } else if (isLogin == false) {
         Navigator.pushNamed(context, '/login');
       }
-    }else  {
-        Navigator.pushNamed(context, '/login');
-      }
+    } else {
+      Navigator.pushNamed(context, '/login');
+    }
 
     if (idUser != null) {
       print("user id là: $idUser");
@@ -188,11 +188,15 @@ class _MyCartState extends State<MyCart> {
                       Container(
                         padding: const EdgeInsets.all(10),
                         child: Image.network(
-                          product.productId?.product?.image?.elementAt(0) ?? "",
-                          height: 100,
-                          width: 100,
-                          fit: BoxFit.cover,
-                        ),
+                            product.productId?.product?.image?.elementAt(0) ??
+                                "",
+                            height: 100,
+                            width: 100,
+                            fit: BoxFit.cover, errorBuilder:
+                                (BuildContext context, Object error,
+                                    StackTrace? stackTrace) {
+                          return Center(child: const Icon(Icons.image));
+                        }),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,7 +204,7 @@ class _MyCartState extends State<MyCart> {
                           Text('kính cỡ: ${product.productId?.sizeId?.name}'),
                           Text('Màu sắc: ${product.productId?.colorId?.name}'),
                           Text(
-                              'Đơn giá: ${NumberFormat.decimalPattern().format( product.productId?.product?.price)} đ'),
+                              'Đơn giá: ${NumberFormat.decimalPattern().format(product.productId?.product?.price)} đ'),
                           Text('Số lượng: ${product.quantity}'),
                         ],
                       )
@@ -645,7 +649,7 @@ class _MyCartState extends State<MyCart> {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  '${NumberFormat.decimalPattern().format( product.productId?.product?.price ?? '')} đ',
+                                                  '${NumberFormat.decimalPattern().format(product.productId?.product?.price ?? '')} đ',
                                                   style: const TextStyle(
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.bold,
@@ -717,7 +721,8 @@ class _MyCartState extends State<MyCart> {
                   ElevatedButton(
                     onPressed: () {
                       // Xử lý khi nút Mua Hàng được nhấn
-                      print('Tổng tiền: ${NumberFormat.decimalPattern().format(totalAmount)} đ');
+                      print(
+                          'Tổng tiền: ${NumberFormat.decimalPattern().format(totalAmount)} đ');
                       _showSelectedProductsModal();
                     },
                     child: const Text(

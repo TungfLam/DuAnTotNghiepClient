@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:appclient/models/productBillModel.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class Itembill extends StatelessWidget {
   const Itembill({
@@ -32,6 +35,38 @@ class Itembill extends StatelessWidget {
         return 'Thanh toán khi nhận hàng';
       } else {
         return 'N/A';
+      }
+    }
+
+    Future<void> updateBillStatus(String billId) async {
+      final String apiUrl = 'https://adadas.onrender.com/api/bill/$billId';
+
+      final Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'Cookie':
+            'connect.sid=s%3AXYx_CjlbCsGDQMrBZU-h_tWtB-2NHm1k.2G%2FjjUbfOR8uzYNo%2FD3NfTvFv3WWzHHu4a4f0kjEg%2B8',
+      };
+
+      final Map<String, dynamic> data = {
+        "status": 9,
+      };
+
+      try {
+        final http.Response response = await http.put(
+          Uri.parse(apiUrl),
+          headers: headers,
+          body: jsonEncode(data),
+        );
+
+        if (response.statusCode == 200) {
+          print('Update thành công');
+        } else {
+          print(
+              'Update không thành công. Mã trạng thái: ${response.statusCode}');
+          print('Nội dung phản hồi: ${response.body}');
+        }
+      } catch (error) {
+        print('Lỗi khi gọi API: $error');
       }
     }
 
@@ -185,7 +220,12 @@ class Itembill extends StatelessWidget {
                       padding: EdgeInsets.only(top: 30),
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          if (billItem.sId != null) {
+                            updateBillStatus(billItem.sId!);
+                          }
+                          
+                        },
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
                               Color(0xFF6342E8)),

@@ -51,7 +51,7 @@ class _DetailProductState extends State<DetailProduct> {
     // setState(() {
     //
     // });
-      getComment();
+    getComment();
   }
 
   void incrementQuantity() {
@@ -106,9 +106,12 @@ class _DetailProductState extends State<DetailProduct> {
                           width: 40,
                           height: 80,
                           child: Image.network(
-                            widget.product?.image?.elementAt(0) ?? '',
-                            fit: BoxFit.cover,
-                          ),
+                              widget.product?.image?.elementAt(0) ?? '',
+                              fit: BoxFit.cover, errorBuilder:
+                                  (BuildContext context, Object error,
+                                      StackTrace? stackTrace) {
+                            return Center(child: const Icon(Icons.image));
+                          }),
                         )),
                     Expanded(
                       flex: 6,
@@ -122,7 +125,7 @@ class _DetailProductState extends State<DetailProduct> {
                               widget.product?.name ?? 'Unknown Product Name',
                             ),
                             Text(
-                              '${NumberFormat.decimalPattern().format( widget.product?.price ?? 0.00)} đ',
+                              '${NumberFormat.decimalPattern().format(widget.product?.price ?? 0.00)} đ',
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -139,7 +142,9 @@ class _DetailProductState extends State<DetailProduct> {
                   height: 35,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: colorList.toSet().length, // Sử dụng toSet() để loại bỏ các màu sắc trùng lặp
+                    itemCount: colorList
+                        .toSet()
+                        .length, // Sử dụng toSet() để loại bỏ các màu sắc trùng lặp
                     itemBuilder: (context, index) {
                       String uniqueColor = colorList.toSet().elementAt(index);
                       // Lấy màu sắc duy nhất từ danh sách không trùng lặp
@@ -450,16 +455,13 @@ class _DetailProductState extends State<DetailProduct> {
 
   Future<void> getComment() async {
     final response = await http.get(
-      Uri.parse("$BASE_API/api/comment/65785ed034b7645148ab9f0a?count=4")
-    );
+        Uri.parse("$BASE_API/api/comment/65785ed034b7645148ab9f0a?count=4"));
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       final data = await json.decode(response.body);
       arrComment = data;
       print(arrComment[0]['_id']);
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
 
@@ -480,12 +482,12 @@ class _DetailProductState extends State<DetailProduct> {
                     color: const Color.fromARGB(255, 198, 198, 198),
                     child: PageView.builder(
                       itemCount: widget.product?.image?.length ?? 0,
-                      onPageChanged: (index){
+                      onPageChanged: (index) {
                         setState(() {
                           _selectedImageIndex = index;
                         });
                       },
-                      itemBuilder: (context , index){
+                      itemBuilder: (context, index) {
                         return Image.network(
                           widget.product?.image?.elementAt(index) ?? "",
                           fit: BoxFit.cover,
@@ -493,23 +495,20 @@ class _DetailProductState extends State<DetailProduct> {
                       },
                     ),
                   ),
-
                   Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      // borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
-                    ),
-                    child: Column(
-                      children: [
+                      padding: const EdgeInsets.all(20),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        // borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
+                      ),
+                      child: Column(children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
                               flex: 7,
                               child: Text(
-                                widget.product?.name ??
-                                    'Unknown Product Name',
+                                widget.product?.name ?? 'Unknown Product Name',
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 17,
@@ -519,7 +518,7 @@ class _DetailProductState extends State<DetailProduct> {
                             Expanded(
                               flex: 3,
                               child: Text(
-                                '${NumberFormat.decimalPattern().format( widget.product?.price ?? 0.00)} đ',
+                                '${NumberFormat.decimalPattern().format(widget.product?.price ?? 0.00)} đ',
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 18,
@@ -528,64 +527,57 @@ class _DetailProductState extends State<DetailProduct> {
                             )
                           ],
                         ),
-
                         showStar(countStar: 5),
-
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.only(top: 16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text("Descripsion: ",
+                              const Text(
+                                "Descripsion: ",
                                 style: TextStyle(
                                     fontSize: 17, fontWeight: FontWeight.bold),
                               ),
-                              Text(widget.product?.description ??
-                                  'Unknown Product Name',
-                                style: const TextStyle(fontSize: 15, color: Colors.grey),
+                              Text(
+                                widget.product?.description ??
+                                    'Unknown Product Name',
+                                style: const TextStyle(
+                                    fontSize: 15, color: Colors.grey),
                               )
                             ],
                           ),
                         ),
-
                         Container(
-                          width: double.infinity,
-                          margin: const EdgeInsets.only(top: 8),
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            "Đáng giá",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold
-                            ),
-                          )
-                        ),
-                        
+                            width: double.infinity,
+                            margin: const EdgeInsets.only(top: 8),
+                            alignment: Alignment.centerLeft,
+                            child: const Text(
+                              "Đáng giá",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            )),
                         Container(
                           width: double.infinity,
                           margin: const EdgeInsets.only(top: 8),
                           child: Column(
-                            children: arrComment.map((e) => itemComment(item: e)).toList(),
+                            children: arrComment
+                                .map((e) => itemComment(item: e))
+                                .toList(),
                           ),
                         ),
-
                         const SizedBox(height: 8),
                         InkWell(
-                          onTap: (){
-                            Navigator.pushNamed(context, AllComment.nameComment);
-                          },
-                          child: const Text(
-                            "Xem tất cả bình luận",
-                            style: TextStyle(
-                              fontSize: 18
-                            ),
-                          )
-                        ),
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, AllComment.nameComment);
+                            },
+                            child: const Text(
+                              "Xem tất cả bình luận",
+                              style: TextStyle(fontSize: 18),
+                            )),
                         const SizedBox(height: 56)
-                      ]
-                    )
-                  ),
+                      ])),
                 ],
               ),
             ),
@@ -624,44 +616,43 @@ class _DetailProductState extends State<DetailProduct> {
             ),
           ),
           Positioned(
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
-              child: SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton.icon(
-                  onPressed: () async {
-                    final SharedPreferences prefs = await SharedPreferences.getInstance();
-                    final bool? isLogin = prefs.getBool("isLogin");
-                    final String? idUser = prefs.getString("idUser");
-                    if (isLogin != null) {
-                      if (isLogin == true) {
-                        print("người dùng đã login");
-                        _showSizeColorModal(context);
-                      } else if (isLogin == false) {
-                        Navigator.pushNamed(context, '/login');
-                      }
+              child: Container(
+            padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
+            child: SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton.icon(
+                onPressed: () async {
+                  final SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  final bool? isLogin = prefs.getBool("isLogin");
+                  final String? idUser = prefs.getString("idUser");
+                  if (isLogin != null) {
+                    if (isLogin == true) {
+                      print("người dùng đã login");
+                      _showSizeColorModal(context);
+                    } else if (isLogin == false) {
+                      Navigator.pushNamed(context, '/login');
                     }
-                  },
-                  icon: const Icon(
-                    Icons.shopping_cart,
+                  }
+                },
+                icon: const Icon(
+                  Icons.shopping_cart,
+                  color: Colors.white,
+                ), // Icon tùy chọn
+                label: const Text(
+                  'Thêm vào giỏ hàng',
+                  style: TextStyle(
                     color: Colors.white,
-                  ), // Icon tùy chọn
-                  label: const Text(
-                    'Thêm vào giỏ hàng',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                    const Color(0xFF6342E8), // Đặt màu nền
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF6342E8), // Đặt màu nền
+                ),
               ),
-            )
-          )
+            ),
+          ))
         ],
       ),
     );

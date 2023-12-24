@@ -72,7 +72,7 @@ class _DetailFavariteProductState extends State<DetailFavariteProduct> {
     });
   }
 
- void _showSizeColorModal(BuildContext context) {
+  void _showSizeColorModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -93,9 +93,14 @@ class _DetailFavariteProductState extends State<DetailFavariteProduct> {
                           width: 40,
                           height: 80,
                           child: Image.network(
-                            widget.productfvr?.productId?.image?.elementAt(0) ?? '',
-                            fit: BoxFit.cover,
-                          ),
+                              widget.productfvr?.productId?.image
+                                      ?.elementAt(0) ??
+                                  '',
+                              fit: BoxFit.cover, errorBuilder:
+                                  (BuildContext context, Object error,
+                                      StackTrace? stackTrace) {
+                            return Center(child: const Icon(Icons.image));
+                          }),
                         )),
                     Expanded(
                       flex: 6,
@@ -106,10 +111,11 @@ class _DetailFavariteProductState extends State<DetailFavariteProduct> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              widget.productfvr?.productId?.name ?? 'Unknown Product Name',
+                              widget.productfvr?.productId?.name ??
+                                  'Unknown Product Name',
                             ),
                             Text(
-                              '${NumberFormat.decimalPattern().format( widget.productfvr?.productId?.price ?? 0.00)} đ',
+                              '${NumberFormat.decimalPattern().format(widget.productfvr?.productId?.price ?? 0.00)} đ',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -456,7 +462,8 @@ class _DetailFavariteProductState extends State<DetailFavariteProduct> {
                     },
                     itemBuilder: (context, index) {
                       return Image.network(
-                        widget.productfvr?.productId?.image?.elementAt(index) ?? '',
+                        widget.productfvr?.productId?.image?.elementAt(index) ??
+                            '',
                         fit: BoxFit.cover,
                       );
                     },
@@ -492,7 +499,7 @@ class _DetailFavariteProductState extends State<DetailFavariteProduct> {
                               Expanded(
                                 flex: 3,
                                 child: Text(
-                                  '${NumberFormat.decimalPattern().format( widget.productfvr?.productId?.price ?? 0.00)} đ',
+                                  '${NumberFormat.decimalPattern().format(widget.productfvr?.productId?.price ?? 0.00)} đ',
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 20,

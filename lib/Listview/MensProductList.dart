@@ -28,8 +28,7 @@ class _MensProductListState extends State<MensProductList> {
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(
-      Uri.parse(
-          '$BASE_API/api/products/655ef4523d0e29622dc02c6c/$page'),
+      Uri.parse('$BASE_API/api/products/655ef4523d0e29622dc02c6c/$page'),
       headers: {'Content-Type': 'application/json'},
     ); // Thay thế URL của API sản phẩm
 
@@ -162,17 +161,25 @@ class _MensProductListState extends State<MensProductList> {
                                 children: [
                                   Container(
                                     width: double.infinity,
-                                    
+
                                     child: product.image?.elementAt(1) != null
                                         ? ClipRRect(
-                                          borderRadius: BorderRadius.circular(10.0),
-                                          child: Image.network(
-                                              product.image!.elementAt(0),
-                                              height: 200,
-                                              width: 180,
-                                              fit: BoxFit.cover,
-                                            ),
-                                        )
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            child: Image.network(
+                                                product.image!.elementAt(0),
+                                                height: 200,
+                                                width: 180,
+                                                fit: BoxFit.cover, errorBuilder:
+                                                    (BuildContext context,
+                                                        Object error,
+                                                        StackTrace?
+                                                            stackTrace) {
+                                              return Center(
+                                                  child:
+                                                      const Icon(Icons.image));
+                                            }),
+                                          )
                                         : Placeholder(), // You can use a placeholder or any other widget
                                   ),
                                   Positioned(
@@ -210,7 +217,7 @@ class _MensProductListState extends State<MensProductList> {
                               child: Container(
                                 padding: EdgeInsets.only(bottom: 10),
                                 child: Text(
-                                  '${NumberFormat.decimalPattern().format( product.price ?? 'Unknown Price')} đ',
+                                  '${NumberFormat.decimalPattern().format(product.price ?? 'Unknown Price')} đ',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Color.fromARGB(255, 105, 105, 105),
