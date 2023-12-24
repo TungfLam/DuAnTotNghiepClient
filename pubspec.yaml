@@ -55,6 +55,7 @@ dependencies:
   
   intl: ^0.19.0
   multi_image_picker: ^4.8.01
+  concentric_transition: ^1.0.3
 
 
 dev_dependencies:

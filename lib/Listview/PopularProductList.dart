@@ -29,7 +29,7 @@ class _PopularProductListState extends State<PopularProductList> {
   Future<void> fetchProducts() async {
     final response = await http.get(
       Uri.parse(
-          'https://adadas.onrender.com/api/products/655ef4523d0e29622dc02c6c/$page'),
+          'https://adadas.onrender.com/api/products/$page'),
       headers: {'Content-Type': 'application/json'},
     ); // Thay thế URL của API sản phẩm
 

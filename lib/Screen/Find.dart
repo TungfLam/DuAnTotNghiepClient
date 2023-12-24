@@ -9,6 +9,8 @@ import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 class Find extends StatefulWidget {
   const Find({Key? key, required this.title}) : super(key: key);
   final String title;
@@ -18,18 +20,16 @@ class Find extends StatefulWidget {
 }
 
 class _FindState extends State<Find> {
-  List<productModel> products = []; // Danh sách sản phẩm từ API
+  TextEditingController searchController = TextEditingController();
+  List<productModel> products = [];
   bool isLoadingMore = false;
   int page = 1;
-  String _selectedSortOption = 'Sort Down';
-  String searchText = ''; // Biến để lưu trữ dữ liệu từ TextField
+  String _selectedSortOption = 'Sắp xếp giảm dần';
+  String searchText = '';
 
-  // Hàm để gọi API và cập nhật danh sách sản phẩm
-  Future<void> fetchProducts() async {
+  Future<void> fetchsearchProducts() async {
     final response = await http.get(Uri.parse(
-
-        '$BASE_API/api/products/search?searchValues=$searchText')); // Thay thế URL của API sản phẩm
-
+        'https://adadas.onrender.com/api/products?searchValues=$searchText'));
 
     print(searchText);
 
@@ -37,10 +37,9 @@ class _FindState extends State<Find> {
       try {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
 
-        if (responseData.containsKey('listProducts') &&
-            responseData['listProducts'] is List) {
+        if (responseData.containsKey('data') && responseData['data'] is List) {
           final List<dynamic> productListData =
-              responseData['listProducts'] as List<dynamic>;
+              responseData['data'] as List<dynamic>;
 
           setState(() {
             products = productListData
@@ -48,18 +47,43 @@ class _FindState extends State<Find> {
                 .toList();
           });
         } else {
-          print('Invalid data format');
+          print('Dữ liệu từ API không chứa danh sách sản phẩm.');
         }
       } catch (e) {
-        print('Error parsing JSON: $e');
+        print('Lỗi khi giải mã JSON: $e');
+      }
+    } else {
+      print('Lỗi khi gọi API: ${response.statusCode}');
+    }
+  }
+  
+    Future<void> fetchProducts() async {
+    final response = await http.get(
+      Uri.parse(
+          'https://adadas.onrender.com/api/products/$page'),
+      headers: {'Content-Type': 'application/json'},
+    ); // Thay thế URL của API sản phẩm
+
+    if (response.statusCode == 200) {
+      final List<dynamic>? productData = jsonDecode(response.body);
+      if (productData != null && mounted) {
+        setState(() {
+          products = products +
+              productData.map((item) => productModel.fromJson(item)).toList();
+        });
       }
     }
   }
-
   @override
   void initState() {
     super.initState();
-    // Gọi API khi widget được khởi tạo
+    fetchProducts();
+    searchController.addListener(() {
+      setState(() {
+        searchText = searchController.text;
+      });
+    });
+    
   }
 
   @override
@@ -70,11 +94,10 @@ class _FindState extends State<Find> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
-            // Xử lý khi người dùng nhấn nút back
           },
         ),
         title: const Text(
-          'Find Products',
+          'Tìm kiếm sản phẩm',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
@@ -87,25 +110,25 @@ class _FindState extends State<Find> {
             height: 70,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: TextField(
-              controller: TextEditingController(text: searchText),
+              controller: searchController,
               onChanged: (value) {
-                searchText = value;
+                setState(() {
+                  searchText = value;
+                });
               },
               onSubmitted: (value) {
-                // Kiểm tra xem giá trị đã nhập có khác rỗng không trước khi gọi API
                 if (value.trim().isNotEmpty) {
-                  fetchProducts();
+                  fetchsearchProducts();
                 }
               },
               decoration: InputDecoration(
-                hintText: 'Search',
+                hintText: 'Tìm kiếm',
                 prefixIcon: const Icon(Icons.search),
-                filled: true, // Đặt filled thành true để có màu nền
-                fillColor: const Color(0xFFF2F3F2), // Đặt màu nền
+                filled: true,
+                fillColor: const Color(0xFFF2F3F2),
                 border: OutlineInputBorder(
-                  borderSide: BorderSide.none, // Xóa đường viền
-                  borderRadius:
-                      BorderRadius.circular(20.0), // Điều chỉnh radius tại đây
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
               ),
             ),
@@ -122,7 +145,7 @@ class _FindState extends State<Find> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(right: 10),
-                          child: Text('Filter & Sort',
+                          child: Text('Bộ lọc & Sắp xếp',
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                         PopupMenuButton<String>(
@@ -130,15 +153,11 @@ class _FindState extends State<Find> {
                             setState(() {
                               _selectedSortOption = value;
                             });
-                            // Thực hiện sắp xếp danh sách sản phẩm dựa trên giá trị được chọn (value)
-                            if (value == 'Sort Down') {
-                              // Sắp xếp danh sách sản phẩm theo thứ tự giảm dần
-                              // Đặt logic sắp xếp ở đây
+
+                            if (value == 'Sắp xếp giảm dần') {
                               products.sort((a, b) =>
                                   (a.price ?? 0).compareTo(b.price ?? 0));
-                            } else if (value == 'Sort Up') {
-                              // Sắp xếp danh sách sản phẩm theo thứ tự tăng dần
-                              // Đặt logic sắp xếp ở đây
+                            } else if (value == 'Sắp xếp tăng dần') {
                               products.sort((a, b) =>
                                   (b.price ?? 0).compareTo(a.price ?? 0));
                             }
@@ -146,138 +165,136 @@ class _FindState extends State<Find> {
                           itemBuilder: (BuildContext context) =>
                               <PopupMenuEntry<String>>[
                             const PopupMenuItem<String>(
-                              value: 'Sort Down',
-                              child: Text('Sort Down'),
+                              value: 'Sắp xếp giảm dần',
+                              child: Text('Sắp xếp giảm dần'),
                             ),
                             const PopupMenuItem<String>(
-                              value: 'Sort Up',
-                              child: Text('Sort Up'),
+                              value: 'Sắp xếp tăng dần',
+                              child: Text('Sắp xếp tăng dần'),
                             ),
                           ],
-                          child: Icon(
-                              Icons.filter_list), // Biểu tượng sắp xếp xuống
+                          child: Icon(Icons.filter_list),
                         ),
                       ],
                     ),
                     Expanded(
-                        //phải có gridview như này này
+                      child: GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                          childAspectRatio: 0.8,
+                        ),
+                        itemCount: isLoadingMore
+                            ? products.length + 1
+                            : products.length,
+                        itemBuilder: (context, index) {
+                          if (index < products.length) {
+                            final product = products[index];
 
-                        child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 8,
-                        mainAxisSpacing: 8,
-                        childAspectRatio: 0.8,
-                      ),
-                      itemCount:
-                          isLoadingMore ? products.length + 1 : products.length,
-                      itemBuilder: (context, index) {
-                        if (index < products.length) {
-                          final product = products[index];
-
-                          return GestureDetector(
-                            onTap: () {
-                              // Xử lý khi bạn click vào item
-                              print(
-                                  'Bạn đã click vào sản phẩm: ${product.sId}');
-                              // Navigator.pushNamed(context, '/detaiproduct');
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DetailProduct(
-                                    title: 'Chi tiết sản phẩm',
-                                    product:
-                                        product, // Truyền đối tượng sản phẩm đã được chọn
+                            return GestureDetector(
+                              onTap: () {
+                                print(
+                                    'Bạn đã click vào sản phẩm: ${product.sId}');
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailProduct(
+                                      title: 'Chi tiết sản phẩm',
+                                      product: product,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Card(
+                                color: Colors.white,
+                                shadowColor: Colors.black,
+                                elevation: 10,
+                                child: SizedBox(
+                                  child: Stack(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Expanded(
+                                            flex: 4,
+                                            child: Stack(
+                                              children: [
+                                                Container(
+                                                  width: double.infinity,
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0),
+                                                    child: Image.network(
+                                                      '${product.image?.elementAt(0)}' ??
+                                                          'loading...',
+                                                      height: 200,
+                                                      width: 180,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  top: 5,
+                                                  right: 5,
+                                                  child: IconButton(
+                                                    icon: const Icon(Icons
+                                                        .favorite_border_outlined),
+                                                    onPressed: () {},
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 1,
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      10, 0, 10, 5),
+                                              child: Text(
+                                                product.name ?? 'Không rõ',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 10,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 1,
+                                            child: Container(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 10),
+                                              child: Text(
+                                                '${NumberFormat.decimalPattern().format(product.price ?? 'Giá không rõ')} đ',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color.fromARGB(
+                                                      255, 105, 105, 105),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              );
-                            },
-                            //cái card này viết trong listview
-                            child: Card(
-                              color: Colors.white,
-                              shadowColor: Colors.black,
-                              elevation: 10,
-                              child: SizedBox(
-                                child: Stack(
-                                  children: [
-                                    Column(
-                                      children: [
-                                        Expanded(
-                                          flex: 4,
-                                          child: Stack(
-                                            children: [
-                                              Container(
-                                                width: double.infinity,
-                                                padding:
-                                                    EdgeInsets.only(top: 10),
-                                                child: Image.network(
-                                                  product.image?.elementAt(0) ??
-                                                      'loading...', // Giả sử danh sách ảnh là danh sách base64
-                                                  height: 200,
-                                                  width: 180,
-                                                ),
-                                              ),
-                                              Positioned(
-                                                top: 5,
-                                                right: 5,
-                                                child: IconButton(
-                                                  icon: Icon(Icons
-                                                      .favorite_border_outlined),
-                                                  onPressed: () {
-                                                    setState(() {});
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            padding: EdgeInsets.fromLTRB(
-                                                10, 0, 10, 5),
-                                            child: Text(
-                                              product.name ?? 'Unknown',
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 10,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            padding:
-                                                EdgeInsets.only(bottom: 10),
-                                            child: Text(
-                                              '\$${product.price ?? 'Unknown Price'}',
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Color.fromARGB(
-                                                    255, 105, 105, 105),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
                               ),
-                            ),
-                          );
-                        } else {
-                          if (mounted) {
-                            return Center(
-                              child: CircularProgressIndicator(),
                             );
+                          } else {
+                            if (mounted) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
                           }
-                        }
-                      },
-                    ))
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),

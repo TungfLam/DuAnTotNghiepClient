@@ -1,4 +1,7 @@
-import 'package:appclient/Screen/Billone.dart';
+import 'package:appclient/Screen/Billdg.dart';
+import 'package:appclient/Screen/Billht.dart';
+import 'package:appclient/Screen/Billhuy.dart';
+import 'package:appclient/Screen/Billxn.dart';
 import 'package:flutter/material.dart';
 
 class BillAllScreen extends StatefulWidget {
@@ -51,23 +54,17 @@ class _BillAllScreenState extends State<BillAllScreen> {
               child: TabBarView(
                 children: [
                   // Nội dung cho tab "Chờ xác nhận"
-                  Container(child: Billone()),
+                  Container(child: Billxn()),
                   // Nội dung cho tab "Chờ giao hàng"
                   Container(
-                    child: const Center(
-                      child: Text('  Chờ giao hàng  '),
-                    ),
+                    child: Billdg(),
                   ),
                   // Nội dung cho tab "Đánh giá"
                   Container(
-                    child: const Center(
-                      child: Text('  Đánh giá  '),
-                    ),
+                    child: Billht(),
                   ),
                   Container(
-                    child: const Center(
-                      child: Text('  Đã hủy  '),
-                    ),
+                    child: Billhuy(),
                   )
                 ],
               ),
