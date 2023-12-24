@@ -1,10 +1,15 @@
+// ignore_for_file: camel_case_types, must_be_immutable
+
+import 'dart:io';
+
 import 'package:appclient/Widgets/showStar.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class itemComment extends StatefulWidget{
   var item;
-  itemComment({required this.item});
+  itemComment({super.key, required this.item});
 
   @override
   State<itemComment> createState() => _itemCommentState();
@@ -176,6 +181,142 @@ class _itemCommentState extends State<itemComment> {
         ),
         const SizedBox(height: 8)
       ],
+    );
+  }
+}
+
+class itemAddComment extends StatefulWidget{
+  final TextEditingController starCtrl;
+  final TextEditingController commentCtrl;
+  final item;
+  final Function pickImage;
+  final List<XFile> images;
+  final int index;
+  const itemAddComment({
+    super.key,
+    required this.item ,
+    required this.starCtrl ,
+    required this.commentCtrl,
+    required this.pickImage,
+    required this.images,
+    required this.index,
+  });
+
+  @override
+  State<itemAddComment> createState() => _itemAddCommentState();
+}
+
+class _itemAddCommentState extends State<itemAddComment> {
+  int commentLeght = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Image.network(
+                widget.item['product_data']['image'][0],
+                  errorBuilder: (BuildContext context , Object error, StackTrace? stackTrace){
+                    return const Icon(Icons.image);
+                  }
+              )
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              flex: 4,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.item['product_data']['name'],
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold
+                    ),),
+                  Text(
+                    "Size : ${widget.item['product_data']['size_name']}" ,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF696969)
+                    ),
+                  ),
+                  Text(
+                    "Color : ${widget.item['product_data']['color_name']}" ,
+                    style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF696969)
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+
+        changeStar(starCtrl: widget.starCtrl),
+
+        TextField(
+          controller: widget.commentCtrl,
+          onChanged: (value) {
+            commentLeght = value.length;
+            setState(() {});
+          },
+          maxLines: 4,
+          keyboardType: TextInputType.multiline,
+          decoration: InputDecoration(
+            hintText: "Viết đánh giá của bạn",
+            hintStyle: const TextStyle(
+              color: Colors.grey
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Color(0xFF6342E8))
+            ),
+            contentPadding: const EdgeInsets.all(8)
+          ),
+        ),
+
+        Container(
+          width: double.infinity,
+          alignment: Alignment.centerRight,
+          child: Text(
+            "$commentLeght/200",
+            style: TextStyle(
+              color: (commentLeght > 200) ? Colors.red : Colors.black
+            ),
+          ),
+        ),
+
+        Container(
+          alignment: Alignment.centerLeft,
+          margin: const EdgeInsets.only(left: 8),
+          child: Row(
+            children: [
+              InkWell(
+                onTap: () async {
+                   widget.pickImage(widget.index);
+                },
+                child: const Icon(Icons.image, color: Colors.grey,size: 56,),
+              ),
+              Row(
+                children: widget.images.map((e) =>
+                  Image.file(File(e.path) , width: 80 ,height: 80 , fit: BoxFit.cover)
+                ).toList(),
+              )
+            ]
+          ),
+        ),
+
+        Container(
+          margin: const EdgeInsets.only(top: 8 , bottom: 8),
+          color: Colors.black45,
+          height: 0.5,
+          width: double.infinity,
+        )
+      ]
     );
   }
 }

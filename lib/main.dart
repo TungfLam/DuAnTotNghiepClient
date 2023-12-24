@@ -1,5 +1,6 @@
 import 'package:appclient/Screen/AllComment.dart';
 import 'package:appclient/Screen/BannerScreen.dart';
+import 'package:appclient/Screen/Comment/AddComment.dart';
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
 import 'package:appclient/Screen/Find.dart';
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: AddComment.nameAddComment, // Đường dẫn mặc định khi khởi chạy ứng dụng
 
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
@@ -69,8 +70,9 @@ class MyApp extends StatelessWidget {
         Otp_Screen.nameOtp : (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS : (context) => const LoginSMS(title: ""),
         RegisterScreen2.nameRegiterScree2 : (context) => const RegisterScreen2(title: ""),
-
         AllComment.nameComment : (context) => AllComment(),
+        AddComment.nameAddComment : (context) => const AddComment(),
+
         '/pay': (context) => const PayScreen(userid: '',  idcart: [], totalAmount: 0, title: '',),
         '/notification': (context) => const NotificationScreen(),
         '/location': (context) => const LocationScreen(),
