@@ -505,20 +505,26 @@ class _DetailProductState extends State<DetailProduct> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              widget.product?.name ??
-                                  'Unknown Product Name',
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold),
+                            Expanded(
+                              flex: 7,
+                              child: Text(
+                                widget.product?.name ??
+                                    'Unknown Product Name',
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
-                            Text(
-                              '${NumberFormat.decimalPattern().format( widget.product?.price ?? 0.00)} đ',
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
+                            Expanded(
+                              flex: 3,
+                              child: Text(
+                                '${NumberFormat.decimalPattern().format( widget.product?.price ?? 0.00)} đ',
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             )
                           ],
                         ),

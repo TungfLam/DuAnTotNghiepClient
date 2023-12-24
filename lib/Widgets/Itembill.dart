@@ -43,7 +43,7 @@ class Itembill extends StatelessWidget {
         double containerHeight = screenHeight * 0.7;
 
         return FractionallySizedBox(
-          heightFactor: 0.7,
+          heightFactor: 0.6,
           child: Container(
             height: containerHeight,
             width: double.infinity,
@@ -163,23 +163,39 @@ class Itembill extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (billItem.status == 1 && billItem.payments == 1)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(top: 30),
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Color(0xFF6342E8)),
-                            ),
-                            child: Text('Hủy đơn hàng',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
-                          ),
+                  if (billItem.status == 7)
+                    Container(
+                      padding: EdgeInsets.only(top: 30),
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Color(0xFF6342E8)),
                         ),
-                      ],
+                        child: Text(
+                          'Đánh giá',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  if (billItem.status == 1 && billItem.payments == 1)
+                    Container(
+                      padding: EdgeInsets.only(top: 30),
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Color(0xFF6342E8)),
+                        ),
+                        child: Text(
+                          'Hủy đơn hàng',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                      ),
                     ),
                 ],
               ),
@@ -288,7 +304,7 @@ class Itembill extends StatelessWidget {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

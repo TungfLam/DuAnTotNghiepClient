@@ -1,5 +1,6 @@
 import 'package:appclient/Screen/AllComment.dart';
 import 'package:appclient/Screen/BannerScreen.dart';
+import 'package:appclient/Screen/ConcentricAnimationOnboarding.dart';
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
 import 'package:appclient/Screen/Find.dart';
@@ -53,7 +54,7 @@ class MyApp extends StatelessWidget {
       ),
 
 
-      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/test', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
 
       routes: {
@@ -61,7 +62,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const MyHomePage(title: ''),
         '/register': (context) => const Register(title: ''),
         '/login': (context) => const Login(title: ''),
-        '/loginorregister': (context) => const LoginOrRegisterScreen(title: ''),
+        '/loginorregister': (context) => const LoginOrRegister(title: ''),
         '/mycart': (context) => const MyCart(title: ''),
         '/bill': (context) => const BillAllScreen(),
         '/find': (context) => const Find(title: ''),
@@ -79,6 +80,7 @@ class MyApp extends StatelessWidget {
         '/location': (context) => const LocationScreen(),
 
          '/profile': (context) => const profileScreen(),
+          '/test': (context) => const ConcentricAnimationOnboarding(),
         // Đăng ký đường dẫn cho màn hình MyCart
       },
     );
