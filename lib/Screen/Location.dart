@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:appclient/models/Location_Model.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class LocationScreen extends StatefulWidget {
   const LocationScreen({super.key});
@@ -9,27 +12,39 @@ class LocationScreen extends StatefulWidget {
 }
 
 class LocationPage extends State<LocationScreen> {
-  List<LocationModel> list = [
-    LocationModel(
-        'Số nhà 1, ngõ 1 An Xá, Quốc Tuấn, Nam Sách, Hải Dương fsdf sfsfsfsfsfsd'),
-    LocationModel('Số nhà 1, ngõ 1 An Xá, Quốc Tuấn, Nam Sách, Hải Dương'),
-    LocationModel('Số nhà 1, ngõ 1 An Xá, Quốc Tuấn, Nam Sách, Hải Dương'),
-    LocationModel('Số nhà 1, ngõ 1 An Xá, Quốc Tuấn, Nam Sách, Hải Dương'),
-    LocationModel('Số nhà 1, ngõ 1 An Xá, Quốc Tuấn, Nam Sách, Hải Dương'),
-    LocationModel('Số nhà 1, ngõ 1 An Xá, Quốc Tuấn, Nam Sách, Hải Dương')
-  ];
+  List<LocationModel> list = [];
   var select = 0;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    fetchData();
   }
 
   @override
   void setState(VoidCallback fn) {
     // TODO: implement setState
     super.setState(fn);
+  }
+
+  Future<void> fetchData() async {
+    try {
+      var response = await http.get(Uri.parse(
+          'https://adadas.onrender.com/api/address/6524318746e12608b3558d74'));
+      if (response.statusCode == 200) {
+        final List<dynamic> responseData = jsonDecode(response.body);
+        for (int i = 0; i < responseData.length; i++) {
+          LocationModel locationModel = LocationModel(
+              address: responseData[i]['address'],
+              specific_address: responseData[i]['specific_addres']);
+          setState(() {
+            list.add(locationModel);
+          });
+        }
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
   }
 
   @override
@@ -54,16 +69,29 @@ class LocationPage extends State<LocationScreen> {
         ),
         elevation: 0.5,
       ),
-      body: ListView.builder(
-        itemCount: list.length,
-        itemBuilder: (context, index) {
-          var notifi = list[index];
-          return itemLocation(context, notifi, index, select, () {
-            setState(() {
-              select = index;
-            });
-          });
-        },
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: list.length,
+              itemBuilder: (context, index) {
+                var notifi = list[index];
+                return itemLocation(context, notifi, index, select, () {
+                  setState(() {
+                    select = index;
+                  });
+                });
+              },
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Text('Số lượng địa chỉ ${list.length}/3')
+          ],
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
           color: Colors.transparent,
@@ -83,7 +111,8 @@ Widget itemLocation(BuildContext context, LocationModel location, int index,
     int select, VoidCallback callback) {
   String? firstLocation;
   String? lastLocation;
-  List<String> list = location.location.toString().split(',');
+  String loca = '${location.specific_address}, ${location.address}';
+  List<String> list = loca.toString().split(',');
   if (list.length >= 3) {
     firstLocation =
         list.sublist(0, list.length - 3).join(',').replaceAll(',', ' ').trim();
