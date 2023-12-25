@@ -25,11 +25,25 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final FirebaseAuthService _authService = FirebaseAuthService();
   String _inout = "Đăng nhập";
+  String anhdd = '';
+  String mail = '';
+  String fname = '';
 
   Future<void> _checkLogin() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final bool? isLogin = prefs.getBool("isLogin");
     final String? idUser = prefs.getString("idUser");
+    final String? avarta = prefs.getString("avata");
+    final String? email = prefs.getString("email");
+    final String? fullname = prefs.getString("fullname");
+    print('$email');
+    print('$avarta');
+    print('$fullname');
+
+    anhdd = avarta ?? '';
+    mail = email ?? '';
+    fname = fullname ?? '';
+
     await prefs.setBool("isDone", true);
     String deviceId = await _authService.getDeviceId(context);
 
@@ -165,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
           backgroundColor: Colors.white,
-          bottom: const TabBar(
+          bottom: TabBar(
             // Thanh TabBar ở đây
             tabs: [
               Tab(text: 'Phổ biến'),
@@ -197,36 +211,34 @@ class _MyHomePageState extends State<MyHomePage> {
             const Center(child: Text('Khuyến mãi')),
           ],
         ),
-        // Định nghĩa thanh điều hướng bên phải với các tùy chọn điều hướng
         endDrawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              const DrawerHeader(
+              DrawerHeader(
                 decoration: BoxDecoration(
-                  color:
-                      Colors.white, // Đặt màu nền của thanh điều hướng bên phải
+                  color: Colors.white,
                 ),
                 child: Row(
                   children: [
                     // Thêm hình ảnh bên trái
-                    Padding(
-                      padding: EdgeInsets.only(right: 16.0),
-                      child: ClipOval(
-                        child: Image(
-                          height: 60,
-                          width: 60,
-                          image: AssetImage('lib/images/img2.jpg'),
+                    if (anhdd != '')
+                      Padding(
+                        padding: EdgeInsets.only(right: 16.0),
+                        child: ClipOval(
+                          child: Image(
+                            height: 60,
+                            width: 60,
+                            image: NetworkImage('$BASE_API$anhdd'),
+                          ),
                         ),
                       ),
-                    ),
-                    // Thêm hai dòng văn bản bên phải
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Tên người dùng',
+                          fname ?? 'tên người dùng không tồn tại',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -234,7 +246,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                         Text(
-                          'email người dùng @mail.com',
+                          mail,
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
@@ -245,121 +257,84 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
               ),
-              // DrawerHeader(
-              //   decoration: BoxDecoration(
-              //     color: Colors.white, // Màu nền của thanh điều hướng bên phải
-              //   ),
-              //   child: Text('Thanh điều hướng'),
-              // ),
               ListTile(
-                leading: const Icon(Icons
-                    .shopping_bag_outlined), // Thêm biểu tượng vào ListTile
+                leading: const Icon(Icons.shopping_bag_outlined),
                 title: const Text(
                   'Giỏ hàng',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
                   Navigator.pushNamed(context, '/mycart');
-                  // Xử lý khi người dùng chọn Tùy chọn 1
                 },
               ),
               ListTile(
-                leading: const Icon(Icons
-                    .favorite_border_outlined), // Thêm biểu tượng vào ListTile
+                leading: const Icon(Icons.favorite_border_outlined),
                 title: const Text(
                   'Yêu thích',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
                   Navigator.pushNamed(context, '/favorite');
-                  // Xử lý khi người dùng chọn Tùy chọn 1
                 },
               ),
               ListTile(
-                leading: const Icon(
-                    Icons.shopify_sharp), // Thêm biểu tượng vào ListTile
+                leading: const Icon(Icons.blinds_closed_outlined),
                 title: const Text(
                   'Đơn hàng',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
-                  // Xử lý khi người dùng chọn Tùy chọn 1
                   Navigator.pushNamed(context, '/bill');
                 },
               ),
               ListTile(
-                leading: const Icon(
-                    Icons.location_on_outlined), // Thêm biểu tượng vào ListTile
+                leading: const Icon(Icons.location_on_outlined),
                 title: const Text(
                   'Địa chỉ',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
                   Navigator.pushNamed(context, '/location');
-                  // Xử lý khi người dùng chọn Tùy chọn 1
                 },
               ),
               ListTile(
-                leading: const Icon(
-                    Icons.payment_outlined), // Thêm biểu tượng vào ListTile
+                leading: const Icon(Icons.payment_outlined),
                 title: const Text(
                   'Phương thức thanh toán',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                onTap: () {
-                  // Xử lý khi người dùng chọn Tùy chọn 1
-                },
+                onTap: () {},
               ),
               ListTile(
-                leading: const Icon(
-                    Icons.discount_outlined), // Thêm biểu tượng vào ListTile
+                leading: const Icon(Icons.discount_outlined),
                 title: const Text(
                   'Khuyến mại',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                onTap: () {
-                  // Xử lý khi người dùng chọn Tùy chọn 1
-                },
+                onTap: () {},
               ),
               ListTile(
-                leading: const Icon(Icons
-                    .notifications_outlined), // Thêm biểu tượng vào ListTile
+                leading: const Icon(Icons.notifications_outlined),
                 title: const Text(
                   'Thông báo',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                onTap: () {
-                  // Xử lý khi người dùng chọn Tùy chọn 1
-                },
+                onTap: () {},
               ),
               ListTile(
-                leading: const Icon(Icons
-                    .help_outline_outlined), // Thêm biểu tượng vào ListTile
+                leading: const Icon(Icons.help_outline_outlined),
                 title: const Text(
                   'Hỗ trợ',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                onTap: () {
-                  // Xử lý khi người dùng chọn Tùy chọn 1
-                },
+                onTap: () {},
               ),
-              // ListTile(
-              //   leading: const Icon(
-              //       Icons.error_outline), // Thêm biểu tượng vào ListTile
-              //   title: const Text(
-              //     'About',
-              //     style: TextStyle(fontWeight: FontWeight.bold),
-              //   ),
-              //   onTap: () {
-              //     // Xử lý khi người dùng chọn Tùy chọn 1
-              //   },
-              // ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                 child: ListTile(
                   leading: Icon((_inout == "Đăng xuất"
                       ? Icons.logout_outlined
-                      : Icons.login_outlined)), // Thêm biểu tượng vào ListTile
+                      : Icons.login_outlined)),
                   title: Text(
                     _inout,
                     style: const TextStyle(fontWeight: FontWeight.bold),
@@ -379,7 +354,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
               ),
-              // Thêm nhiều ListTile khác cho các tùy chọn bổ sung
             ],
           ),
         ),

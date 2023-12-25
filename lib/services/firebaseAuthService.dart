@@ -42,6 +42,7 @@ class FirebaseAuthService {
         print("that bai r");
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.clear();
+        await prefs.setBool("isLogin", false);
         throw Exception(err.message);
       },
       codeSent: (verificationId, [int? forceResendingToken]) {

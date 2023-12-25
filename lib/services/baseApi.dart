@@ -7,7 +7,7 @@ import 'package:appclient/models/apiRes.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-const String BASE_API = "http://192.168.45.120:6868";
+const String BASE_API = "https://adadas.onrender.com";
 // http://192.168.2.112:6868
 
 
