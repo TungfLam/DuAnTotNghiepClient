@@ -98,7 +98,9 @@ class LocationPage extends State<LocationScreen> {
           child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF6342E8)),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/changelocation');
+              },
               child: const Text(
                 'THÊM ĐỊA CHỈ',
                 style: TextStyle(color: Colors.white),

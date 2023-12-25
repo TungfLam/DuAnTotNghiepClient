@@ -1,4 +1,6 @@
 import 'package:appclient/Screen/BannerScreen.dart';
+import 'package:appclient/Screen/ChangeLocation.dart';
+import 'package:appclient/Screen/ChangePassword.dart';
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
 import 'package:appclient/Screen/Find.dart';
@@ -51,7 +53,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute:
+          '/changepassword', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
@@ -75,6 +78,8 @@ class MyApp extends StatelessWidget {
             ),
         '/notification': (context) => const NotificationScreen(),
         '/location': (context) => const LocationScreen(),
+        '/changepassword': (context) => ChangePassword(),
+        '/changelocation': (context) => ChangeLocation(),
         // Đăng ký đường dẫn cho màn hình MyCart
       },
     );
