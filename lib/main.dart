@@ -1,6 +1,10 @@
 import 'package:appclient/Screen/AllComment.dart';
 import 'package:appclient/Screen/BannerScreen.dart';
-import 'package:appclient/Screen/ConcentricAnimationOnboarding.dart';
+
+import 'package:appclient/Screen/ChangeLocation.dart';
+import 'package:appclient/Screen/ChangePassword.dart';
+import 'package:appclient/Screen/ConcentricAnimationOnboarding.dart'
+
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
 import 'package:appclient/Screen/Find.dart';
@@ -49,12 +53,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromRGBO(103, 58, 183, 1)),
         useMaterial3: true,
       ),
 
 
-      initialRoute: '/test', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute:
+          '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
 
       routes: {
@@ -79,8 +85,13 @@ class MyApp extends StatelessWidget {
         '/notification': (context) => const NotificationScreen(),
         '/location': (context) => const LocationScreen(),
 
+        '/changepassword': (context) => ChangePassword(),
+        '/changelocation': (context) => ChangeLocation(),
+
+
          '/profile': (context) => const profileScreen(),
           '/test': (context) => const ConcentricAnimationOnboarding(),
+
         // Đăng ký đường dẫn cho màn hình MyCart
       },
     );
