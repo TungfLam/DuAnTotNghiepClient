@@ -28,8 +28,7 @@ class _PopularProductListState extends State<PopularProductList> {
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(
-      Uri.parse(
-          'https://adadas.onrender.com/api/products/$page'),
+      Uri.parse('https://adadas.onrender.com/api/products/$page'),
       headers: {'Content-Type': 'application/json'},
     ); // Thay thế URL của API sản phẩm
 
@@ -165,12 +164,16 @@ class _PopularProductListState extends State<PopularProductList> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10.0),
                                       child: Image.network(
-                                        '${product.image?.elementAt(0)}' ??
-                                            'loading...',
-                                        height: 200,
-                                        width: 180,
-                                        fit: BoxFit.cover,
-                                      ),
+                                          '${product.image?.elementAt(0)}' ??
+                                              'loading...',
+                                          height: 200,
+                                          width: 180,
+                                          fit: BoxFit.cover, errorBuilder:
+                                              (BuildContext context,
+                                                  Object error,
+                                                  StackTrace? stackTrace) {
+                                        return Center(child: const Icon(Icons.image));
+                                      }),
                                     ),
                                   ),
                                   Positioned(

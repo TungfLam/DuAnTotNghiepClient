@@ -77,6 +77,7 @@ class _BannerScreenState extends State<BannerScreen>
                   image: DecorationImage(
                 image: AssetImage('lib/images/banner.png'),
                 fit: BoxFit.cover,
+                
               )),
               child: SlideTransition(
                 position: _offsetAnimation,

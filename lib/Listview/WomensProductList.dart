@@ -27,13 +27,11 @@ class _WomensProductListState extends State<WomensProductList> {
 
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
-
     final response = await http.get(
       Uri.parse(
           'https://adadas.onrender.com/api/products/6573359c00c9d30fb93fddc4/$page'),
       headers: {'Content-Type': 'application/json'},
     ); // Thay thế URL của API sản phẩm
-
 
     if (response.statusCode == 200) {
       final List<dynamic>? productData = jsonDecode(response.body);
@@ -51,7 +49,6 @@ class _WomensProductListState extends State<WomensProductList> {
       final response = await http.post(
         Uri.parse(
             'https://adadas.onrender.com/api/addFavorite/6524318746e12608b3558d74/$productId'),
-
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -165,7 +162,7 @@ class _WomensProductListState extends State<WomensProductList> {
                                 children: [
                                   Container(
                                     width: double.infinity,
-                                  
+
                                     // child: Image.memory(
                                     //   base64Decode(product.image
                                     //           ?.elementAt(0) ??
@@ -175,17 +172,21 @@ class _WomensProductListState extends State<WomensProductList> {
                                     //   fit: BoxFit.cover,
                                     // ),
 
-
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10.0),
                                       child: Image.network(
-                                        '${product.image?.elementAt(0)}' ?? 'loading...',
-                                        height: 200,
-                                        width: 180,
-                                        fit: BoxFit.cover,
-                                      ),
+                                          '${product.image?.elementAt(0)}' ??
+                                              'loading...',
+                                          height: 200,
+                                          width: 180,
+                                          fit: BoxFit.cover, errorBuilder:
+                                              (BuildContext context,
+                                                  Object error,
+                                                  StackTrace? stackTrace) {
+                                        return Center(
+                                            child: const Icon(Icons.image));
+                                      }),
                                     ),
-                                    
                                   ),
                                   Positioned(
                                     top: 5,
@@ -220,7 +221,7 @@ class _WomensProductListState extends State<WomensProductList> {
                               child: Container(
                                 padding: EdgeInsets.only(bottom: 10),
                                 child: Text(
-                                  '${NumberFormat.decimalPattern().format( product.price ?? 'Unknown Price')} đ',
+                                  '${NumberFormat.decimalPattern().format(product.price ?? 'Unknown Price')} đ',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Color.fromARGB(255, 105, 105, 105),

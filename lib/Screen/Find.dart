@@ -56,11 +56,10 @@ class _FindState extends State<Find> {
       print('Lỗi khi gọi API: ${response.statusCode}');
     }
   }
-  
-    Future<void> fetchProducts() async {
+
+  Future<void> fetchProducts() async {
     final response = await http.get(
-      Uri.parse(
-          'https://adadas.onrender.com/api/products/$page'),
+      Uri.parse('https://adadas.onrender.com/api/products/$page'),
       headers: {'Content-Type': 'application/json'},
     ); // Thay thế URL của API sản phẩm
 
@@ -74,6 +73,7 @@ class _FindState extends State<Find> {
       }
     }
   }
+
   @override
   void initState() {
     super.initState();
@@ -83,7 +83,6 @@ class _FindState extends State<Find> {
         searchText = searchController.text;
       });
     });
-    
   }
 
   @override
@@ -227,12 +226,21 @@ class _FindState extends State<Find> {
                                                         BorderRadius.circular(
                                                             10.0),
                                                     child: Image.network(
-                                                      '${product.image?.elementAt(0)}' ??
-                                                          'loading...',
-                                                      height: 200,
-                                                      width: 180,
-                                                      fit: BoxFit.cover,
-                                                    ),
+                                                        '${product.image?.elementAt(0)}' ??
+                                                            'loading...',
+                                                        height: 200,
+                                                        width: 180,
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                Object error,
+                                                                StackTrace?
+                                                                    stackTrace) {
+                                                      return Center(
+                                                          child: const Icon(
+                                                              Icons.image));
+                                                    }),
                                                   ),
                                                 ),
                                                 Positioned(
