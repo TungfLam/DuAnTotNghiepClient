@@ -1,7 +1,6 @@
 // ignore_for_file: camel_case_types
 
 import 'package:flutter/material.dart';
-import 'package:pinput/pinput.dart';
 
 class showStar extends StatelessWidget{
   final int countStar;
@@ -70,6 +69,7 @@ class _changeStarState extends State<changeStar> {
         textValue = "Rất tốt";
         break;
       default:
+        textValue = "Lỗi rồi Duy ơi";
         break;
     }
   }
@@ -77,7 +77,15 @@ class _changeStarState extends State<changeStar> {
   @override
   void initState() {
     super.initState();
+    print("dfasdf ${widget.starCtrl.text.toString()}");
+    int? chekn = int.tryParse(widget.starCtrl.text);
+
+    if(chekn != null){
+      indexStar = int.parse(widget.starCtrl.text);
+    }
+
     updateArr();
+    setState(() {});
   }
 
   @override

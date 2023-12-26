@@ -30,9 +30,15 @@ class _AddCommentState extends State<AddComment> {
 
   Future<void> getProductBill() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    idUser = prefs.getString("idUser")!;
+    try{
+      idUser = prefs.getString("idUser")!;
+    }catch(e){
+      print(e);
+      // Navigator.pop(context);
+    }
+
     final response = await http.get(
-      Uri.parse("$BASE_API/api/bill-by-id/6581d7275e380e8480224ff9")
+      Uri.parse("$BASE_API/api/bill-by-id/65819a903c68d1ff1e421857")
     );
 
     if(response.statusCode == 200){
@@ -40,9 +46,15 @@ class _AddCommentState extends State<AddComment> {
       if(!data['err']){
         if(data['objBill']['status'] == 7){
           productBill = data['objBill']['cart_data'];
+
           _images = List.generate(productBill.length, (index) => []);
           arrStar = List.generate(productBill.length, (index) => TextEditingController());
           arrComment = List.generate(productBill.length, (index) => TextEditingController());
+
+          for(var item in productBill){
+            int index = productBill.indexOf(item);
+            await getComment(item['product_id'], index);
+          }
           setState(() {});
         }else{
           showSnackBarErr(context, "Hoàn thành đơn hàng để đánh giá");
@@ -54,22 +66,22 @@ class _AddCommentState extends State<AddComment> {
       }
     }else{
       showSnackBarErr(context, "Err : lỗi server");
-      Navigator.pop(context);
+      // Navigator.pop(context);
     }
   }
 
-  Future<void> postComment(String IdProduct, String IdUser, String comment, String rating, List<XFile> images) async {
+  Future<void> postComment(String IdProductDetail, String comment, String rating, List<XFile> images) async {
 
     final request = http.MultipartRequest('POST' , Uri.parse("$BASE_API/api/comment"));
 
-    images.map((e) {
-      final File file = File(e.path);
+    for(var image in images){
+      final File file = File(image.path);
       request.files.add(
-          http.MultipartFile.fromBytes('images', file.readAsBytesSync() , filename: e.name)
+          await http.MultipartFile.fromPath('images',file.path , filename: image.name)
       );
-    });
+    }
 
-    request.fields['ProductId'] = IdProduct;
+    request.fields['ProductId'] = IdProductDetail;
     request.fields['UserId'] = "6524318746e12608b3558d74";
     request.fields['Comment'] = comment;
     request.fields['rating'] = rating;
@@ -86,6 +98,35 @@ class _AddCommentState extends State<AddComment> {
       print("thanh cong");
     }else{
       print("that bai");
+    }
+  }
+
+  Future<void> getComment(String idProductDetail , int index) async {
+    final response = await http.post(
+      Uri.parse("$BASE_API/api/comment-by-id"),
+      headers: <String , String>{
+        'Content-Type': 'application/json; charset=UTF-8'
+      },
+      body: jsonEncode(<String , String>{
+        'ProductDetailId' : idProductDetail,
+        'UserId' : "6524318746e12608b3558d74"
+      })
+    );
+
+    if(response.statusCode == 200){
+      final data = await jsonDecode(response.body);
+
+      if(!data['err']!){
+        arrStar[index].text = '${data['objComment']['rating']}';
+
+        arrComment[index].text = data['objComment']['comment'] ?? "";
+        print(data['objComment']['rating']);
+      }else{
+        arrStar[index].text = '5';
+      }
+
+    }else{
+      showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
     }
   }
 
@@ -113,8 +154,7 @@ class _AddCommentState extends State<AddComment> {
             borderRadius: const BorderRadius.all(Radius.circular(8)),
             onTap: (){
               for(int i = 0; i < productBill.length ; i++){
-                print("${arrStar[i].text} -- ${arrComment[i].text}");
-                  postComment(productBill[i]['product_id'], idUser, arrComment[i].text, arrStar[i].text, _images[i]);
+                  postComment(productBill[i]['product_id'], arrComment[i].text, arrStar[i].text, _images[i]);
               }
             },
             child: const Padding(
@@ -135,6 +175,7 @@ class _AddCommentState extends State<AddComment> {
           child: Column(
             children: productBill.map((e) {
               int index = productBill.indexOf(e);
+              print(productBill[index]['product_id']);
               return itemAddComment(
                 item: e,
                 starCtrl: arrStar[index],
