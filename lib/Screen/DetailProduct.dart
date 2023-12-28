@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:appclient/Screen/AllComment.dart';
+import 'package:appclient/Screen/Comment/AllComment.dart';
 import 'package:appclient/Widgets/buttomCustom.dart';
 import 'package:appclient/Widgets/itemComment.dart';
 import 'package:appclient/Widgets/showStar.dart';
@@ -51,7 +51,10 @@ class _DetailProductState extends State<DetailProduct> {
     // setState(() {
     //
     // });
-    getComment();
+    if(widget.product != null){
+      getComment();
+    }
+
   }
 
   void incrementQuantity() {
@@ -455,12 +458,11 @@ class _DetailProductState extends State<DetailProduct> {
 
   Future<void> getComment() async {
     final response = await http.get(
-        Uri.parse("$BASE_API/api/comment/65785ed034b7645148ab9f0a?count=4"));
+        Uri.parse("$BASE_API/api/comment/${widget.product!.sId}?count=4"));
 
     if (response.statusCode == 200) {
       final data = await json.decode(response.body);
       arrComment = data;
-      print(arrComment[0]['_id']);
       setState(() {});
     }
   }

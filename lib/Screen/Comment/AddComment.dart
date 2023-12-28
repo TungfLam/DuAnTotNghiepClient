@@ -23,6 +23,7 @@ class AddComment extends StatefulWidget{
 
 class _AddCommentState extends State<AddComment> {
   List productBill = [];
+  List<List<String>> imagescall = [];
   List<List<XFile>> _images = [];
   List<TextEditingController> arrStar = [];
   List<TextEditingController> arrComment = [];
@@ -45,9 +46,10 @@ class _AddCommentState extends State<AddComment> {
       final data = await jsonDecode(response.body);
       if(!data['err']){
         if(data['objBill']['status'] == 7){
-          productBill = data['objBill']['cart_data'];
+          productBill = await data['objBill']['cart_data'];
 
           _images = List.generate(productBill.length, (index) => []);
+          imagescall = List.generate(productBill.length, (index) => []);
           arrStar = List.generate(productBill.length, (index) => TextEditingController());
           arrComment = List.generate(productBill.length, (index) => TextEditingController());
 
@@ -55,7 +57,9 @@ class _AddCommentState extends State<AddComment> {
             int index = productBill.indexOf(item);
             await getComment(item['product_id'], index);
           }
-          setState(() {});
+          setState(() {
+            print("reload...");
+          });
         }else{
           showSnackBarErr(context, "Hoàn thành đơn hàng để đánh giá");
           Navigator.pop(context);
@@ -114,13 +118,20 @@ class _AddCommentState extends State<AddComment> {
     );
 
     if(response.statusCode == 200){
-      final data = await jsonDecode(response.body);
+      final data = jsonDecode(response.body);
 
       if(!data['err']!){
-        arrStar[index].text = '${data['objComment']['rating']}';
+        arrStar[index].text = data['objComment']['rating'].toString();
 
+        List img = await data['objComment']['images'];
+        if(img.length != 0){
+          for(var item in img){
+            print(item);
+            imagescall[index].add(item.toString());
+          }
+        }
+        print(arrStar[index].text);
         arrComment[index].text = data['objComment']['comment'] ?? "";
-        print(data['objComment']['rating']);
       }else{
         arrStar[index].text = '5';
       }
@@ -160,7 +171,7 @@ class _AddCommentState extends State<AddComment> {
             child: const Padding(
               padding: EdgeInsets.all(8),
               child: Icon(
-                Icons.send,
+                Icons.update,
                 color: Color(0xFF6C4EE7),
               ),
             ),
@@ -175,7 +186,6 @@ class _AddCommentState extends State<AddComment> {
           child: Column(
             children: productBill.map((e) {
               int index = productBill.indexOf(e);
-              print(productBill[index]['product_id']);
               return itemAddComment(
                 item: e,
                 starCtrl: arrStar[index],
@@ -183,6 +193,7 @@ class _AddCommentState extends State<AddComment> {
                 pickImage: _pickImages,
                 images: _images[index],
                 index: index,
+                imagescall: imagescall[index],
               );
             }).toList(),
           ),

@@ -192,6 +192,7 @@ class itemAddComment extends StatefulWidget{
   final Function pickImage;
   final List<XFile> images;
   final int index;
+  final List<String> imagescall;
   const itemAddComment({
     super.key,
     required this.item ,
@@ -200,6 +201,7 @@ class itemAddComment extends StatefulWidget{
     required this.pickImage,
     required this.images,
     required this.index,
+    required this.imagescall
   });
 
   @override
@@ -213,6 +215,10 @@ class _itemAddCommentState extends State<itemAddComment> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    setState(() {
+
+    });
   }
 
   @override
@@ -307,10 +313,25 @@ class _itemAddCommentState extends State<itemAddComment> {
                 },
                 child: const Icon(Icons.image, color: Colors.grey,size: 56,),
               ),
+
               Row(
-                children: widget.images.map((e) =>
-                  Image.file(File(e.path) , width: 80 ,height: 80 , fit: BoxFit.cover)
-                ).toList(),
+                children: (widget.images.isNotEmpty) ?
+                widget.images.map((e) {
+                  return Image.file(
+                      File(e.path), width: 80, height: 80, fit: BoxFit.cover
+                  );
+                }
+                ).toList()
+                : widget.imagescall.map((e) =>
+                    Image.network(
+                        width: 80 ,height: 80,
+                        '$BASE_API$e',
+                        errorBuilder: (BuildContext context , Object error, StackTrace? stackTrace){
+                          print('$BASE_API$e');
+                          return const Icon(Icons.image);
+                        }
+                    )
+                ).toList()
               )
             ]
           ),

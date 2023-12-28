@@ -1,4 +1,4 @@
-import 'package:appclient/Screen/AllComment.dart';
+import 'package:appclient/Screen/Comment/AllComment.dart';
 import 'package:appclient/Screen/BannerScreen.dart';
 import 'package:appclient/Screen/Comment/AddComment.dart';
 import 'package:appclient/Screen/DetailProduct.dart';
@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      initialRoute: AddComment.nameAddComment, // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),

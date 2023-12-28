@@ -43,6 +43,11 @@ class _changeStarState extends State<changeStar> {
   String textValue = "Rất tốt";
 
   void updateArr(){
+    int? chekn = int.tryParse(widget.starCtrl.text);
+    if(chekn != null){
+      indexStar = int.parse(widget.starCtrl.text);
+    }
+
     arrValue.clear();
     for(int i = 1; i < 6; i++){
       if(i <= indexStar){
@@ -72,20 +77,17 @@ class _changeStarState extends State<changeStar> {
         textValue = "Lỗi rồi Duy ơi";
         break;
     }
+
+    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
-    print("dfasdf ${widget.starCtrl.text.toString()}");
-    int? chekn = int.tryParse(widget.starCtrl.text);
-
-    if(chekn != null){
-      indexStar = int.parse(widget.starCtrl.text);
-    }
-
     updateArr();
-    setState(() {});
+    widget.starCtrl.addListener(() {
+      updateArr();
+    });
   }
 
   @override
@@ -103,7 +105,6 @@ class _changeStarState extends State<changeStar> {
                 indexStar = index + 1;
                 widget.starCtrl.text = "$indexStar";
                 updateArr();
-                setState(() {});
               },
               child: Icon(
                 arrValue[index] ? Icons.star : Icons.star_outline,

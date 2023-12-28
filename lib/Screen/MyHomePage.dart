@@ -28,6 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String anhdd = '';
   String mail = '';
   String fname = '';
+  String _idUser = '';
 
   Future<void> _checkLogin() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -43,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
     anhdd = avarta ?? '';
     mail = email ?? '';
     fname = fullname ?? '';
+    _idUser = idUser ?? '';
 
     await prefs.setBool("isDone", true);
     String deviceId = await _authService.getDeviceId(context);
@@ -294,7 +296,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
-                  Navigator.pushNamed(context, '/location');
+                  if(_inout == "Đăng xuất"){
+                    Navigator.pushNamed(context, '/location');
+                  }else{
+                    Navigator.pushNamed(context, '/login');
+                  }
+
                 },
               ),
               ListTile(
