@@ -28,6 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String anhdd = '';
   String mail = '';
   String fname = '';
+  String userid = '';
 
   Future<void> _checkLogin() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -43,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
     anhdd = avarta ?? '';
     mail = email ?? '';
     fname = fullname ?? '';
+    userid = idUser ?? '';
 
     await prefs.setBool("isDone", true);
     String deviceId = await _authService.getDeviceId(context);

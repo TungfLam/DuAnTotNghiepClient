@@ -3,7 +3,8 @@ import 'package:appclient/Screen/BannerScreen.dart';
 
 import 'package:appclient/Screen/ChangeLocation.dart';
 import 'package:appclient/Screen/ChangePassword.dart';
-import 'package:appclient/Screen/ConcentricAnimationOnboarding.dart'
+import 'package:appclient/Screen/ChatBoxScreen.dart';
+import 'package:appclient/Screen/ConcentricAnimationOnboarding.dart';
 
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
@@ -60,7 +61,7 @@ class MyApp extends StatelessWidget {
 
 
       initialRoute:
-          '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
+          '/chat', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
 
       routes: {
@@ -91,6 +92,8 @@ class MyApp extends StatelessWidget {
 
          '/profile': (context) => const profileScreen(),
           '/test': (context) => const ConcentricAnimationOnboarding(),
+          '/chat': (context) => const ChatBoxScreen(),
+
 
         // Đăng ký đường dẫn cho màn hình MyCart
       },
