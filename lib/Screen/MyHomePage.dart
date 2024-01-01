@@ -299,7 +299,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   if(_inout == "Đăng xuất"){
                     Navigator.pushNamed(context, '/location');
                   }else{
-                    Navigator.pushNamed(context, '/login');
+                    showDialogUilt(context, "Thông báo",
+                      "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
+                      () {
+                        print("object");
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/login');
+                        print("object");
+                      }
+                    );
                   }
 
                 },

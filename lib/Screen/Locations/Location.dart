@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:appclient/Widgets/buttomCustom.dart';
 import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/Location_Model.dart';
 import 'package:appclient/models/apiRes.dart';
@@ -106,17 +107,13 @@ class LocationPage extends State<LocationScreen> {
       bottomNavigationBar: BottomAppBar(
         height: 72,
         color: Colors.white,
-        child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF6342E8)),
-            onPressed: () {
-              Navigator.pushNamed(context, '/changelocation');
-            },
-            child: const Text(
-              'THÊM ĐỊA CHỈ',
-              style: TextStyle(color: Colors.white),
-            )
-        )
+        child: CustomButton(text: "Thêm địa chỉ", onPressed: (){
+          if(list.length >= 3){
+            showDialogUilt(context, "Thông báo", "Chỉ được tạo tối đã 3 địa chỉ", (){});
+          }else{
+
+          }
+        })
       ),
     );
   }

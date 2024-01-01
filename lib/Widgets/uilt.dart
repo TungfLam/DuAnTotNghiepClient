@@ -28,8 +28,8 @@ Future<void> showDialogUilt(BuildContext context , String title , String content
           actions: [
             TextButton(
                 onPressed: (){
-                  onPressed();
                   Navigator.pop(context);
+                  onPressed();
                 },
                 child: const Text("OK")
             )
