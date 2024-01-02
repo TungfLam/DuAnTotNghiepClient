@@ -155,6 +155,11 @@ class _DiscountScreenState extends State<DiscountScreen> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.grey,
+                          fontSize: 10,
+                          decoration:
+                              TextDecoration.lineThrough, // Thêm gạch ngang
+                          decorationColor: Colors.grey, // Màu của gạch ngang
+                          decorationThickness: 1.5, // Độ dày của gạch ngang
                         ),
                       ),
                       Text(
