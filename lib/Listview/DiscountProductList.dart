@@ -42,6 +42,7 @@ class _DiscountScreenState extends State<DiscountScreen> {
       print('Error during API call: $error');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,7 +114,8 @@ class _DiscountScreenState extends State<DiscountScreen> {
               MaterialPageRoute(
                 builder: (context) => DetailDcProduct(
                   title: 'Chi tiết sản phẩm',
-                  productdc: productdc, // Truyền đối tượng sản phẩm đã được chọn
+                  productdc:
+                      productdc, // Truyền đối tượng sản phẩm đã được chọn
                 ),
               ),
             );
@@ -150,6 +152,13 @@ class _DiscountScreenState extends State<DiscountScreen> {
                       SizedBox(height: 8),
                       Text(
                         '${NumberFormat.decimalPattern().format(productdc.price ?? 0)} đ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Text(
+                        '${NumberFormat.decimalPattern().format(productdc.discount ?? 0)} đ',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Color(0xff9975ff),
