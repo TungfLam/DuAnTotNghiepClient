@@ -1,5 +1,7 @@
 class LocationModel {
-  String? location;
+  String? id;
+  String? address;
+  String? specific_address;
 
-  LocationModel(this.location);
+  LocationModel({this.id ,this.address, this.specific_address});
 }

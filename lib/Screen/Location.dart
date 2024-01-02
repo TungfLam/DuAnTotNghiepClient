@@ -1,5 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
+
+import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/Location_Model.dart';
+import 'package:appclient/models/apiRes.dart';
+import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LocationScreen extends StatefulWidget {
   const LocationScreen({super.key});
@@ -7,98 +16,133 @@ class LocationScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => LocationPage();
 }
-
+String idUsr = '';
 class LocationPage extends State<LocationScreen> {
-  List<LocationModel> list = [
-    LocationModel(
-        'Số nhà 1, ngõ 1 An Xá, Quốc Tuấn, Nam Sách, Hải Dương fsdf sfsfsfsfsfsd'),
-    LocationModel('Số nhà 1, ngõ 1 An Xá, Quốc Tuấn, Nam Sách, Hải Dương'),
-    LocationModel('Số nhà 1, ngõ 1 An Xá, Quốc Tuấn, Nam Sách, Hải Dương'),
-    LocationModel('Số nhà 1, ngõ 1 An Xá, Quốc Tuấn, Nam Sách, Hải Dương'),
-    LocationModel('Số nhà 1, ngõ 1 An Xá, Quốc Tuấn, Nam Sách, Hải Dương'),
-    LocationModel('Số nhà 1, ngõ 1 An Xá, Quốc Tuấn, Nam Sách, Hải Dương')
-  ];
+  List<LocationModel> list = [];
   var select = 0;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    fetchData();
+    select = 0;
   }
 
   @override
   void setState(VoidCallback fn) {
-    // TODO: implement setState
     super.setState(fn);
+  }
+
+  Future<void> fetchData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? idUser = prefs.getString("idUser");
+    final String? addressuser = prefs.getString('address');
+    idUsr = idUser ?? '';
+
+    try {
+      var response = await http.get(Uri.parse(
+          '$BASE_API/api/address/$idUser'));
+      if (response.statusCode == 200) {
+        final List<dynamic> responseData = jsonDecode(response.body);
+        for (int i = 0; i < responseData.length; i++) {
+          LocationModel locationModel = LocationModel(
+            id : responseData[i]['_id'],
+            address: responseData[i]['address'],
+            specific_address: responseData[i]['specific_addres'],
+          );
+
+          if(addressuser != null){
+            if(addressuser == locationModel.id){
+              select = i;
+              print(addressuser);
+              print('==$i');
+            }
+          }
+          setState(() {
+            list.add(locationModel);
+          });
+        }
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Location',
+          'Địa chỉ',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            // Handle the back button press here, such as navigating back
-            Navigator.of(context).pop();
-          },
-        ),
-        elevation: 0.5,
       ),
-      body: ListView.builder(
-        itemCount: list.length,
-        itemBuilder: (context, index) {
-          var notifi = list[index];
-          return itemLocation(context, notifi, index, select, () {
-            setState(() {
-              select = index;
-            });
-          });
-        },
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: list.length,
+              itemBuilder: (context, index) {
+                var notifi = list[index];
+                return itemLocation(context, notifi, index, select, () {
+                  setState(() {
+                    select = index;
+                  });
+                });
+              },
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Text('Số lượng địa chỉ ${list.length}/3')
+          ],
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
-          color: Colors.transparent,
-          child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6342E8)),
-              onPressed: () {},
-              child: const Text(
-                'THÊM ĐỊA CHỈ',
-                style: TextStyle(color: Colors.white),
-              ))),
+        height: 72,
+        color: Colors.white,
+        child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF6342E8)),
+            onPressed: () {
+              Navigator.pushNamed(context, '/changelocation');
+            },
+            child: const Text(
+              'THÊM ĐỊA CHỈ',
+              style: TextStyle(color: Colors.white),
+            )
+        )
+      ),
     );
   }
 }
 
-Widget itemLocation(BuildContext context, LocationModel location, int index,
-    int select, VoidCallback callback) {
+Widget itemLocation(BuildContext context, LocationModel location,int index,int select, VoidCallback callback) {
   String? firstLocation;
   String? lastLocation;
-  List<String> list = location.location.toString().split(',');
+  String loca = '${location.specific_address}, ${location.address}';
+  List<String> list = loca.toString().split(',');
   if (list.length >= 3) {
     firstLocation =
         list.sublist(0, list.length - 3).join(',').replaceAll(',', ' ').trim();
     lastLocation = list.sublist(list.length - 3, list.length).join(',').trim();
   }
   return InkWell(
-    onTap: () => {callback()},
+    onTap: () {
+      callback();
+      setAddress(context , idUsr , location.id.toString());
+    },
     child: Container(
-      width: MediaQuery.of(context).size.width,
-      margin: const EdgeInsets.only(left: 10, right: 10, top: 20),
-      padding: const EdgeInsets.all(15),
+      width: double.infinity,
+      margin: const EdgeInsets.only(left: 16, right: 16, top: 8 , bottom: 8),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: index % 2 == 0
-            ? const Color.fromARGB(245, 245, 245, 255)
-            : const Color.fromARGB(245, 245, 245, 255),
+        color: const Color.fromARGB(245, 245, 245, 255),
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
@@ -111,39 +155,68 @@ Widget itemLocation(BuildContext context, LocationModel location, int index,
       ),
       child: Row(
         children: [
-          Container(
-              margin: const EdgeInsets.only(right: 10),
-              child: Icon(
-                Icons.location_on_sharp,
-                color: index == select ? Colors.redAccent : Colors.grey,
-              )),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 1.3,
-                child: Text(
-                  lastLocation ?? '',
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
+          Expanded(
+            flex: 1,
+            child: Icon(
+              Icons.location_on_sharp,
+              color: index == select ? Colors.redAccent : Colors.grey,
+            ),
+          ),
+          Expanded(
+            flex: 6,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  child: Text(
+                    lastLocation ?? '',
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 1.3,
-                child: Container(
-                    margin: const EdgeInsets.only(top: 10),
-                    child: Text(
-                      firstLocation ?? '',
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    )),
-              )
-            ],
+                SizedBox(
+                  child: Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        firstLocation ?? '',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      )),
+                )
+              ],
+            ),
           )
         ],
       ),
     ),
   );
+}
+
+Future<void> setAddress(BuildContext context , String idUser , String idAddress) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final response = await http.post(
+    Uri.parse("$BASE_API/api/setaddress"),
+    headers: <String , String>{
+      'Content-Type': 'application/json; charset=UTF-8'
+    },
+    body: jsonEncode(<String , String>{
+      'idUser' : idUser,
+      'idAddress' : idAddress
+    })
+  );
+
+  if(response.statusCode == 200){
+    ApiRes res = ApiRes.fromJson(jsonDecode(response.body));
+
+    if(res.err!){
+      showSnackBarErr(context, res.msg!);
+    }else{
+      await prefs.setString("address", idAddress);
+      showSnackBar(context, res.msg!);
+    }
+  }else{
+    showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
+  }
 }

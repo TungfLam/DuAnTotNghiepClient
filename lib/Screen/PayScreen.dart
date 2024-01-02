@@ -33,7 +33,7 @@ class _PayScreenState extends State<PayScreen> {
     final requestData = {
       "idCart": widget.idcart,
       "amount": widget.totalAmount,
-      "language": "vn"
+      "language": "vi"
     };
     final headers = {
       'Content-Type': 'application/json',
@@ -90,7 +90,20 @@ class _PayScreenState extends State<PayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('Thanh toán')),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+            // Xử lý khi người dùng nhấn nút back
+          },
+        ),
+        title: const Text(
+          'Thanh toán',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        actions: const [],
       ),
       body: FutureBuilder(
         future: _createPaymentFuture,

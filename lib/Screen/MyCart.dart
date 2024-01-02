@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:appclient/models/productCartModel.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyCart extends StatefulWidget {
   const MyCart({Key? key, required this.title}) : super(key: key);
   final String title;
-  
 
   @override
   State<MyCart> createState() => _MyCartState();
@@ -41,12 +41,14 @@ class _MyCartState extends State<MyCart> {
       } else if (isLogin == false) {
         Navigator.pushNamed(context, '/login');
       }
+    } else {
+      Navigator.pushNamed(context, '/login');
     }
 
     if (idUser != null) {
       print("user id là: $idUser");
       setState(() {
-        userid=idUser;
+        userid = idUser;
       });
 
       try {
@@ -186,11 +188,15 @@ class _MyCartState extends State<MyCart> {
                       Container(
                         padding: const EdgeInsets.all(10),
                         child: Image.network(
-                          product.productId?.product?.image?.elementAt(0) ?? "",
-                          height: 100,
-                          width: 100,
-                          fit: BoxFit.cover,
-                        ),
+                            product.productId?.product?.image?.elementAt(0) ??
+                                "",
+                            height: 100,
+                            width: 100,
+                            fit: BoxFit.cover, errorBuilder:
+                                (BuildContext context, Object error,
+                                    StackTrace? stackTrace) {
+                          return Center(child: const Icon(Icons.image));
+                        }),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,7 +204,7 @@ class _MyCartState extends State<MyCart> {
                           Text('kính cỡ: ${product.productId?.sizeId?.name}'),
                           Text('Màu sắc: ${product.productId?.colorId?.name}'),
                           Text(
-                              'Đơn giá: đ${product.productId?.product?.price}'),
+                              'Đơn giá: ${NumberFormat.decimalPattern().format(product.productId?.product?.price)} đ'),
                           Text('Số lượng: ${product.quantity}'),
                         ],
                       )
@@ -456,7 +462,7 @@ class _MyCartState extends State<MyCart> {
     List<String> selectedCartIds = [];
     for (int i = 0; i < selectedProducts.length; i++) {
       if (selectedProducts[i]) {
-        String idcartselect="${products[i].sId}";
+        String idcartselect = "${products[i].sId}";
         selectedCartIds.add(idcartselect ?? '');
       }
     }
@@ -620,6 +626,22 @@ class _MyCartState extends State<MyCart> {
                                           Expanded(
                                             flex: 3,
                                             child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  'Số lượng: ${product.quantity! ?? ''}',
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 3,
+                                            child: Row(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               mainAxisAlignment:
@@ -627,7 +649,7 @@ class _MyCartState extends State<MyCart> {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  '\đ${product.productId?.product?.price ?? ''}',
+                                                  '${NumberFormat.decimalPattern().format(product.productId?.product?.price ?? '')} đ',
                                                   style: const TextStyle(
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.bold,
@@ -690,7 +712,7 @@ class _MyCartState extends State<MyCart> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Tổng tiền: đ$totalAmount',
+                    'Tổng tiền: ${NumberFormat.decimalPattern().format(totalAmount)} đ',
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -699,7 +721,8 @@ class _MyCartState extends State<MyCart> {
                   ElevatedButton(
                     onPressed: () {
                       // Xử lý khi nút Mua Hàng được nhấn
-                      print('Tổng tiền: $totalAmount');
+                      print(
+                          'Tổng tiền: ${NumberFormat.decimalPattern().format(totalAmount)} đ');
                       _showSelectedProductsModal();
                     },
                     child: const Text(

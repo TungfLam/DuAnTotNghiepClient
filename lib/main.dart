@@ -1,4 +1,6 @@
+import 'package:appclient/Screen/Comment/AllComment.dart';
 import 'package:appclient/Screen/BannerScreen.dart';
+import 'package:appclient/Screen/Comment/AddComment.dart';
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
 import 'package:appclient/Screen/Find.dart';
@@ -12,8 +14,8 @@ import 'package:appclient/Screen/Notification.dart';
 import 'package:appclient/Screen/PayScreen.dart';
 import 'package:appclient/Screen/Register.dart';
 import 'package:appclient/Screen/RegisterScreen2.dart';
+import 'package:appclient/Screen/billAllScreen.dart';
 
-import 'package:appclient/Screen/billScreen.dart';
 import 'package:appclient/Screen/otp_screen.dart';
 import 'package:appclient/Screen/profile.dart';
 import 'package:appclient/services/firebaseMessagingService.dart';
@@ -51,16 +53,16 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      initialRoute: '/profile', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
         '/': (context) => const MyHomePage(title: ''),
         '/register': (context) => const Register(title: ''),
         '/login': (context) => const Login(title: ''),
-        '/loginorregister': (context) => const LoginOrRegisterScreen(title: ''),
+        '/loginorregister': (context) => const LoginOrRegister(title: ''),
         '/mycart': (context) => const MyCart(title: ''),
-        '/bill': (context) => const BillScreen(),
+        '/bill': (context) => const BillAllScreen(),
         '/find': (context) => const Find(title: ''),
         '/favorite': (context) => const Favorite(title: ''),
         '/detaiproduct': (context) => const DetailProduct(title: ''),
@@ -68,14 +70,14 @@ class MyApp extends StatelessWidget {
         Otp_Screen.nameOtp : (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS : (context) => const LoginSMS(title: ""),
         RegisterScreen2.nameRegiterScree2 : (context) => const RegisterScreen2(title: ""),
+        AllComment.nameComment : (context) => AllComment(),
+        AddComment.nameAddComment : (context) => const AddComment(),
+
         '/pay': (context) => const PayScreen(userid: '',  idcart: [], totalAmount: 0, title: '',),
-
-
         '/notification': (context) => const NotificationScreen(),
         '/location': (context) => const LocationScreen(),
 
          '/profile': (context) => const profileScreen(),
-
         // Đăng ký đường dẫn cho màn hình MyCart
       },
     );
