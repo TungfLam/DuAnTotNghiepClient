@@ -121,7 +121,7 @@ class _RegisterState extends State<RegisterScreen2> {
     }
   }
 
-    Future<void> _getLocation() async {
+  Future<void> _getLocation() async {
     _addressCtrl.text = "Đang tìm ...";
     await _determinePosition();
     try {

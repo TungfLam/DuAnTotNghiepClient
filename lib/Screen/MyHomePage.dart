@@ -83,9 +83,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     TextButton(
                         onPressed: () async {
                           await prefs.clear();
+                          Navigator.of(context).pop();
                           await Navigator.of(context).pushNamedAndRemoveUntil(
                               '/login', (Route<dynamic> route) => false);
-                          Navigator.of(context).pop();
                         },
                         child: const Text("OK"))
                   ],

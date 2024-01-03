@@ -4,6 +4,7 @@ import 'package:appclient/Screen/Comment/AddComment.dart';
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
 import 'package:appclient/Screen/Find.dart';
+import 'package:appclient/Screen/Locations/ChangeLocation.dart';
 import 'package:appclient/Screen/Locations/Location.dart';
 import 'package:appclient/Screen/Login.dart';
 import 'package:appclient/Screen/LoginOrRegister.dart';
@@ -53,7 +54,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/location', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
@@ -72,6 +73,7 @@ class MyApp extends StatelessWidget {
         RegisterScreen2.nameRegiterScree2 : (context) => const RegisterScreen2(title: ""),
         AllComment.nameComment : (context) => AllComment(),
         AddComment.nameAddComment : (context) => const AddComment(),
+        ChangeLocation.nameChangeLocation : (context) => const ChangeLocation(),
 
         '/pay': (context) => const PayScreen(userid: '',  idcart: [], totalAmount: 0, title: '',),
         '/notification': (context) => const NotificationScreen(),

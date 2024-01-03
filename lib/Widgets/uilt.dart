@@ -38,3 +38,30 @@ Future<void> showDialogUilt(BuildContext context , String title , String content
       }
   );
 }
+
+Future<void> showDialogUilt2(BuildContext context , String title , String content , Function onPressed) async {
+  await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: [
+            TextButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+                child: const Text("back")
+            ),
+            TextButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                  onPressed();
+                },
+                child: const Text("OK")
+            )
+          ],
+        );
+      }
+  );
+}
