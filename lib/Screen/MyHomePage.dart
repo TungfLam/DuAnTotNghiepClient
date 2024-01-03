@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:appclient/Listview/DiscountProductList.dart';
 import 'package:appclient/Listview/MensProductList.dart';
 import 'package:appclient/Listview/PopularProductList.dart';
 import 'package:appclient/Listview/WomensProductList.dart';
@@ -210,7 +211,10 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const WomensProductList(),
             ),
             // Nội dung của Tab 4
-            const Center(child: Text('Khuyến mãi')),
+                       Container(
+              padding: const EdgeInsets.all(20),
+              child: const DiscountScreen(),
+            ),
           ],
         ),
         endDrawer: Drawer(

@@ -17,8 +17,8 @@ import 'package:appclient/models/productSizeColor.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DetailProduct extends StatefulWidget {
-  const DetailProduct(
+class DetailDcProduct extends StatefulWidget {
+  const DetailDcProduct(
       {Key? key, required this.title, this.product, this.productfvr, this.productdc})
       : super(key: key);
   final String title;
@@ -26,10 +26,10 @@ class DetailProduct extends StatefulWidget {
   final ListFavorite? productfvr;
   final ProductIdDC? productdc;
   @override
-  State<DetailProduct> createState() => _DetailProductState();
+  State<DetailDcProduct> createState() => _DetailDcProductState();
 }
 
-class _DetailProductState extends State<DetailProduct> {
+class _DetailDcProductState extends State<DetailDcProduct> {
   String _selectedSize = '';
   String _selectedColor = ''; // Biến lưu kích thước đã chọn
   List<ProductListSize> productList = [];
@@ -47,12 +47,7 @@ class _DetailProductState extends State<DetailProduct> {
   void initState() {
     super.initState();
     fetchProductList();
-    // arrComment.add(Comment(sId: "6558d4bcc1ab8c3f98265386" , productId: "65785ed034b7645148ab9f0a",
-    //   userId: "6524318746e12608b3558d74",comment: "em dep lam2",rating: 4 ,date: "123456" , images: ["$BASE_API/avatas/6524318746e12608b3558d74_images.jpg" , "$BASE_API/avatas/6524318746e12608b3558d74_images.jpg" ]));
-    // setState(() {
-    //
-    // });
-    if(widget.product != null){
+    if(widget.productdc != null){
       getComment();
     }
 
@@ -110,7 +105,7 @@ class _DetailProductState extends State<DetailProduct> {
                           width: 40,
                           height: 80,
                           child: Image.network(
-                              widget.product?.image?.elementAt(0) ?? '',
+                              widget.productdc?.image?.elementAt(0) ?? '',
                               fit: BoxFit.cover, errorBuilder:
                                   (BuildContext context, Object error,
                                       StackTrace? stackTrace) {
@@ -126,10 +121,10 @@ class _DetailProductState extends State<DetailProduct> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              widget.product?.name ?? 'Unknown Product Name',
+                              widget.productdc?.name ?? 'Unknown Product Name',
                             ),
                             Text(
-                              '${NumberFormat.decimalPattern().format(widget.product?.price ?? 0.00)} đ',
+                              '${NumberFormat.decimalPattern().format(widget.productdc?.price ?? 0.00)} đ',
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -396,7 +391,7 @@ class _DetailProductState extends State<DetailProduct> {
       //   ),
       final response = await http.read(
         Uri.parse(
-          'https://adadas.onrender.com/api/getListAll_deltail/${widget.product?.sId}',
+          'https://adadas.onrender.com/api/getListAll_deltail/${widget.productdc?.sId}',
         ),
         headers: {'Content-Type': 'application/json'},
       );
@@ -459,7 +454,7 @@ class _DetailProductState extends State<DetailProduct> {
 
   Future<void> getComment() async {
     final response = await http.get(
-        Uri.parse("$BASE_API/api/comment/${widget.product!.sId}?count=4"));
+        Uri.parse("$BASE_API/api/comment/${widget.productdc!.sId}?count=4"));
 
     if (response.statusCode == 200) {
       final data = await json.decode(response.body);
@@ -484,7 +479,7 @@ class _DetailProductState extends State<DetailProduct> {
                     height: 400,
                     color: const Color.fromARGB(255, 198, 198, 198),
                     child: PageView.builder(
-                      itemCount: widget.product?.image?.length ?? 0,
+                      itemCount: widget.productdc?.image?.length ?? 0,
                       onPageChanged: (index) {
                         setState(() {
                           _selectedImageIndex = index;
@@ -492,7 +487,7 @@ class _DetailProductState extends State<DetailProduct> {
                       },
                       itemBuilder: (context, index) {
                         return Image.network(
-                          widget.product?.image?.elementAt(index) ?? "",
+                          widget.productdc?.image?.elementAt(index) ?? "",
                           fit: BoxFit.cover,
                         );
                       },
@@ -511,7 +506,7 @@ class _DetailProductState extends State<DetailProduct> {
                             Expanded(
                               flex: 7,
                               child: Text(
-                                widget.product?.name ?? 'Unknown Product Name',
+                                widget.productdc?.name ?? 'Unknown Product Name',
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 17,
@@ -521,7 +516,7 @@ class _DetailProductState extends State<DetailProduct> {
                             Expanded(
                               flex: 3,
                               child: Text(
-                                '${NumberFormat.decimalPattern().format(widget.product?.price ?? 0.00)} đ',
+                                '${NumberFormat.decimalPattern().format(widget.productdc?.price ?? 0.00)} đ',
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 18,
@@ -543,7 +538,7 @@ class _DetailProductState extends State<DetailProduct> {
                                     fontSize: 17, fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                widget.product?.description ??
+                                widget.productdc?.description ??
                                     'Unknown Product Name',
                                 style: const TextStyle(
                                     fontSize: 15, color: Colors.grey),
