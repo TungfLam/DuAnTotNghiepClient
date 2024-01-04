@@ -1,12 +1,15 @@
 import 'dart:convert';
 
 import 'package:appclient/Widgets/itemComment.dart';
+import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class AllComment extends StatefulWidget{
   static const nameComment = "/allComment";
+
+  const AllComment({super.key});
 
   @override
   State<AllComment> createState() => _AllCommentState();
@@ -15,16 +18,18 @@ class AllComment extends StatefulWidget{
 const List<String> list = <String>[ '0','1', '2', '3', '4', '5'];
 class _AllCommentState extends State<AllComment> {
   String dropdownValue = list.first;
+  String idProduct = '';
   List arrComment = [];
 
   Future<void> getComment() async {
     final response = await http.get(
-        Uri.parse("$BASE_API/api/comment/65785ed034b7645148ab9f0a?star=$dropdownValue")
+        Uri.parse("$BASE_API/api/comment/$idProduct?star=$dropdownValue")
     );
 
     if(response.statusCode == 200){
       final data = await json.decode(response.body);
       arrComment = data;
+      print(arrComment.length);
       setState(() {});
     }
   }
@@ -32,6 +37,16 @@ class _AllCommentState extends State<AllComment> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    idProduct = ModalRoute.of(context)!.settings.arguments.toString();
+    if(idProduct == ""){
+      return;
+    }
     getComment();
   }
 

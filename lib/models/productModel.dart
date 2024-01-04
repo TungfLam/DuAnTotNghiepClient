@@ -8,9 +8,11 @@ class productModel {
   int? price;
   int? iV;
   bool? isFavorite;
+  int? rating;
 
   productModel(
-      {this.sId,
+    {
+      this.sId,
       this.name,
       this.description,
       this.image,
@@ -18,7 +20,10 @@ class productModel {
       this.updatedAt,
       this.price,
       this.iV,
-      this.isFavorite});
+      this.isFavorite,
+      this.rating,
+    }
+  );
 
   productModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -30,6 +35,7 @@ class productModel {
     price = json['price'];
     iV = json['__v'];
     isFavorite = json['isFavorite'];
+    rating = json['rating'];
   }
 
   Map<String, dynamic> toJson() {
@@ -42,7 +48,8 @@ class productModel {
     data['updatedAt'] = this.updatedAt;
     data['price'] = this.price;
     data['__v'] = this.iV;
-     data['isFavorite'] = this.isFavorite;
+    data['isFavorite'] = this.isFavorite;
+    data['rating'] = this.rating;
     return data;
   }
 }

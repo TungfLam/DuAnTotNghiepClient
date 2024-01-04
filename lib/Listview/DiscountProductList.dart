@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:appclient/Screen/DetaildcProduct.dart';
 
 import 'package:appclient/models/slideShowMOdel.dart';
+import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -23,7 +24,7 @@ class _DiscountScreenState extends State<DiscountScreen> {
   }
 
   Future<void> fetchBanners() async {
-    final apiUrl = 'https://adadas.onrender.com/api/banner';
+    const apiUrl = '$BASE_API/api/banner';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));

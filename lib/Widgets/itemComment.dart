@@ -158,13 +158,14 @@ class _itemCommentState extends State<itemComment> {
           ) :
           const SizedBox(),
 
+        const SizedBox(height: 8),
         Row(
          children: images.map((e) =>
            SizedBox(
              width: 64,
              height: 64,
              child: Image.network(
-               "$e",
+               "$BASE_API$e",
                errorBuilder: (BuildContext context , Object error, StackTrace? stackTrace){
                  return const Icon(Icons.image);
                }
