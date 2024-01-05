@@ -211,7 +211,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const WomensProductList(),
             ),
             // Nội dung của Tab 4
-                       Container(
+            Container(
               padding: const EdgeInsets.all(20),
               child: const DiscountScreen(),
             ),
@@ -233,10 +233,13 @@ class _MyHomePageState extends State<MyHomePage> {
                         padding: EdgeInsets.only(right: 16.0),
                         child: ClipOval(
                           child: Image(
-                            height: 60,
-                            width: 60,
-                            image: NetworkImage('$BASE_API$anhdd'),
-                          ),
+                              height: 60,
+                              width: 60,
+                              image: NetworkImage('$BASE_API$anhdd'),
+                              errorBuilder: (BuildContext context, Object error,
+                                  StackTrace? stackTrace) {
+                                return Center(child: const Icon(Icons.image));
+                              }),
                         ),
                       ),
                     Column(
@@ -300,12 +303,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
-                  if(_inout == "Đăng xuất"){
+                  if (_inout == "Đăng xuất") {
                     Navigator.pushNamed(context, '/location');
-                  }else{
+                  } else {
                     Navigator.pushNamed(context, '/login');
                   }
-
                 },
               ),
               ListTile(
