@@ -84,9 +84,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     TextButton(
                         onPressed: () async {
                           await prefs.clear();
+                          Navigator.of(context).pop();
                           await Navigator.of(context).pushNamedAndRemoveUntil(
                               '/login', (Route<dynamic> route) => false);
-                          Navigator.of(context).pop();
                         },
                         child: const Text("OK"))
                   ],
@@ -305,8 +305,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {
                   if (_inout == "Đăng xuất") {
                     Navigator.pushNamed(context, '/location');
-                  } else {
-                    Navigator.pushNamed(context, '/login');
+                  }else{
+                    showDialogUilt(context, "Thông báo",
+                      "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
+                      () {
+                        print("object");
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/login');
+                        print("object");
+                      }
+                    );
                   }
                 },
               ),

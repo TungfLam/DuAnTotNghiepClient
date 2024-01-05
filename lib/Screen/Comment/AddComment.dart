@@ -28,6 +28,7 @@ class _AddCommentState extends State<AddComment> {
   List<TextEditingController> arrStar = [];
   List<TextEditingController> arrComment = [];
   String idUser = '';
+  String idBill = '';
 
   Future<void> getProductBill() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -35,11 +36,11 @@ class _AddCommentState extends State<AddComment> {
       idUser = prefs.getString("idUser")!;
     }catch(e){
       print(e);
-      // Navigator.pop(context);
+      Navigator.pop(context);
     }
 
     final response = await http.get(
-      Uri.parse("$BASE_API/api/bill-by-id/65819a903c68d1ff1e421857")
+      Uri.parse("$BASE_API/api/bill-by-id/$idBill")
     );
 
     if(response.statusCode == 200){
@@ -70,11 +71,11 @@ class _AddCommentState extends State<AddComment> {
       }
     }else{
       showSnackBarErr(context, "Err : lỗi server");
-      // Navigator.pop(context);
+      Navigator.pop(context);
     }
   }
 
-  Future<void> postComment(String IdProductDetail, String comment, String rating, List<XFile> images) async {
+  Future<void> postComment(String IdProductDetail , String IdProduct , String comment, String rating, List<XFile> images) async {
 
     final request = http.MultipartRequest('POST' , Uri.parse("$BASE_API/api/comment"));
 
@@ -85,8 +86,9 @@ class _AddCommentState extends State<AddComment> {
       );
     }
 
-    request.fields['ProductId'] = IdProductDetail;
-    request.fields['UserId'] = "6524318746e12608b3558d74";
+    request.fields['ProductDetailId'] = IdProductDetail;
+    request.fields['ProductId'] = "ProductId";
+    request.fields['UserId'] = idUser;
     request.fields['Comment'] = comment;
     request.fields['rating'] = rating;
 
@@ -113,7 +115,7 @@ class _AddCommentState extends State<AddComment> {
       },
       body: jsonEncode(<String , String>{
         'ProductDetailId' : idProductDetail,
-        'UserId' : "6524318746e12608b3558d74"
+        'UserId' : idUser
       })
     );
 
@@ -152,6 +154,16 @@ class _AddCommentState extends State<AddComment> {
   void initState() {
     super.initState();
 
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    idBill = ModalRoute.of(context)!.settings.arguments.toString();
+    if(idBill == ''){
+      return;
+    }
     getProductBill();
   }
 
@@ -165,7 +177,7 @@ class _AddCommentState extends State<AddComment> {
             borderRadius: const BorderRadius.all(Radius.circular(8)),
             onTap: (){
               for(int i = 0; i < productBill.length ; i++){
-                  postComment(productBill[i]['product_id'], arrComment[i].text, arrStar[i].text, _images[i]);
+                  postComment(productBill[i]['product_id'] , productBill[i]['product_data'][''], arrComment[i].text, arrStar[i].text, _images[i]);
               }
             },
             child: const Padding(

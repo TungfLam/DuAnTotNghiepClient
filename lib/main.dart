@@ -4,7 +4,8 @@ import 'package:appclient/Screen/Comment/AddComment.dart';
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
 import 'package:appclient/Screen/Find.dart';
-import 'package:appclient/Screen/Location.dart';
+import 'package:appclient/Screen/Locations/ChangeLocation.dart';
+import 'package:appclient/Screen/Locations/Location.dart';
 import 'package:appclient/Screen/Login.dart';
 import 'package:appclient/Screen/LoginOrRegister.dart';
 import 'package:appclient/Screen/LoginSMS.dart';
@@ -70,8 +71,9 @@ class MyApp extends StatelessWidget {
         Otp_Screen.nameOtp : (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS : (context) => const LoginSMS(title: ""),
         RegisterScreen2.nameRegiterScree2 : (context) => const RegisterScreen2(title: ""),
-        AllComment.nameComment : (context) => AllComment(),
+        AllComment.nameComment : (context) => const AllComment(),
         AddComment.nameAddComment : (context) => const AddComment(),
+        ChangeLocation.nameChangeLocation : (context) => const ChangeLocation(),
 
         '/pay': (context) => const PayScreen(userid: '',  idcart: [], totalAmount: 0, title: '',),
         '/notification': (context) => const NotificationScreen(),

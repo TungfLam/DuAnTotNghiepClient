@@ -54,7 +54,7 @@ class _DetailDcProductState extends State<DetailDcProduct> {
   }
 
   void incrementQuantity() {
-    productList.forEach((productListSize) {
+    for (var productListSize in productList) {
       if (_selectedSize == productListSize.sizeId?.name &&
           _selectedColor == productListSize.colorId?.name) {
         setState(() {
@@ -64,7 +64,7 @@ class _DetailDcProductState extends State<DetailDcProduct> {
           }
         });
       }
-    });
+    }
   }
 
   void decrementQuantity() {
@@ -77,11 +77,11 @@ class _DetailDcProductState extends State<DetailDcProduct> {
 
   void updateSizeList() {
     sizeList.clear();
-    productList.forEach((productListSize) {
+    for (var productListSize in productList) {
       if (productListSize.colorId?.name == _selectedColor) {
         sizeList.add('${productListSize.sizeId?.name}');
       }
-    });
+    }
   }
 
   void _showSizeColorModal(BuildContext context) {
@@ -408,10 +408,7 @@ class _DetailDcProductState extends State<DetailDcProduct> {
       sizeList.clear();
       colorList.clear();
 
-      productList.forEach((productListSize) {
-        // print('Quantity: ${productListSize.quantity}');
-        // print('Quantity: ${productListSize.sizeId?.name}');
-        // print('idsizecolor : ${productListSize.sId}');
+      for (var productListSize in productList) {
         sizeList.add('${productListSize.sizeId?.name}');
         colorList.add('${productListSize.colorId?.name}');
         if (_selectedSize == productListSize.sizeId?.name &&
@@ -421,7 +418,7 @@ class _DetailDcProductState extends State<DetailDcProduct> {
             _selectedProductListSizeId = productListSize.sId;
           });
         }
-      });
+      }
     } catch (error) {
       print('Error fetching product list: $error');
     }
@@ -457,8 +454,10 @@ class _DetailDcProductState extends State<DetailDcProduct> {
         Uri.parse("$BASE_API/api/comment/${widget.productdc!.sId}?count=4"));
 
     if (response.statusCode == 200) {
+      print("object");
       final data = await json.decode(response.body);
       arrComment = data;
+      print("leng : ${arrComment.length}");
       setState(() {});
     }
   }
@@ -525,7 +524,7 @@ class _DetailDcProductState extends State<DetailDcProduct> {
                             )
                           ],
                         ),
-                        showStar(countStar: 5),
+                        showStar(countStar: widget.product?.rating ?? 0),
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.only(top: 16),
@@ -570,9 +569,8 @@ class _DetailDcProductState extends State<DetailDcProduct> {
                               Navigator.pushNamed(
                                   context, AllComment.nameComment);
                             },
-                            child: const Text(
-                              "Xem tất cả bình luận",
-                              style: TextStyle(fontSize: 18),
+                            child: Text((arrComment.length >= 5) ? "Xem tất cả đánh giá" : "",
+                              style: const TextStyle(fontSize: 18),
                             )),
                         const SizedBox(height: 56)
                       ])),
