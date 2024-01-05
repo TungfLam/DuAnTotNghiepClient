@@ -101,7 +101,7 @@ class _MyCartState extends State<MyCart> {
   Future<void> addBillApiCall(String idcart, int payment) async {
     // Tạo đối tượng body theo định dạng mà API yêu cầu
     final Map<String, dynamic> requestBody = {
-      "user_id": "6524318746e12608b3558d74",
+      "user_id": "$userid",
       "cart_id": "$idcart",
       "payments": payment,
       "total_amount": 1,
@@ -167,119 +167,119 @@ class _MyCartState extends State<MyCart> {
         return StatefulBuilder(
           builder: (context, setState) {
             return Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Center(
-                    child: Text(
-                      product.productId?.product?.name ?? "Unknown",
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff6342E8),
-                      ),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        child: Image.network(
-                            product.productId?.product?.image?.elementAt(0) ??
-                                "",
-                            height: 100,
-                            width: 100,
-                            fit: BoxFit.cover, errorBuilder:
-                                (BuildContext context, Object error,
-                                    StackTrace? stackTrace) {
-                          return Center(child: const Icon(Icons.image));
-                        }),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('kính cỡ: ${product.productId?.sizeId?.name}'),
-                          Text('Màu sắc: ${product.productId?.colorId?.name}'),
-                          Text(
-                              'Đơn giá: ${NumberFormat.decimalPattern().format(product.productId?.product?.price)} đ'),
-                          Text('Số lượng: ${product.quantity}'),
-                        ],
-                      )
-                    ],
-                  ),
-                  Container(
-                    width: double.infinity,
-                    child: DropdownButton<String>(
-                      hint: Text('phương thức thanh toán'),
-                      value: selectedPaymentMethod.isNotEmpty
-                          ? selectedPaymentMethod
-                          : null,
-                      onChanged: (String? newPaymentMethod) {
-                        setState(() {
-                          selectedPaymentMethod = newPaymentMethod!;
-                          isVnPaySelected =
-                              selectedPaymentMethod == 'Thanh toán VNPAY';
-                        });
-                      },
-                      items: paymentMethods.map((String paymentMethod) {
-                        return DropdownMenuItem<String>(
-                          value: paymentMethod,
-                          child: Text(paymentMethod),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  Container(child: const Text("phiếu giảm giá")),
-                  Text(
-                      "Thành tiền: đ${(product.productId?.product?.price)! * (product.quantity ?? 0)}"),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        print('phương thức tt đã chọn: $selectedPaymentMethod');
-                        if (product.sId != null) {
-                          if (isVnPaySelected) {
-                            // Xử lý thanh toán VNPAY
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => PayScreen(
-                            //       productId: product.sId!,
-                            //       title: '',
-                            //       totalAmount:
-                            //           (product.productId?.product?.price)! *
-                            //               (product.quantity ?? 0),
-                            //     ),
-                            //   ),
-                            // );
-                            print('thanh toán vnpay: ${product!.sId}');
-                          } else {
-                            // Xử lý thanh toán khác
-                            addBillApiCall(product.sId!, 2);
-                          }
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.shopping_cart,
-                        color: Colors.white,
-                      ),
-                      label: Text(
-                        isVnPaySelected ? 'Thanh toán' : 'Đặt hàng',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF6342E8),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              // width: double.infinity,
+              // padding: const EdgeInsets.all(20),
+              // child: Column(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Center(
+              //       child: Text(
+              //         product.productId?.product?.name ?? "Unknown",
+              //         style: const TextStyle(
+              //           fontSize: 18,
+              //           fontWeight: FontWeight.bold,
+              //           color: Color(0xff6342E8),
+              //         ),
+              //       ),
+              //     ),
+              //     Row(
+              //       children: [
+              //         Container(
+              //           padding: const EdgeInsets.all(10),
+              //           child: Image.network(
+              //               product.productId?.product?.image?.elementAt(0) ??
+              //                   "",
+              //               height: 100,
+              //               width: 100,
+              //               fit: BoxFit.cover, errorBuilder:
+              //                   (BuildContext context, Object error,
+              //                       StackTrace? stackTrace) {
+              //             return Center(child: const Icon(Icons.image));
+              //           }),
+              //         ),
+              //         Column(
+              //           crossAxisAlignment: CrossAxisAlignment.start,
+              //           children: [
+              //             Text('kính cỡ: ${product.productId?.sizeId?.name}'),
+              //             Text('Màu sắc: ${product.productId?.colorId?.name}'),
+              //             Text(
+              //                 'Đơn giá: ${NumberFormat.decimalPattern().format(product.productId?.product?.price)} đ'),
+              //             Text('Số lượng: ${product.quantity}'),
+              //           ],
+              //         )
+              //       ],
+              //     ),
+              //     Container(
+              //       width: double.infinity,
+              //       child: DropdownButton<String>(
+              //         hint: Text('phương thức thanh toán'),
+              //         value: selectedPaymentMethod.isNotEmpty
+              //             ? selectedPaymentMethod
+              //             : null,
+              //         onChanged: (String? newPaymentMethod) {
+              //           setState(() {
+              //             selectedPaymentMethod = newPaymentMethod!;
+              //             isVnPaySelected =
+              //                 selectedPaymentMethod == 'Thanh toán VNPAY';
+              //           });
+              //         },
+              //         items: paymentMethods.map((String paymentMethod) {
+              //           return DropdownMenuItem<String>(
+              //             value: paymentMethod,
+              //             child: Text(paymentMethod),
+              //           );
+              //         }).toList(),
+              //       ),
+              //     ),
+              //     Container(child: const Text("phiếu giảm giá")),
+              //     Text(
+              //         "Thành tiền: đ${(product.productId?.product?.price)! * (product.quantity ?? 0)}"),
+              //     SizedBox(
+              //       width: double.infinity,
+              //       child: ElevatedButton.icon(
+              //         onPressed: () {
+              //           print('phương thức tt đã chọn: $selectedPaymentMethod');
+              //           if (product.sId != null) {
+              //             if (isVnPaySelected) {
+              //               // Xử lý thanh toán VNPAY
+              //               // Navigator.push(
+              //               //   context,
+              //               //   MaterialPageRoute(
+              //               //     builder: (context) => PayScreen(
+              //               //       productId: product.sId!,
+              //               //       title: '',
+              //               //       totalAmount:
+              //               //           (product.productId?.product?.price)! *
+              //               //               (product.quantity ?? 0),
+              //               //     ),
+              //               //   ),
+              //               // );
+              //               print('thanh toán vnpay: ${product!.sId}');
+              //             } else {
+              //               // Xử lý thanh toán khác
+              //               addBillApiCall(product.sId!, 2);
+              //             }
+              //           }
+              //         },
+              //         icon: const Icon(
+              //           Icons.shopping_cart,
+              //           color: Colors.white,
+              //         ),
+              //         label: Text(
+              //           isVnPaySelected ? 'Thanh toán' : 'Đặt hàng',
+              //           style: TextStyle(
+              //             color: Colors.white,
+              //             fontWeight: FontWeight.bold,
+              //           ),
+              //         ),
+              //         style: ElevatedButton.styleFrom(
+              //           backgroundColor: const Color(0xFF6342E8),
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
             );
           },
         );
@@ -304,6 +304,10 @@ class _MyCartState extends State<MyCart> {
                     for (int i = 0; i < products.length; i++)
                       if (selectedProducts[i])
                         _buildProductDetailsWidget(products[i]),
+
+                    Container( 
+                      child: Text('Adadas voucher'),
+                    ),
                     Container(
                       width: double.infinity,
                       child: DropdownButton<String>(
@@ -326,6 +330,7 @@ class _MyCartState extends State<MyCart> {
                         }).toList(),
                       ),
                     ),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
