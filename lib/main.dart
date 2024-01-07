@@ -1,6 +1,17 @@
 import 'package:appclient/Screen/Comment/AllComment.dart';
 import 'package:appclient/Screen/BannerScreen.dart';
+
+
+import 'package:appclient/Screen/ChangeLocation.dart';
+import 'package:appclient/Screen/ChangePassword.dart';
+
+import 'package:appclient/Screen/ConcentricAnimationOnboarding.dart';
+
+import 'package:appclient/Screen/ConcentricAnimationOnboarding.dart';
+
+
 import 'package:appclient/Screen/Comment/AddComment.dart';
+
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
 import 'package:appclient/Screen/Find.dart';
@@ -68,6 +79,46 @@ class MyApp extends StatelessWidget {
         '/favorite': (context) => const Favorite(title: ''),
         '/detaiproduct': (context) => const DetailProduct(title: ''),
 
+
+        Otp_Screen.nameOtp: (context) => const Otp_Screen(),
+        LoginSMS.nameLoginSMS: (context) => const LoginSMS(title: ""),
+        RegisterScreen2.nameRegiterScree2: (context) =>
+            const RegisterScreen2(title: ""),
+
+        AllComment.nameComment: (context) => AllComment(),
+        '/pay': (context) => const PayScreen(
+              userid: '',
+              idcart: [],
+              totalAmount: 0,
+              title: '',
+            ),
+
+        Otp_Screen.nameOtp: (context) => const Otp_Screen(),
+        LoginSMS.nameLoginSMS: (context) => const LoginSMS(title: ""),
+        RegisterScreen2.nameRegiterScree2: (context) =>
+            const RegisterScreen2(title: ""),
+
+        AllComment.nameComment: (context) => AllComment(),
+        '/pay': (context) => const PayScreen(
+              userid: '',
+              idcart: [],
+              totalAmount: 0,
+              title: '',
+            ),
+
+        '/notification': (context) => const NotificationScreen(),
+        '/location': (context) => const LocationScreen(),
+
+        '/changepassword': (context) => ChangePassword(),
+        '/changelocation': (context) => ChangeLocation(),
+
+        '/profile': (context) => const profileScreen(),
+        '/test': (context) => const ConcentricAnimationOnboarding(),
+
+        '/profile': (context) => const profileScreen(),
+        '/test': (context) => const ConcentricAnimationOnboarding(),
+
+
         Otp_Screen.nameOtp : (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS : (context) => const LoginSMS(title: ""),
         RegisterScreen2.nameRegiterScree2 : (context) => const RegisterScreen2(title: ""),
@@ -80,6 +131,7 @@ class MyApp extends StatelessWidget {
         '/location': (context) => const LocationScreen(),
 
          '/profile': (context) => const profileScreen(),
+
         // Đăng ký đường dẫn cho màn hình MyCart
       },
     );
