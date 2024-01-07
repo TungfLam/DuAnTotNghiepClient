@@ -28,7 +28,7 @@ class _MensProductListState extends State<MensProductList> {
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(
-      Uri.parse('$BASE_API/api/products/655ef4523d0e29622dc02c6c/$page'),
+      Uri.parse('$BASE_API/api/products/658b22fd972503452eb54013/$page'),
       headers: {'Content-Type': 'application/json'},
     ); // Thay thế URL của API sản phẩm
 

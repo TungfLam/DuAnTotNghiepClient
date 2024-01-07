@@ -1,8 +1,5 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:convert';
 
-import 'package:appclient/Screen/Comment/AddComment.dart';
 import 'package:appclient/Screen/Comment/AllComment.dart';
 import 'package:appclient/Widgets/buttomCustom.dart';
 import 'package:appclient/Widgets/itemComment.dart';
@@ -20,8 +17,8 @@ import 'package:appclient/models/productSizeColor.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DetailProduct extends StatefulWidget {
-  const DetailProduct(
+class DetailDcProduct extends StatefulWidget {
+  const DetailDcProduct(
       {Key? key, required this.title, this.product, this.productfvr, this.productdc})
       : super(key: key);
   final String title;
@@ -29,10 +26,10 @@ class DetailProduct extends StatefulWidget {
   final ListFavorite? productfvr;
   final ProductIdDC? productdc;
   @override
-  State<DetailProduct> createState() => _DetailProductState();
+  State<DetailDcProduct> createState() => _DetailDcProductState();
 }
 
-class _DetailProductState extends State<DetailProduct> {
+class _DetailDcProductState extends State<DetailDcProduct> {
   String _selectedSize = '';
   String _selectedColor = ''; // Biến lưu kích thước đã chọn
   List<ProductListSize> productList = [];
@@ -50,12 +47,7 @@ class _DetailProductState extends State<DetailProduct> {
   void initState() {
     super.initState();
     fetchProductList();
-    // arrComment.add(Comment(sId: "6558d4bcc1ab8c3f98265386" , productId: "65785ed034b7645148ab9f0a",
-    //   userId: "6524318746e12608b3558d74",comment: "em dep lam2",rating: 4 ,date: "123456" , images: ["$BASE_API/avatas/6524318746e12608b3558d74_images.jpg" , "$BASE_API/avatas/6524318746e12608b3558d74_images.jpg" ]));
-    // setState(() {
-    //
-    // });
-    if(widget.product != null){
+    if(widget.productdc != null){
       getComment();
     }
 
@@ -99,7 +91,7 @@ class _DetailProductState extends State<DetailProduct> {
         return StatefulBuilder(builder: (context, setState) {
           return Container(
             // Nội dung của ModalBottomSheet ở đây
-            padding: const EdgeInsets.fromLTRB(20, 35, 20, 20),
+            padding: EdgeInsets.fromLTRB(20, 35, 20, 20),
             width: double.infinity,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,30 +101,30 @@ class _DetailProductState extends State<DetailProduct> {
                   children: [
                     Expanded(
                         flex: 2,
-                        child: SizedBox(
+                        child: Container(
                           width: 40,
                           height: 80,
                           child: Image.network(
-                              widget.product?.image?.elementAt(0) ?? '',
+                              widget.productdc?.image?.elementAt(0) ?? '',
                               fit: BoxFit.cover, errorBuilder:
                                   (BuildContext context, Object error,
                                       StackTrace? stackTrace) {
-                            return const Center(child: Icon(Icons.image));
+                            return Center(child: const Icon(Icons.image));
                           }),
                         )),
                     Expanded(
                       flex: 6,
                       child: Container(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                        padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              widget.product?.name ?? 'Unknown Product Name',
+                              widget.productdc?.name ?? 'Unknown Product Name',
                             ),
                             Text(
-                              '${NumberFormat.decimalPattern().format(widget.product?.price ?? 0.00)} đ',
+                              '${NumberFormat.decimalPattern().format(widget.productdc?.price ?? 0.00)} đ',
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -144,8 +136,8 @@ class _DetailProductState extends State<DetailProduct> {
                     )
                   ],
                 ),
-                const Text("Màu sắc"),
-                SizedBox(
+                Text("Màu sắc"),
+                Container(
                   height: 35,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -167,14 +159,14 @@ class _DetailProductState extends State<DetailProduct> {
                           });
                         },
                         child: Container(
-                          padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
                           decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(Radius.circular(5)),
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
                             color: _selectedColor == uniqueColor
-                                ? const Color(0xFF6342E8)
+                                ? Color(0xFF6342E8)
                                 : Colors.grey[300],
                           ),
-                          margin: const EdgeInsets.symmetric(horizontal: 5),
+                          margin: EdgeInsets.symmetric(horizontal: 5),
                           height: 30,
                           child: Center(
                             child: Text(
@@ -191,8 +183,8 @@ class _DetailProductState extends State<DetailProduct> {
                     },
                   ),
                 ),
-                const Text("Size"),
-                SizedBox(
+                Text("Size"),
+                Container(
                   height: 40,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -213,13 +205,13 @@ class _DetailProductState extends State<DetailProduct> {
                         child: Container(
                           width: 50,
                           decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(Radius.circular(5)),
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
                             color: _selectedSize == uniqueSize
-                                ? const Color(0xFF6342E8)
+                                ? Color(0xFF6342E8)
                                 : Colors.grey[300],
                           ),
-                          margin: const EdgeInsets.symmetric(horizontal: 5),
-                          padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+                          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
                           child: Center(
                             child: Text(
                               uniqueSize,
@@ -238,12 +230,12 @@ class _DetailProductState extends State<DetailProduct> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text("Số lượng"),
+                    Text("Số lượng"),
                     Container(
                       height: 40,
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey, width: 1),
-                          borderRadius: const BorderRadius.all(Radius.circular(5))),
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
                       child: StatefulBuilder(
                         builder: (context, setState) {
                           return Row(
@@ -254,11 +246,11 @@ class _DetailProductState extends State<DetailProduct> {
                                     decrementQuantity();
                                   });
                                 },
-                                icon: const Icon(Icons.remove),
+                                icon: Icon(Icons.remove),
                               ),
                               Text(
                                 selectedQuantity.toString(),
-                                style: const TextStyle(fontSize: 16),
+                                style: TextStyle(fontSize: 16),
                               ),
                               IconButton(
                                 onPressed: () {
@@ -266,7 +258,7 @@ class _DetailProductState extends State<DetailProduct> {
                                     incrementQuantity();
                                   });
                                 },
-                                icon: const Icon(Icons.add),
+                                icon: Icon(Icons.add),
                               ),
                             ],
                           );
@@ -275,107 +267,109 @@ class _DetailProductState extends State<DetailProduct> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton.icon(
-                    onPressed: () async {
-                      if (_selectedSize.isNotEmpty &&
-                          _selectedColor.isNotEmpty) {
-                        for (var productListSize in productList) {
-                          if (_selectedSize == productListSize.sizeId?.name &&
-                              _selectedColor ==
-                                  productListSize.colorId?.name) {
-                            setState(() {
-                              maxQuantity = productListSize.quantity!;
-                              _selectedProductListSizeId =
-                                  productListSize.sId;
-                            });
+                Container(
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        if (_selectedSize.isNotEmpty &&
+                            _selectedColor.isNotEmpty) {
+                          productList.forEach((productListSize) {
+                            if (_selectedSize == productListSize.sizeId?.name &&
+                                _selectedColor ==
+                                    productListSize.colorId?.name) {
+                              setState(() {
+                                maxQuantity = productListSize.quantity!;
+                                _selectedProductListSizeId =
+                                    productListSize.sId;
+                              });
+                            }
+                          });
+
+                          print('Selected Size: $_selectedSize');
+                          print('Selected Color: $_selectedColor');
+                          print(
+                              'Selected ProductListSizeId: $_selectedProductListSizeId');
+
+                          // Thử thêm vào giỏ hàng
+                          bool addToCartSuccess = await addToCart(
+                              '$_selectedProductListSizeId', selectedQuantity);
+
+                          if (addToCartSuccess) {
+                            // Nếu thêm vào giỏ hàng thành công, hiển thị thông báo và cung cấp tùy chọn chuyển đến giỏ hàng
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Center(child: Text('Thông Báo')),
+                                  content: Text(
+                                      'Sản phẩm đã được thêm vào giỏ hàng.'),
+                                  actions: <Widget>[
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text('Đóng'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            // Điều hướng đến màn hình giỏ hàng
+                                            Navigator.of(context)
+                                                .pop(); // Đóng hộp thoại hiện tại trước khi điều hướng
+                                            Navigator.pushNamed(context,
+                                                '/mycart'); // Thay đổi '/cart' bằng định tuyến thích hợp
+                                          },
+                                          child: Text('Đến Giỏ Hàng'),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           }
-                        }
-
-                        print('Selected Size: $_selectedSize');
-                        print('Selected Color: $_selectedColor');
-                        print(
-                            'Selected ProductListSizeId: $_selectedProductListSizeId');
-
-                        // Thử thêm vào giỏ hàng
-                        bool addToCartSuccess = await addToCart(
-                            '$_selectedProductListSizeId', selectedQuantity);
-
-                        if (addToCartSuccess) {
-                          // Nếu thêm vào giỏ hàng thành công, hiển thị thông báo và cung cấp tùy chọn chuyển đến giỏ hàng
+                          // ... (các xử lý khác nếu cần)
+                        } else {
+                          // Hiển thị thông báo nếu chưa chọn size hoặc color
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: const Center(child: Text('Thông Báo')),
-                                content: const Text(
-                                    'Sản phẩm đã được thêm vào giỏ hàng.'),
+                                title: Center(child: Text('Xin Lỗi')),
+                                content: Text(
+                                    'Vui lòng chọn kích thước và màu sắc.'),
                                 actions: <Widget>[
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text('Đóng'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          // Điều hướng đến màn hình giỏ hàng
-                                          Navigator.of(context)
-                                              .pop(); // Đóng hộp thoại hiện tại trước khi điều hướng
-                                          Navigator.pushNamed(context,
-                                              '/mycart'); // Thay đổi '/cart' bằng định tuyến thích hợp
-                                        },
-                                        child: const Text('Đến Giỏ Hàng'),
-                                      ),
-                                    ],
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Đóng'),
                                   ),
                                 ],
                               );
                             },
                           );
                         }
-                        // ... (các xử lý khác nếu cần)
-                      } else {
-                        // Hiển thị thông báo nếu chưa chọn size hoặc color
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Center(child: Text('Xin Lỗi')),
-                              content: Text(
-                                  'Vui lòng chọn kích thước và màu sắc.'),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('Đóng'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.shopping_cart,
-                      color: Colors.white,
-                    ), // Icon tùy chọn
-                    label: const Text(
-                      'Thêm vào giỏ hàng',
-                      style: TextStyle(
+                      },
+                      icon: const Icon(
+                        Icons.shopping_cart,
                         color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                      ), // Icon tùy chọn
+                      label: const Text(
+                        'Thêm vào giỏ hàng',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF6342E8),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF6342E8),
+                      ),
                     ),
                   ),
                 ),
@@ -397,7 +391,7 @@ class _DetailProductState extends State<DetailProduct> {
       //   ),
       final response = await http.read(
         Uri.parse(
-          'https://adadas.onrender.com/api/getListAll_deltail/${widget.product?.sId}',
+          'https://adadas.onrender.com/api/getListAll_deltail/${widget.productdc?.sId}',
         ),
         headers: {'Content-Type': 'application/json'},
       );
@@ -434,7 +428,7 @@ class _DetailProductState extends State<DetailProduct> {
     try {
       final response = await http.post(
         Uri.parse(
-            'https://adadas.onrender.com/api/addCart/6528fddae170b2e55ff929a1/$productId'),
+            'https://adadas.onrender.com/api/addCart/6524318746e12608b3558d74/$productId'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'quantity': quantity}),
       );
@@ -457,11 +451,13 @@ class _DetailProductState extends State<DetailProduct> {
 
   Future<void> getComment() async {
     final response = await http.get(
-        Uri.parse("$BASE_API/api/comment/${widget.product!.sId}?count=4"));
+        Uri.parse("$BASE_API/api/comment/${widget.productdc!.sId}?count=4"));
 
     if (response.statusCode == 200) {
+      print("object");
       final data = await json.decode(response.body);
       arrComment = data;
+      print("leng : ${arrComment.length}");
       setState(() {});
     }
   }
@@ -482,7 +478,7 @@ class _DetailProductState extends State<DetailProduct> {
                     height: 400,
                     color: const Color.fromARGB(255, 198, 198, 198),
                     child: PageView.builder(
-                      itemCount: widget.product?.image?.length ?? 0,
+                      itemCount: widget.productdc?.image?.length ?? 0,
                       onPageChanged: (index) {
                         setState(() {
                           _selectedImageIndex = index;
@@ -490,7 +486,7 @@ class _DetailProductState extends State<DetailProduct> {
                       },
                       itemBuilder: (context, index) {
                         return Image.network(
-                          widget.product?.image?.elementAt(index) ?? "",
+                          widget.productdc?.image?.elementAt(index) ?? "",
                           fit: BoxFit.cover,
                         );
                       },
@@ -509,7 +505,7 @@ class _DetailProductState extends State<DetailProduct> {
                             Expanded(
                               flex: 7,
                               child: Text(
-                                widget.product?.name ?? 'Unknown Product Name',
+                                widget.productdc?.name ?? 'Unknown Product Name',
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 17,
@@ -519,7 +515,7 @@ class _DetailProductState extends State<DetailProduct> {
                             Expanded(
                               flex: 3,
                               child: Text(
-                                '${NumberFormat.decimalPattern().format(widget.product?.price ?? 0.00)} đ',
+                                '${NumberFormat.decimalPattern().format(widget.productdc?.price ?? 0.00)} đ',
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 18,
@@ -541,7 +537,7 @@ class _DetailProductState extends State<DetailProduct> {
                                     fontSize: 17, fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                widget.product?.description ??
+                                widget.productdc?.description ??
                                     'Unknown Product Name',
                                 style: const TextStyle(
                                     fontSize: 15, color: Colors.grey),
@@ -570,9 +566,10 @@ class _DetailProductState extends State<DetailProduct> {
                         const SizedBox(height: 8),
                         InkWell(
                             onTap: () {
-                              Navigator.of(context).pushNamed(AllComment.nameComment, arguments: widget.product?.sId);
+                              Navigator.pushNamed(
+                                  context, AllComment.nameComment);
                             },
-                            child: Text((arrComment.length >= 4) ? "Xem tất cả đánh giá" : "",
+                            child: Text((arrComment.length >= 5) ? "Xem tất cả đánh giá" : "",
                               style: const TextStyle(fontSize: 18),
                             )),
                         const SizedBox(height: 56)

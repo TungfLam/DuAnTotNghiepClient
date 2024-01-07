@@ -6,7 +6,6 @@ import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:appclient/models/productModel.dart';
 import 'package:appclient/Screen/DetailFavariteProduct.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -38,7 +37,7 @@ class _FavoriteState extends State<Favorite> {
 
       try {
         final response = await http.get(
-          Uri.parse('https://adadas.onrender.com/api/getListFavorite/$idUser'),
+          Uri.parse('$BASE_API/api/getListFavorite/$idUser'),
         );
 
         if (response.statusCode == 200) {

@@ -61,6 +61,7 @@ class _LoginState extends State<Login> {
           await prefs.setString("fullname", res.fullname.toString());
           await prefs.setString("phone", res.phone.toString());
           await prefs.setString("email", res.email.toString());
+          await prefs.setString("address", res.address.toString());
           await prefs.setBool("isLogin", true);
 
           showSnackBar(context, res.msg!);
@@ -289,7 +290,7 @@ class _LoginState extends State<Login> {
   }
 
   void _clickLogin(BuildContext context){
-    String username = _username.text;
+    String username = _username.text.trim();
     String password = _password.text;
 
     if(username.isEmpty){

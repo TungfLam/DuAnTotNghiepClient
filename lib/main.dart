@@ -1,5 +1,6 @@
-import 'package:appclient/Screen/AllComment.dart';
+import 'package:appclient/Screen/Comment/AllComment.dart';
 import 'package:appclient/Screen/BannerScreen.dart';
+
 
 import 'package:appclient/Screen/ChangeLocation.dart';
 import 'package:appclient/Screen/ChangePassword.dart';
@@ -8,10 +9,14 @@ import 'package:appclient/Screen/ConcentricAnimationOnboarding.dart';
 
 import 'package:appclient/Screen/ConcentricAnimationOnboarding.dart';
 
+
+import 'package:appclient/Screen/Comment/AddComment.dart';
+
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
 import 'package:appclient/Screen/Find.dart';
-import 'package:appclient/Screen/Location.dart';
+import 'package:appclient/Screen/Locations/ChangeLocation.dart';
+import 'package:appclient/Screen/Locations/Location.dart';
 import 'package:appclient/Screen/Login.dart';
 import 'package:appclient/Screen/LoginOrRegister.dart';
 import 'package:appclient/Screen/LoginSMS.dart';
@@ -56,8 +61,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromRGBO(103, 58, 183, 1)),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
 
@@ -74,6 +78,7 @@ class MyApp extends StatelessWidget {
         '/find': (context) => const Find(title: ''),
         '/favorite': (context) => const Favorite(title: ''),
         '/detaiproduct': (context) => const DetailProduct(title: ''),
+
 
         Otp_Screen.nameOtp: (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS: (context) => const LoginSMS(title: ""),
@@ -112,6 +117,20 @@ class MyApp extends StatelessWidget {
 
         '/profile': (context) => const profileScreen(),
         '/test': (context) => const ConcentricAnimationOnboarding(),
+
+
+        Otp_Screen.nameOtp : (context) => const Otp_Screen(),
+        LoginSMS.nameLoginSMS : (context) => const LoginSMS(title: ""),
+        RegisterScreen2.nameRegiterScree2 : (context) => const RegisterScreen2(title: ""),
+        AllComment.nameComment : (context) => const AllComment(),
+        AddComment.nameAddComment : (context) => const AddComment(),
+        ChangeLocation.nameChangeLocation : (context) => const ChangeLocation(),
+
+        '/pay': (context) => const PayScreen(userid: '',  idcart: [], totalAmount: 0, title: '',),
+        '/notification': (context) => const NotificationScreen(),
+        '/location': (context) => const LocationScreen(),
+
+         '/profile': (context) => const profileScreen(),
 
         // Đăng ký đường dẫn cho màn hình MyCart
       },

@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:appclient/Listview/DiscountProductList.dart';
 import 'package:appclient/Listview/MensProductList.dart';
 import 'package:appclient/Listview/PopularProductList.dart';
 import 'package:appclient/Listview/WomensProductList.dart';
@@ -28,6 +29,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String anhdd = '';
   String mail = '';
   String fname = '';
+  String _idUser = '';
 
   Future<void> _checkLogin() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -43,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
     anhdd = avarta ?? '';
     mail = email ?? '';
     fname = fullname ?? '';
+    _idUser = idUser ?? '';
 
     await prefs.setBool("isDone", true);
     String deviceId = await _authService.getDeviceId(context);
@@ -81,9 +84,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     TextButton(
                         onPressed: () async {
                           await prefs.clear();
+                          Navigator.of(context).pop();
                           await Navigator.of(context).pushNamedAndRemoveUntil(
                               '/login', (Route<dynamic> route) => false);
-                          Navigator.of(context).pop();
                         },
                         child: const Text("OK"))
                   ],
@@ -208,7 +211,10 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const WomensProductList(),
             ),
             // Nội dung của Tab 4
-            const Center(child: Text('Khuyến mãi')),
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: const DiscountScreen(),
+            ),
           ],
         ),
         endDrawer: Drawer(
@@ -227,10 +233,13 @@ class _MyHomePageState extends State<MyHomePage> {
                         padding: EdgeInsets.only(right: 16.0),
                         child: ClipOval(
                           child: Image(
-                            height: 60,
-                            width: 60,
-                            image: NetworkImage('$BASE_API$anhdd'),
-                          ),
+                              height: 60,
+                              width: 60,
+                              image: NetworkImage('$BASE_API$anhdd'),
+                              errorBuilder: (BuildContext context, Object error,
+                                  StackTrace? stackTrace) {
+                                return Center(child: const Icon(Icons.image));
+                              }),
                         ),
                       ),
                     Column(
@@ -294,7 +303,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
-                  Navigator.pushNamed(context, '/location');
+                  if (_inout == "Đăng xuất") {
+                    Navigator.pushNamed(context, '/location');
+                  }else{
+                    showDialogUilt(context, "Thông báo",
+                      "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
+                      () {
+                        print("object");
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/login');
+                        print("object");
+                      }
+                    );
+                  }
                 },
               ),
               ListTile(
