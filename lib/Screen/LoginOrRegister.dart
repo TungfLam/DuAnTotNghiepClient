@@ -1,14 +1,48 @@
+import 'package:concentric_transition/concentric_transition.dart';
 import 'package:flutter/material.dart';
 
-class LoginOrRegisterScreen extends StatefulWidget {
-  const LoginOrRegisterScreen({Key? key, required this.title}) : super(key: key);
+class LoginOrRegister extends StatefulWidget {
+  const LoginOrRegister({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
-  State<LoginOrRegisterScreen> createState() => _LoginOrRegisterScreenState();
+  State<LoginOrRegister> createState() => _LoginOrRegisterState();
 }
 
-class _LoginOrRegisterScreenState extends State<LoginOrRegisterScreen> {
+class _LoginOrRegisterState extends State<LoginOrRegister>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _offsetAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    );
+
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset(0.0, 0.4),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -18,82 +52,87 @@ class _LoginOrRegisterScreenState extends State<LoginOrRegisterScreen> {
           width: double.infinity,
           height: double.infinity,
           decoration: const BoxDecoration(
-              image: DecorationImage(
-            image: AssetImage('lib/images/LoginOrRegister.jpg'),
-            fit: BoxFit.cover,
-          )),
-          child: Column(
-            children: [
-              Padding(padding: EdgeInsets.only(
-                top: 50,bottom: 80
-              ),
-              child:  Text(
-              "Adadas",
-               style: TextStyle(fontSize: 80,fontWeight: FontWeight.w900),
-              ), 
-              ),
-                Text(
-              "Create your fashion in your own way",
-               style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),
-              ),
-                Padding(padding: EdgeInsets.all(30),
-                child:
-                Text(
-                  "Each men and women has their own style,Adadas help you to create your unique style",
-               textAlign: TextAlign.center,
-               style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-                ),
-
-          Container(
-            child: Padding(
-            padding: EdgeInsets.only(bottom: 47),
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                    TextButton(
-                child: Text("LOG IN",
-                style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold)),
-                style: ButtonStyle(
-                padding: MaterialStateProperty.all<EdgeInsets>(
-                        EdgeInsets.only(left: 95,right: 95,top: 30,bottom: 30)),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.black),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40),
-                            side: BorderSide( width:3.0,color: Colors.black)))),
-                onPressed: () => null),
-                  Padding(padding: EdgeInsets.only(bottom: 20,top: 20),
-                    child: Row(
-                      children: [
-                        Text(
-                      "OR",
-                       style: TextStyle(fontSize: 30,  fontWeight: FontWeight.bold,),
-                   )
-                   ],
-                    ) 
-                  ),
-                TextButton(
-                child: Text("REGISTER",
-                style: TextStyle(fontSize: 21,fontWeight: FontWeight.bold)),
-                style: ButtonStyle(
-                padding: MaterialStateProperty.all<EdgeInsets>(
-                        EdgeInsets.only(left: 80,right: 80,top: 30,bottom: 30)),
-                        backgroundColor:MaterialStateProperty.all<Color>(Color.fromARGB(255, 67, 30, 233)),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40),
-                            ))),
-                onPressed: () => null),
-                ],
-              )
-            ) 
+            color: Color(0xFFc2cbdc),
           ),
-            ],
-          ) 
+          child: SlideTransition(
+            position: _offsetAnimation,
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                image: AssetImage('lib/images/banner.png'),
+                fit: BoxFit.cover,
+              )),
+              child: SlideTransition(
+                position: _offsetAnimation,
+                child: Container(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 50),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 30),
+                          child: Text(
+                            "Adadas",
+                            style: TextStyle(
+                              fontSize: 80,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: 200,
+                          height: 50,
+                          margin: EdgeInsets.only(bottom: 5),
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 2, color: Colors.white),
+                            borderRadius: BorderRadius.all(Radius.circular(25)),
+                          ),
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/login');
+                            },
+                            child: Text(
+                              'Đăng Nhập',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        // Text('hoặc',style: TextStyle(color: Color(0xFF7b8794)),),
+                        // Container(
+                        //   margin: EdgeInsets.only(top: 5),
+                        //   width: 200,
+                        //   height: 50,
+                        //   decoration: BoxDecoration(
+                        //     border: Border.all(width: 2, color: Colors.white),
+                        //     borderRadius: BorderRadius.all(Radius.circular(25)),
+                        //   ),
+                        //   child: TextButton(
+                        //     onPressed: () {
+                        //       Navigator.pushNamed(context, '/register');
+                        //     },
+                        //     child: Text(
+                        //       'Đăng ký',
+                        //       style: TextStyle(
+                        //         color: Colors.white,
+                        //         fontWeight: FontWeight.bold,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );

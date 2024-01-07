@@ -122,6 +122,7 @@ class _RegisterState extends State<RegisterScreen2> {
   }
 
     Future<void> _getLocation() async {
+    _addressCtrl.text = "Đang tìm ...";
     await _determinePosition();
     try {
       Position position = await Geolocator.getCurrentPosition(
@@ -129,7 +130,6 @@ class _RegisterState extends State<RegisterScreen2> {
       setState(() {
         latitude = position.latitude.toString();
         longitude = position.longitude.toString();
-        _addressCtrl.text = "lati : $latitude , long : $longitude";
       });
       await _getCityName();
       setState(() {

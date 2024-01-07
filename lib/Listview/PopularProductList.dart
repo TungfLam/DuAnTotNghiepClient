@@ -9,7 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class PopularProductList extends StatefulWidget {
   const PopularProductList({super.key});
@@ -27,24 +27,8 @@ class _PopularProductListState extends State<PopularProductList> {
 
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
-    // check người dùng đã login hay chưa
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final bool? isLogin = prefs.getBool("isLogin");
-    final String? idUser = prefs.getString("idUser");
-    if (isLogin != null) {
-      if (isLogin == true) {
-        print("người dùng đã login");
-      }
-      
-    }
-
-    if (idUser != null) {
-      print("user id là: $idUser");
-    }
-    //
     final response = await http.get(
-      Uri.parse(
-          'https://adadas.onrender.com/api/products/6573359c00c9d30fb93fddc4/$page'),
+      Uri.parse('https://adadas.onrender.com/api/products/$page'),
       headers: {'Content-Type': 'application/json'},
     ); // Thay thế URL của API sản phẩm
 
@@ -95,8 +79,8 @@ class _PopularProductListState extends State<PopularProductList> {
       children: [
         Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10),
+            const Padding(
+              padding: EdgeInsets.only(right: 10),
               child: Text('Lọc & sắp xếp',
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
@@ -121,11 +105,11 @@ class _PopularProductListState extends State<PopularProductList> {
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                 const PopupMenuItem<String>(
                   value: 'Sort Down',
-                  child: Text('bé đến lớn'),
+                  child: Text('lớn đến bé'),
                 ),
                 const PopupMenuItem<String>(
                   value: 'Sort Up',
-                  child: Text('lớn đến bé'),
+                  child: Text('bé đến lớn'),
                 ),
               ],
               child: Icon(Icons.filter_list), // Biểu tượng sắp xếp xuống
@@ -177,33 +161,27 @@ class _PopularProductListState extends State<PopularProductList> {
                                 children: [
                                   Container(
                                     width: double.infinity,
-
-                                    // child: Image.memory(
-                                    //   base64Decode(product.image
-                                    //           ?.elementAt(0) ??
-                                    //       'loading...'), // Giả sử danh sách ảnh là danh sách base64
-                                    //   height: 200,
-                                    //   width: 180,
-                                    //   fit: BoxFit.cover,
-                                    // ),
-
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10.0),
                                       child: Image.network(
-                                        '${product.image?.elementAt(0)}' ??
-                                            'loading...',
-                                        height: 200,
-                                        width: 180,
-                                        fit: BoxFit.cover,
-                                      ),
+                                          '${product.image?.elementAt(0)}' ??
+                                              'loading...',
+                                          height: 200,
+                                          width: 180,
+                                          fit: BoxFit.cover, errorBuilder:
+                                              (BuildContext context,
+                                                  Object error,
+                                                  StackTrace? stackTrace) {
+                                        return Center(child: const Icon(Icons.image));
+                                      }),
                                     ),
                                   ),
                                   Positioned(
                                     top: 5,
                                     right: 5,
                                     child: IconButton(
-                                      icon:
-                                          Icon(Icons.favorite_border_outlined),
+                                      icon: const Icon(
+                                          Icons.favorite_border_outlined),
                                       onPressed: () {
                                         addFavorite(product.sId!);
                                       },
@@ -215,7 +193,8 @@ class _PopularProductListState extends State<PopularProductList> {
                             Expanded(
                               flex: 1,
                               child: Container(
-                                padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 0, 10, 5),
                                 child: Text(
                                   product.name ?? 'Unknown',
                                   style: const TextStyle(
@@ -229,9 +208,9 @@ class _PopularProductListState extends State<PopularProductList> {
                             Expanded(
                               flex: 1,
                               child: Container(
-                                padding: EdgeInsets.only(bottom: 10),
+                                padding: const EdgeInsets.only(bottom: 10),
                                 child: Text(
-                                  '\đ${product.price ?? 'Unknown Price'}',
+                                  '${NumberFormat.decimalPattern().format(product.price ?? 'Unknown Price')} đ',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Color.fromARGB(255, 105, 105, 105),
@@ -248,7 +227,7 @@ class _PopularProductListState extends State<PopularProductList> {
               );
             } else {
               if (mounted) {
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               }

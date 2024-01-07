@@ -162,13 +162,18 @@ class _FavoriteState extends State<Favorite> {
                                     child: Container(
                                       padding: const EdgeInsets.all(10),
                                       child: Image.network(
-                                        product.productId?.image
-                                                ?.elementAt(0) ??
-                                            '',
-                                        height: 200,
-                                        width: 180,
-                                        fit: BoxFit.cover,
-                                      ),
+                                          product.productId?.image
+                                                  ?.elementAt(0) ??
+                                              '',
+                                          height: 200,
+                                          width: 180,
+                                          fit: BoxFit.cover, errorBuilder:
+                                              (BuildContext context,
+                                                  Object error,
+                                                  StackTrace? stackTrace) {
+                                        return Center(
+                                            child: const Icon(Icons.image));
+                                      }),
                                     ),
                                   ),
                                   Expanded(
