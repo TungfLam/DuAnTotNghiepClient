@@ -3,6 +3,9 @@ import 'package:appclient/Screen/BannerScreen.dart';
 
 import 'package:appclient/Screen/ChangeLocation.dart';
 import 'package:appclient/Screen/ChangePassword.dart';
+
+import 'package:appclient/Screen/ConcentricAnimationOnboarding.dart';
+
 import 'package:appclient/Screen/ConcentricAnimationOnboarding.dart';
 
 import 'package:appclient/Screen/DetailProduct.dart';
@@ -58,8 +61,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      initialRoute:
-          '/changepassword', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
@@ -85,11 +87,28 @@ class MyApp extends StatelessWidget {
               totalAmount: 0,
               title: '',
             ),
+
+        Otp_Screen.nameOtp: (context) => const Otp_Screen(),
+        LoginSMS.nameLoginSMS: (context) => const LoginSMS(title: ""),
+        RegisterScreen2.nameRegiterScree2: (context) =>
+            const RegisterScreen2(title: ""),
+
+        AllComment.nameComment: (context) => AllComment(),
+        '/pay': (context) => const PayScreen(
+              userid: '',
+              idcart: [],
+              totalAmount: 0,
+              title: '',
+            ),
+
         '/notification': (context) => const NotificationScreen(),
         '/location': (context) => const LocationScreen(),
 
         '/changepassword': (context) => ChangePassword(),
         '/changelocation': (context) => ChangeLocation(),
+
+        '/profile': (context) => const profileScreen(),
+        '/test': (context) => const ConcentricAnimationOnboarding(),
 
         '/profile': (context) => const profileScreen(),
         '/test': (context) => const ConcentricAnimationOnboarding(),
