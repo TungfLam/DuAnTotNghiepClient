@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/apiRes.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:http/http.dart' as http;
@@ -70,6 +69,7 @@ class ChangePasswordPage extends State<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(

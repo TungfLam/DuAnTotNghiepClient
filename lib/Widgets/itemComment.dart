@@ -214,12 +214,11 @@ class _itemAddCommentState extends State<itemAddComment> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
-    setState(() {
+    commentLeght = widget.commentCtrl.text.toString().length;
 
-    });
+    setState(() {});
   }
 
   @override
