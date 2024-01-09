@@ -1,5 +1,6 @@
 import 'package:appclient/Screen/PayScreen.dart';
 import 'package:appclient/models/productBillModel.dart';
+import 'package:appclient/models/voucherModel.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -28,7 +29,17 @@ class _MyCartState extends State<MyCart> {
   List<bool> selectedProducts = [];
   int totalAmount = 0;
   late String userid;
+  Listdiscount? selectedVoucher;
+  List<Listdiscount> vouchers = [];
+  int discountAmount = 0;
   // late ListCart product;
+  void calculateDiscountAmount() {
+    discountAmount = 0;
+
+    if (selectedVoucher != null) {
+      discountAmount = selectedVoucher!.price ?? 0;
+    }
+  }
 
   Future<void> fetchProducts() async {
     //lấy id user
@@ -96,6 +107,44 @@ class _MyCartState extends State<MyCart> {
       }
     }
     //
+  }
+
+  Future<void> fetchVouchers() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? idUser = prefs.getString("idUser");
+
+    if (idUser == null) {
+      print('User id is null. Please log in first.');
+      return;
+    }
+
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'https://adadas.onrender.com/api/discount/655d7897afc3bd165ef29ea5'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+        if (responseData.containsKey('listdiscount')) {
+          final List<dynamic> listDiscountData = responseData['listdiscount'];
+
+          setState(() {
+            vouchers = listDiscountData
+                .map((item) => Listdiscount.fromJson(item))
+                .toList();
+          });
+        } else {
+          print('Key listdiscount not found in JSON response');
+        }
+      } else {
+        print(
+            'Fetch vouchers API call failed with status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error calling Fetch vouchers API: $error');
+    }
   }
 
   Future<void> addBillApiCall(String idcart, int payment) async {
@@ -166,121 +215,7 @@ class _MyCartState extends State<MyCart> {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return Container(
-              // width: double.infinity,
-              // padding: const EdgeInsets.all(20),
-              // child: Column(
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     Center(
-              //       child: Text(
-              //         product.productId?.product?.name ?? "Unknown",
-              //         style: const TextStyle(
-              //           fontSize: 18,
-              //           fontWeight: FontWeight.bold,
-              //           color: Color(0xff6342E8),
-              //         ),
-              //       ),
-              //     ),
-              //     Row(
-              //       children: [
-              //         Container(
-              //           padding: const EdgeInsets.all(10),
-              //           child: Image.network(
-              //               product.productId?.product?.image?.elementAt(0) ??
-              //                   "",
-              //               height: 100,
-              //               width: 100,
-              //               fit: BoxFit.cover, errorBuilder:
-              //                   (BuildContext context, Object error,
-              //                       StackTrace? stackTrace) {
-              //             return Center(child: const Icon(Icons.image));
-              //           }),
-              //         ),
-              //         Column(
-              //           crossAxisAlignment: CrossAxisAlignment.start,
-              //           children: [
-              //             Text('kính cỡ: ${product.productId?.sizeId?.name}'),
-              //             Text('Màu sắc: ${product.productId?.colorId?.name}'),
-              //             Text(
-              //                 'Đơn giá: ${NumberFormat.decimalPattern().format(product.productId?.product?.price)} đ'),
-              //             Text('Số lượng: ${product.quantity}'),
-              //           ],
-              //         )
-              //       ],
-              //     ),
-              //     Container(
-              //       width: double.infinity,
-              //       child: DropdownButton<String>(
-              //         hint: Text('phương thức thanh toán'),
-              //         value: selectedPaymentMethod.isNotEmpty
-              //             ? selectedPaymentMethod
-              //             : null,
-              //         onChanged: (String? newPaymentMethod) {
-              //           setState(() {
-              //             selectedPaymentMethod = newPaymentMethod!;
-              //             isVnPaySelected =
-              //                 selectedPaymentMethod == 'Thanh toán VNPAY';
-              //           });
-              //         },
-              //         items: paymentMethods.map((String paymentMethod) {
-              //           return DropdownMenuItem<String>(
-              //             value: paymentMethod,
-              //             child: Text(paymentMethod),
-              //           );
-              //         }).toList(),
-              //       ),
-              //     ),
-              //     Container(child: const Text("phiếu giảm giá")),
-              //     Text(
-              //         "Thành tiền: đ${(product.productId?.product?.price)! * (product.quantity ?? 0)}"),
-              //     SizedBox(
-              //       width: double.infinity,
-              //       child: ElevatedButton.icon(
-              //         onPressed: () {
-              //           print('phương thức tt đã chọn: $selectedPaymentMethod');
-              //           if (product.sId != null) {
-              //             if (isVnPaySelected) {
-              //               // Xử lý thanh toán VNPAY
-              //               // Navigator.push(
-              //               //   context,
-              //               //   MaterialPageRoute(
-              //               //     builder: (context) => PayScreen(
-              //               //       productId: product.sId!,
-              //               //       title: '',
-              //               //       totalAmount:
-              //               //           (product.productId?.product?.price)! *
-              //               //               (product.quantity ?? 0),
-              //               //     ),
-              //               //   ),
-              //               // );
-              //               print('thanh toán vnpay: ${product!.sId}');
-              //             } else {
-              //               // Xử lý thanh toán khác
-              //               addBillApiCall(product.sId!, 2);
-              //             }
-              //           }
-              //         },
-              //         icon: const Icon(
-              //           Icons.shopping_cart,
-              //           color: Colors.white,
-              //         ),
-              //         label: Text(
-              //           isVnPaySelected ? 'Thanh toán' : 'Đặt hàng',
-              //           style: TextStyle(
-              //             color: Colors.white,
-              //             fontWeight: FontWeight.bold,
-              //           ),
-              //         ),
-              //         style: ElevatedButton.styleFrom(
-              //           backgroundColor: const Color(0xFF6342E8),
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
-            );
+            return Container();
           },
         );
       },
@@ -304,9 +239,56 @@ class _MyCartState extends State<MyCart> {
                     for (int i = 0; i < products.length; i++)
                       if (selectedProducts[i])
                         _buildProductDetailsWidget(products[i]),
-
-                    Container( 
-                      child: Text('Adadas voucher'),
+                    Container(
+                      width: double.infinity,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<Listdiscount>(
+                          hint: Text('Chọn voucher'),
+                          value: selectedVoucher,
+                          onChanged: (Listdiscount? newSelectedVoucher) {
+                            setState(() {
+                              selectedVoucher = newSelectedVoucher;
+                               calculateDiscountAmount();
+                              // Xử lý logic khi voucher được chọn
+                            });
+                          },
+                          items: vouchers.map((Listdiscount voucher) {
+                            return DropdownMenuItem<Listdiscount>(
+                              value: voucher,
+                              child: Container(
+                                height: 70,
+                                padding: EdgeInsets.symmetric(vertical: 5),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    // Thêm các widget dựa trên hình ảnh, ví dụ:
+                                    Container(
+                                      margin: EdgeInsets.only(right: 10),
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.all(Radius.circular(10)),
+                                        child: Image(
+                                          image: AssetImage(
+                                              'lib/images/voucher.png'),
+                        
+                                          height: 60,
+                                          fit: BoxFit
+                                              .cover, // Ảnh sẽ lấp đầy toàn bộ không gian, có thể bị cắt
+                                          // Hoặc sử dụng BoxFit.contain để hiển thị toàn bộ ảnh trong không gian, có thể có khoảng trống
+                                        ),
+                                      ),
+                                    ),
+                                    Text(voucher.description ?? ''),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                          itemHeight: 70,
+                          isExpanded: true, // Đặt chiều cao mong muốn cho dropdown
+                        ),
+                      ),
                     ),
                     Container(
                       width: double.infinity,
@@ -330,12 +312,11 @@ class _MyCartState extends State<MyCart> {
                         }).toList(),
                       ),
                     ),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Tổng tiền: đ$totalAmount',
+                          'Tổng tiền: đ${NumberFormat.decimalPattern().format(totalAmount - discountAmount)}',
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -343,9 +324,13 @@ class _MyCartState extends State<MyCart> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            print('Tổng tiền: $totalAmount');
+                            int discountedAmount =
+                                totalAmount - (selectedVoucher!.price ?? 0) ??
+                                    0;
+
                             print(
                                 'phương thức tt đã chọn: $selectedPaymentMethod');
+                            print('voucher đã chọn: ${selectedVoucher?.sId}');
 
                             if (isVnPaySelected) {
                               List<String> selectedCartIds =
@@ -360,12 +345,14 @@ class _MyCartState extends State<MyCart> {
                                       userid: userid,
                                       idcart: selectedCartIds,
                                       title: '',
-                                      totalAmount: totalAmount),
+                                      totalAmount: discountedAmount,
+                                      idDiscount: selectedVoucher?.sId ?? ''),
                                 ),
                               );
                               print('userid là: $userid');
                               print('selectedCartIds là: $selectedCartIds');
                               print('totalAmount là: $totalAmount');
+                              print('Tổng tiền: đ${NumberFormat.decimalPattern().format(totalAmount - discountAmount)}');
                             } else {
                               // Xử lý thanh toán khác
                               // addBillApiCall(product.sId!, 2);
@@ -443,6 +430,7 @@ class _MyCartState extends State<MyCart> {
   void initState() {
     super.initState();
     fetchProducts();
+    fetchVouchers();
     selectedProducts = List.generate(products.length, (index) => false);
     yourFunctionToProcessSelectedCarts();
   }
@@ -476,6 +464,7 @@ class _MyCartState extends State<MyCart> {
 
   void yourFunctionToProcessSelectedCarts() {
     updateTotalAmount();
+    calculateDiscountAmount();
     List<String> selectedCartIds = getSelectedCartIds();
     // Tiếp tục xử lý danh sách selectedCartIds theo nhu cầu của bạn
     print('Selected Cart IDs: $selectedCartIds');

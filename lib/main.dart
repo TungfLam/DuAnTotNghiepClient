@@ -63,7 +63,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
+
       initialRoute: '/changepassword', // Đường dẫn mặc định khi khởi chạy ứng dụng
+
 
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
@@ -81,12 +83,9 @@ class MyApp extends StatelessWidget {
         LoginSMS.nameLoginSMS: (context) => const LoginSMS(title: ""),
         RegisterScreen2.nameRegiterScree2: (context) => const RegisterScreen2(title: ""),
         AllComment.nameComment: (context) => const AllComment(),
-        '/pay': (context) => const PayScreen(
-              userid: '',
-              idcart: [],
-              totalAmount: 0,
-              title: '',
-            ),
+
+
+        '/pay': (context) => const PayScreen(userid: '',  idcart: [], totalAmount: 0, title: '',idDiscount: '',),
 
         '/notification': (context) => const NotificationScreen(),
         '/location': (context) => const LocationScreen(),
