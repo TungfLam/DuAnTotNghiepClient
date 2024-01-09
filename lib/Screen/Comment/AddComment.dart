@@ -151,12 +151,6 @@ class _AddCommentState extends State<AddComment> {
   }
 
   @override
-  void initState() {
-    super.initState();
-
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
@@ -177,6 +171,10 @@ class _AddCommentState extends State<AddComment> {
             borderRadius: const BorderRadius.all(Radius.circular(8)),
             onTap: (){
               for(int i = 0; i < productBill.length ; i++){
+                if(arrComment[i].text.length > 200){
+                  showSnackBarErr(context, "Đánh giá không quá 200 kí tự");
+                  return;
+                }
                   postComment(productBill[i]['product_id'] , productBill[i]['product_data'][''], arrComment[i].text, arrStar[i].text, _images[i]);
               }
             },
