@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/loginorregister', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
       routes: {
         '/banner': (context) => const BannerScreen(title: ''),
@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
         AddComment.nameAddComment : (context) => const AddComment(),
         ChangeLocation.nameChangeLocation : (context) => const ChangeLocation(),
 
-        '/pay': (context) => const PayScreen(userid: '',  idcart: [], totalAmount: 0, title: '',),
+        '/pay': (context) => const PayScreen(userid: '',  idcart: [], totalAmount: 0, title: '',idDiscount: '',),
         '/notification': (context) => const NotificationScreen(),
         '/location': (context) => const LocationScreen(),
 

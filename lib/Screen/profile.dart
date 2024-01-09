@@ -35,6 +35,7 @@ class _profileScreenState extends State<profileScreen> {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      
       home: Scaffold(
       body: SingleChildScrollView(
           child: Column(
