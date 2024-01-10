@@ -32,6 +32,8 @@ class _MyCartState extends State<MyCart> {
   Listdiscount? selectedVoucher;
   List<Listdiscount> vouchers = [];
   int discountAmount = 0;
+  int quantityselect = 0;
+  int quantitysave = 0;
   // late ListCart product;
   void calculateDiscountAmount() {
     discountAmount = 0;
@@ -147,6 +149,40 @@ class _MyCartState extends State<MyCart> {
     }
   }
 
+  Future<void> updateCartApiCall(String cartId, int quantity) async {
+    // Địa chỉ API và ID cart được truyền vào URL
+    final String apiUrl =
+        'https://adadas.onrender.com/api/updateCart/$userid/$cartId';
+
+    // Tạo đối tượng body theo định dạng mà API yêu cầu
+    final Map<String, dynamic> requestBody = {
+      "quantity": quantity,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        // Xử lý khi request thành công
+        print('Update cart API call successful');
+        // Nếu có dữ liệu trả về, bạn có thể xử lý dữ liệu ở đây
+      } else {
+        // Xử lý khi request không thành công
+        print(
+            'Update cart API call failed with status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Xử lý khi có lỗi trong quá trình gọi API
+      print('Error calling Update cart API: $error');
+    }
+  }
+
   Future<void> addBillApiCall(String idcart, int payment) async {
     // Tạo đối tượng body theo định dạng mà API yêu cầu
     final Map<String, dynamic> requestBody = {
@@ -248,7 +284,7 @@ class _MyCartState extends State<MyCart> {
                           onChanged: (Listdiscount? newSelectedVoucher) {
                             setState(() {
                               selectedVoucher = newSelectedVoucher;
-                               calculateDiscountAmount();
+                              calculateDiscountAmount();
                               // Xử lý logic khi voucher được chọn
                             });
                           },
@@ -266,12 +302,12 @@ class _MyCartState extends State<MyCart> {
                                     Container(
                                       margin: EdgeInsets.only(right: 10),
                                       child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.all(Radius.circular(10)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)),
                                         child: Image(
                                           image: AssetImage(
                                               'lib/images/voucher.png'),
-                        
+
                                           height: 60,
                                           fit: BoxFit
                                               .cover, // Ảnh sẽ lấp đầy toàn bộ không gian, có thể bị cắt
@@ -286,7 +322,8 @@ class _MyCartState extends State<MyCart> {
                             );
                           }).toList(),
                           itemHeight: 70,
-                          isExpanded: true, // Đặt chiều cao mong muốn cho dropdown
+                          isExpanded:
+                              true, // Đặt chiều cao mong muốn cho dropdown
                         ),
                       ),
                     ),
@@ -352,7 +389,8 @@ class _MyCartState extends State<MyCart> {
                               print('userid là: $userid');
                               print('selectedCartIds là: $selectedCartIds');
                               print('totalAmount là: $totalAmount');
-                              print('Tổng tiền: đ${NumberFormat.decimalPattern().format(totalAmount - discountAmount)}');
+                              print(
+                                  'Tổng tiền: đ${NumberFormat.decimalPattern().format(totalAmount - discountAmount)}');
                             } else {
                               // Xử lý thanh toán khác
                               // addBillApiCall(product.sId!, 2);
@@ -435,18 +473,20 @@ class _MyCartState extends State<MyCart> {
     yourFunctionToProcessSelectedCarts();
   }
 
-  void increaseQuantity(int quantity, int maxQuantity) {
-    if (quantity < maxQuantity) {
+  void increaseQuantity(int maxQuantity) {
+    if (quantityselect < maxQuantity - quantitysave) {
       setState(() {
-        quantity++;
+        quantityselect++;
+        print(quantityselect);
       });
     }
   }
 
-  void decreaseQuantity(int quantity, int maxQuantity) {
-    if (quantity > 0) {
+  void decreaseQuantity(int maxQuantity) {
+    if (quantitysave + quantityselect > 1) {
       setState(() {
-        quantity--;
+        quantityselect--;
+        print(quantityselect);
       });
     }
   }
@@ -511,6 +551,7 @@ class _MyCartState extends State<MyCart> {
                     if (product.productId != null &&
                         product.productId!.product != null) {
                       print(product.productId?.quantity);
+                      quantitysave = product.quantity!;
                       return GestureDetector(
                         onTap: () {
                           if (index < products.length) {
@@ -618,16 +659,76 @@ class _MyCartState extends State<MyCart> {
                                             ),
                                           ),
                                           Expanded(
-                                            flex: 3,
+                                            flex: 4,
                                             child: Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-                                                Text(
-                                                  'Số lượng: ${product.quantity! ?? ''}',
-                                                  style: const TextStyle(
-                                                    fontSize: 15,
+                                                // Text(
+                                                //   'Số lượng: ${product.quantity! ?? ''}',
+                                                //   style: const TextStyle(
+                                                //     fontSize: 15,
+                                                //   ),
+                                                // ),
+                                                const Text("Số lượng"),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: Colors.grey,
+                                                          width: 1),
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                              .all(
+                                                              Radius.circular(
+                                                                  5))),
+                                                  child: StatefulBuilder(
+                                                    builder:
+                                                        (context, setState) {
+                                                      return Row(
+                                                        children: [
+                                                          IconButton(
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                decreaseQuantity(product
+                                                                    .productId!
+                                                                    .quantity!);
+                                                              });
+                                                              updateCartApiCall(
+                                                                  product.sId!,
+                                                                  quantityselect +
+                                                                      quantitysave);
+                                                            },
+                                                            icon: const Icon(
+                                                                Icons.remove),
+                                                          ),
+                                                          Text(
+                                                            //  '${quantityselect + product.quantity!}'
+                                                            '${quantityselect + quantitysave}'
+                                                                .toString(),
+                                                            style:
+                                                                const TextStyle(
+                                                                    fontSize:
+                                                                        16),
+                                                          ),
+                                                          IconButton(
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                increaseQuantity(product
+                                                                    .productId!
+                                                                    .quantity!);
+                                                              });
+                                                              updateCartApiCall(
+                                                                  product.sId!,
+                                                                  quantityselect +
+                                                                      quantitysave);
+                                                            },
+                                                            icon: const Icon(
+                                                                Icons.add),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
                                                   ),
                                                 ),
                                               ],
