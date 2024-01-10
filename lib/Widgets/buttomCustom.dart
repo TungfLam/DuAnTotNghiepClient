@@ -59,6 +59,37 @@ class CustomButtonOutline extends StatelessWidget{
   }
 }
 
+class CustomButtonOutlineRed extends StatelessWidget{
+  final String text;
+  final VoidCallback onPressed;
+  const CustomButtonOutlineRed({super.key , required this.text, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 48,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+            side: const BorderSide(
+                width: 2,
+                color: Colors.redAccent
+            )
+        ),
+        child: Text(
+          text,
+          style: const TextStyle(
+              fontSize: 18,
+              color: Colors.red,
+              fontWeight: FontWeight.bold
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class CustomButtonGPS extends StatelessWidget{
   final String text;
   final VoidCallback onPressed;

@@ -1,10 +1,21 @@
+
 import 'package:appclient/Screen/Comment/AllComment.dart';
 import 'package:appclient/Screen/BannerScreen.dart';
+
+
+import 'package:appclient/Screen/ChangePassword.dart';
+
+import 'package:appclient/Screen/ConcentricAnimationOnboarding.dart';
+
+import 'package:appclient/Screen/ConcentricAnimationOnboarding.dart';
+
 import 'package:appclient/Screen/Comment/AddComment.dart';
+
 import 'package:appclient/Screen/DetailProduct.dart';
 import 'package:appclient/Screen/Favorite.dart';
 import 'package:appclient/Screen/Find.dart';
-import 'package:appclient/Screen/Location.dart';
+import 'package:appclient/Screen/Locations/ChangeLocation.dart';
+import 'package:appclient/Screen/Locations/Location.dart';
 import 'package:appclient/Screen/Login.dart';
 import 'package:appclient/Screen/LoginOrRegister.dart';
 import 'package:appclient/Screen/LoginSMS.dart';
@@ -44,7 +55,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -54,10 +64,12 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
+
+      initialRoute: '/banner', // Đường dẫn mặc định khi khởi chạy ứng dụng
+
 
       routes: {
-        '/banner': (context) => const BannerScreen(title: ''),
+        '/banner': (context) => const ConcentricAnimationOnboarding(),
         '/': (context) => const MyHomePage(title: ''),
         '/register': (context) => const Register(title: ''),
         '/login': (context) => const Login(title: ''),
@@ -71,21 +83,26 @@ class MyApp extends StatelessWidget {
 
         Otp_Screen.nameOtp: (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS: (context) => const LoginSMS(title: ""),
-        RegisterScreen2.nameRegiterScree2: (context) =>
-            const RegisterScreen2(title: ""),
-        AllComment.nameComment: (context) => AllComment(),
-        AddComment.nameAddComment: (context) => const AddComment(),
 
-        '/pay': (context) => const PayScreen(
-              userid: '',
-              idcart: [],
-              totalAmount: 0,
-              title: '',
-            ),
+        RegisterScreen2.nameRegiterScree2: (context) => const RegisterScreen2(title: ""),
+        AllComment.nameComment: (context) => const AllComment(),
+
+
+        '/pay': (context) => const PayScreen(userid: '',  idcart: [], totalAmount: 0, title: '',idDiscount: '',),
+
         '/notification': (context) => const NotificationScreen(),
         '/location': (context) => const LocationScreen(),
 
+        '/changepassword': (context) => ChangePassword(),
+        '/changelocation': (context) => const ChangeLocation(),
+
         '/profile': (context) => const profileScreen(),
+        '/test': (context) => const ConcentricAnimationOnboarding(),
+
+        AddComment.nameAddComment : (context) => const AddComment(),
+        ChangeLocation.nameChangeLocation : (context) => const ChangeLocation(),
+
+
         // Đăng ký đường dẫn cho màn hình MyCart
       },
     );

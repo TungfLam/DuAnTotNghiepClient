@@ -1,6 +1,10 @@
+// ignore_for_file: unnecessary_string_interpolations
+
 import 'dart:convert';
 
+import 'package:appclient/Screen/Comment/AddComment.dart';
 import 'package:appclient/models/productBillModel.dart';
+import 'package:appclient/services/baseApi.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -27,6 +31,7 @@ class Itembill extends StatelessWidget {
   void _showBillDetails(BuildContext context) {
     String date = '${billItem.createdAt}';
     String outputdate = parseDate(date);
+    String idBill = billItem.sId ?? "";
 
     String getPaymentMethodText(int? paymentMethod) {
       if (paymentMethod == 2) {
@@ -39,7 +44,7 @@ class Itembill extends StatelessWidget {
     }
 
     Future<void> updateBillStatus(String billId) async {
-      final String apiUrl = 'https://adadas.onrender.com/api/bill/$billId';
+      final String apiUrl = '$BASE_API/api/bill/$billId';
 
       final Map<String, String> headers = {
         'Content-Type': 'application/json',
@@ -82,133 +87,133 @@ class Itembill extends StatelessWidget {
           child: Container(
             height: containerHeight,
             width: double.infinity,
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             // Thêm nội dung chi tiết bill vào đây
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Ngày đặt hàng: $outputdate'),
-                        Container(
-                          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.location_on_outlined),
-                                  Text(
-                                    '  Địa chỉ',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  )
-                                ],
-                              ),
-                              Text('Trần Văn Trọng'),
-                              Text('(+84)868132185'),
-                              Text(
-                                  'Số 48, ngõ 99, Cầu Diễn, Phường Phúc Diễn, Quận Bắc Từ Liêm, Hà Nội'),
-                            ],
-                          ),
-                        ),
-                        Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Ngày đặt hàng: $outputdate'),
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(Icons.payment_outlined),
-                            Text(
-                              '  Phương thức thanh toán',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                        Text('${getPaymentMethodText(billItem.payments)}'),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: billItem.cartData?.length ?? 0,
-                          itemBuilder: (context, cartIndex) {
-                            final cartItem = billItem.cartData![cartIndex];
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: const Color(
-                                    0xFF6342E8), // Màu của vòng border
-                                radius: 20, // Bán kính của CircleAvatar
-                                child: CircleAvatar(
-                                  radius:
-                                      19, // Bán kính của CircleAvatar bên trong vòng border
-                                  backgroundImage: NetworkImage(
-                                      cartItem.productData?.image?.first ?? ''),
-                                ),
-                              ),
-                              title: Text(
-                                '${cartItem.productData?.name ?? 'N/A'}',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xFF6342E8),
-                                    fontWeight: FontWeight.bold),
-                              ),
-
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                          '${cartItem.productData?.colorName}/${cartItem.productData?.sizeName}'),
-                                      Text('x${cartItem.quantity}')
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text('đơn giá: '),
-                                      Text(
-                                          '${NumberFormat.decimalPattern().format(cartItem.productData?.price ?? 0)} đ')
-                                    ],
-                                  )
-                                ],
-                              ),
-                              // Thêm các nút hoặc hành động khác tại đây
-                            );
-                          },
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("${billItem?.cartData?.length ?? 0} sản phẩm"),
                             Row(
                               children: [
-                                Text('Thành tiền: '),
+                                Icon(Icons.location_on_outlined),
                                 Text(
-                                  "${NumberFormat.decimalPattern().format(billItem.totalAmount ?? 0)} đ",
-                                  style: TextStyle(
-                                      color: Color(0xFF6342E8),
-                                      fontWeight: FontWeight.bold),
+                                  '  Địa chỉ',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold),
                                 )
                               ],
                             ),
+                            Text('Trần Văn Trọng'),
+                            Text('(+84)868132185'),
+                            Text(
+                                'Số 48, ngõ 99, Cầu Diễn, Phường Phúc Diễn, Quận Bắc Từ Liêm, Hà Nội'),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                      const Row(
+                        children: [
+                          Icon(Icons.payment_outlined),
+                          Text(
+                            '  Phương thức thanh toán',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                      Text('${getPaymentMethodText(billItem.payments)}'),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: billItem.cartData?.length ?? 0,
+                        itemBuilder: (context, cartIndex) {
+                          final cartItem = billItem.cartData![cartIndex];
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: const Color(
+                                  0xFF6342E8), // Màu của vòng border
+                              radius: 20, // Bán kính của CircleAvatar
+                              child: CircleAvatar(
+                                radius:
+                                    19, // Bán kính của CircleAvatar bên trong vòng border
+                                backgroundImage: NetworkImage(
+                                    cartItem.productData?.image?.first ?? ''),
+                              ),
+                            ),
+                            title: Text(
+                              '${cartItem.productData?.name ?? 'N/A'}',
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xFF6342E8),
+                                  fontWeight: FontWeight.bold),
+                            ),
+
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        '${cartItem.productData?.colorName}/${cartItem.productData?.sizeName}'),
+                                    Text('x${cartItem.quantity}')
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    const Text('đơn giá: '),
+                                    Text(
+                                        '${NumberFormat.decimalPattern().format(cartItem.productData?.price ?? 0)} đ')
+                                  ],
+                                )
+                              ],
+                            ),
+                            // Thêm các nút hoặc hành động khác tại đây
+                          );
+                        },
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("${billItem.cartData?.length ?? 0} sản phẩm"),
+                          Row(
+                            children: [
+                              const Text('Thành tiền: '),
+                              Text(
+                                "${NumberFormat.decimalPattern().format(billItem.totalAmount ?? 0)} đ",
+                                style: const TextStyle(
+                                    color: Color(0xFF6342E8),
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                   if (billItem.status == 7)
                     Container(
-                      padding: EdgeInsets.only(top: 30),
+                      padding: const EdgeInsets.only(top: 30),
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(AddComment.nameAddComment , arguments: idBill);
+                        },
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
-                              Color(0xFF6342E8)),
+                              const Color(0xFF6342E8)),
                         ),
-                        child: Text(
+                        child: const Text(
                           'Đánh giá',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white),
@@ -217,7 +222,7 @@ class Itembill extends StatelessWidget {
                     ),
                   if (billItem.status == 1 && billItem.payments == 1)
                     Container(
-                      padding: EdgeInsets.only(top: 30),
+                      padding: const EdgeInsets.only(top: 30),
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
@@ -228,9 +233,9 @@ class Itembill extends StatelessWidget {
                         },
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
-                              Color(0xFF6342E8)),
+                              const Color(0xFF6342E8)),
                         ),
-                        child: Text(
+                        child: const Text(
                           'Hủy đơn hàng',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white),
@@ -262,7 +267,7 @@ class Itembill extends StatelessWidget {
       onTap: () => _showBillDetails(context),
       child: Card(
         elevation: 4.0,
-        margin: EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -270,13 +275,13 @@ class Itembill extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 'đơn hàng: ${getStatusText(billItem.payments)}',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
             // Thêm các trường thông tin khác của hóa đơn tại đây
             ListView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: billItem.cartData?.length ?? 0,
               itemBuilder: (context, cartIndex) {
                 final cartItem = billItem.cartData![cartIndex];
@@ -294,7 +299,7 @@ class Itembill extends StatelessWidget {
                   ),
                   title: Text(
                     '${cartItem.productData?.name ?? 'N/A'}',
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 12,
                         color: Color(0xFF6342E8),
                         fontWeight: FontWeight.bold),
@@ -314,7 +319,7 @@ class Itembill extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          Text('đơn giá: '),
+                          const Text('đơn giá: '),
                           Text(
                               '${NumberFormat.decimalPattern().format(cartItem.productData?.price ?? 0)} đ')
                         ],
@@ -326,17 +331,17 @@ class Itembill extends StatelessWidget {
               },
             ),
             Container(
-              padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+              padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("${billItem?.cartData?.length ?? 0} sản phẩm"),
                   Row(
                     children: [
-                      Text('Thành tiền: '),
+                      const Text('Thành tiền: '),
                       Text(
                         "${NumberFormat.decimalPattern().format(billItem.totalAmount ?? 0)} đ",
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Color(0xFF6342E8),
                             fontWeight: FontWeight.bold),
                       )

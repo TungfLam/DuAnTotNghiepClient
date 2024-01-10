@@ -9,12 +9,13 @@ class PayScreen extends StatefulWidget {
   final int totalAmount;
   final List<String> idcart;
   final String userid;
+  final String idDiscount;
   const PayScreen(
       {Key? key,
       required String title,
       required this.totalAmount,
       required this.idcart,
-      required this.userid})
+      required this.userid, required this.idDiscount})
       : super(key: key);
 
   @override
@@ -33,6 +34,7 @@ class _PayScreenState extends State<PayScreen> {
     final requestData = {
       "idCart": widget.idcart,
       "amount": widget.totalAmount,
+      "idDiscount":widget.idDiscount,
       "language": "vi"
     };
     final headers = {
@@ -40,7 +42,6 @@ class _PayScreenState extends State<PayScreen> {
       'Cookie':
           'connect.sid=s%3AGOomxkPMZ7_8pNTgL7RxMaHQHJ93Vli8.v9IC4cc1ExSIjV3tZTjQkwF1%2Bz83TynXg5Q6qgRoI%2FE'
     };
-
     try {
       final response = await http.post(
         Uri.parse(apiUrl),

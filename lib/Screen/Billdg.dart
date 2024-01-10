@@ -1,9 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:appclient/Widgets/Itembill.dart';
+import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/productBillModel.dart';
+import 'package:appclient/services/baseApi.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Billdg extends StatefulWidget {
   @override
@@ -16,12 +20,19 @@ class _BilldgState extends State<Billdg> {
   @override
   void initState() {
     super.initState();
-    fetchData(); // Gọi hàm fetchData khi widget được khởi tạo
+    fetchData();
   }
 
+
   Future<void> fetchData() async {
-    final apiUrl =
-        'https://adadas.onrender.com/api/bill/6524318746e12608b3558d74';
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? idUser = prefs.getString("idUser");
+    if(idUser == null){
+      Navigator.pop(context);
+      showSnackBarErr(context, "Không tìm thấy bill");
+    }
+
+    final apiUrl = "$BASE_API/api/bill/$idUser";
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -51,10 +62,10 @@ class _BilldgState extends State<Billdg> {
   Widget build(BuildContext context) {
     // Sử dụng dữ liệu trong cây widget
     return Container(
-      padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
       child: Scaffold(
         body: billData == null
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : ListView.builder(
                 itemCount: billData!.biilModel?.length ?? 0,
                 itemBuilder: (context, index) {
@@ -64,7 +75,7 @@ class _BilldgState extends State<Billdg> {
                     return Itembill(billItem: billItem);
                   } else {
                     // Trả về một widget trống nếu không muốn hiển thị bill này
-                    return SizedBox.shrink();
+                    return const SizedBox.shrink();
                   }
                 },
               ),
