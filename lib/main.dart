@@ -64,11 +64,11 @@ class MyApp extends StatelessWidget {
       ),
 
 
-      initialRoute: '/changepassword', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/banner', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
 
       routes: {
-        '/banner': (context) => const BannerScreen(title: ''),
+        '/banner': (context) => const ConcentricAnimationOnboarding(),
         '/': (context) => const MyHomePage(title: ''),
         '/register': (context) => const Register(title: ''),
         '/login': (context) => const Login(title: ''),
