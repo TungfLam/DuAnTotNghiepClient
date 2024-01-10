@@ -29,6 +29,7 @@ class _AddCommentState extends State<AddComment> {
   List<TextEditingController> arrComment = [];
   String idUser = '';
   String idBill = '';
+  bool isNewComment = true;
 
   Future<void> getProductBill() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -75,7 +76,7 @@ class _AddCommentState extends State<AddComment> {
     }
   }
 
-  Future<void> postComment(String IdProductDetail , String IdProduct , String comment, String rating, List<XFile> images) async {
+  Future<void> postComment(String IdProductDetail, String IdProduct, String comment, String rating, List<XFile> images) async {
 
     final request = http.MultipartRequest('POST' , Uri.parse("$BASE_API/api/comment"));
 
@@ -123,16 +124,15 @@ class _AddCommentState extends State<AddComment> {
       final data = jsonDecode(response.body);
 
       if(!data['err']!){
+        isNewComment = false;
         arrStar[index].text = data['objComment']['rating'].toString();
 
         List img = await data['objComment']['images'];
-        if(img.length != 0){
+        if(img.isNotEmpty){
           for(var item in img){
-            print(item);
             imagescall[index].add(item.toString());
           }
         }
-        print(arrStar[index].text);
         arrComment[index].text = data['objComment']['comment'] ?? "";
       }else{
         arrStar[index].text = '5';
@@ -141,6 +141,17 @@ class _AddCommentState extends State<AddComment> {
     }else{
       showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
     }
+  }
+
+  Future<void> updateComment(String idComment , List<XFile> images) async {
+    final request = http.MultipartRequest('PUT' , Uri.parse("$BASE_API/api/comment/$idComment"));
+    for(var image in images){
+      File file = File(image.path);
+      request.files.add(
+          await http.MultipartFile.fromPath('images', file.path , filename: image.name)
+      );
+    }
+
   }
 
   Future<void> _pickImages(int index) async {
@@ -170,19 +181,13 @@ class _AddCommentState extends State<AddComment> {
           InkWell(
             borderRadius: const BorderRadius.all(Radius.circular(8)),
             onTap: (){
-              for(int i = 0; i < productBill.length ; i++){
-                if(arrComment[i].text.length > 200){
-                  showSnackBarErr(context, "Đánh giá không quá 200 kí tự");
-                  return;
-                }
-                  postComment(productBill[i]['product_id'] , productBill[i]['product_data'][''], arrComment[i].text, arrStar[i].text, _images[i]);
-              }
+              isNewComment ? clickPostComment() : clickUpdateCommetn();
             },
-            child: const Padding(
-              padding: EdgeInsets.all(8),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
               child: Icon(
-                Icons.update,
-                color: Color(0xFF6C4EE7),
+                isNewComment ? Icons.send : Icons.update,
+                color: const Color(0xFF6C4EE7),
               ),
             ),
           ),
@@ -210,5 +215,19 @@ class _AddCommentState extends State<AddComment> {
         ),
       ),
     );
+  }
+
+  void clickPostComment(){
+    for(int i = 0; i < productBill.length ; i++){
+      if(arrComment[i].text.length > 200){
+        showSnackBarErr(context, "Đánh giá không quá 200 kí tự");
+        return;
+      }
+      postComment(productBill[i]['product_id'] , productBill[i]['product_data']['product_id'], arrComment[i].text, arrStar[i].text, _images[i]);
+    }
+  }
+
+  void clickUpdateCommetn(){
+
   }
 }
