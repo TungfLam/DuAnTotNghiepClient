@@ -169,6 +169,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 // Xử lý khi người dùng nhấn vào biểu tượng tìm kiếm
               },
             ),
+            IconButton(
+              icon: const Icon(Icons.chat_bubble_outline_outlined),
+              onPressed: () {
+                Navigator.pushNamed(context, '/chat');
+                // Xử lý khi người dùng nhấn vào biểu tượng tìm kiếm
+              },
+            ),
             Builder(
               builder: (BuildContext context) {
                 return IconButton(
@@ -182,7 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
           backgroundColor: Colors.white,
-          bottom: TabBar(
+          bottom: const TabBar(
             // Thanh TabBar ở đây
             tabs: [
               Tab(text: 'Phổ biến'),
@@ -222,7 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: EdgeInsets.zero,
             children: [
               DrawerHeader(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                 ),
                 child: Row(
@@ -230,7 +237,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     // Thêm hình ảnh bên trái
                     if (anhdd != '')
                       Padding(
-                        padding: EdgeInsets.only(right: 16.0),
+                        padding: const EdgeInsets.only(right: 16.0),
                         child: ClipOval(
                           child: Image(
                               height: 60,
@@ -248,7 +255,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: [
                         Text(
                           fname ?? 'tên người dùng không tồn tại',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
@@ -256,7 +263,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         Text(
                           mail,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
                           ),
@@ -305,6 +312,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {
                   if (_inout == "Đăng xuất") {
                     Navigator.pushNamed(context, '/location');
+
                   }else{
                     showDialogUilt(context, "Thông báo",
                       "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
@@ -315,6 +323,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         print("object");
                       }
                     );
+
                   }
                 },
               ),

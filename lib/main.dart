@@ -26,6 +26,7 @@ import 'package:appclient/Screen/PayScreen.dart';
 import 'package:appclient/Screen/Register.dart';
 import 'package:appclient/Screen/RegisterScreen2.dart';
 import 'package:appclient/Screen/billAllScreen.dart';
+import 'package:appclient/Screen/ChatBoxScreen.dart';
 
 import 'package:appclient/Screen/otp_screen.dart';
 import 'package:appclient/Screen/profile.dart';
@@ -78,9 +79,11 @@ class MyApp extends StatelessWidget {
         '/find': (context) => const Find(title: ''),
         '/favorite': (context) => const Favorite(title: ''),
         '/detaiproduct': (context) => const DetailProduct(title: ''),
+        '/chat': (context) => const ChatBoxScreen(),
 
         Otp_Screen.nameOtp: (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS: (context) => const LoginSMS(title: ""),
+
         RegisterScreen2.nameRegiterScree2: (context) => const RegisterScreen2(title: ""),
         AllComment.nameComment: (context) => const AllComment(),
 
@@ -98,6 +101,7 @@ class MyApp extends StatelessWidget {
 
         AddComment.nameAddComment : (context) => const AddComment(),
         ChangeLocation.nameChangeLocation : (context) => const ChangeLocation(),
+
 
         // Đăng ký đường dẫn cho màn hình MyCart
       },
