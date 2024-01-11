@@ -32,6 +32,7 @@ import 'package:appclient/Screen/otp_screen.dart';
 import 'package:appclient/Screen/profile.dart';
 import 'package:appclient/services/firebaseMessagingService.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -39,16 +40,24 @@ import 'package:permission_handler/permission_handler.dart';
 import 'firebase_options.dart';
 import 'services/local_notification.dart';
 
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  showNotification( message.notification!.title.toString(), message.notification!.body.toString());
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureLocalNotifications();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseMessagingService().initNotifications();
   await Permission.notification.isDenied.then((value) {
     if (value) {
       Permission.notification.request();
     }
   });
+  await FirebaseMessagingService().initNotifications();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(const MyApp());
 }
 

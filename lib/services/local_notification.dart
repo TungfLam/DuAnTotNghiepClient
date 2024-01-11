@@ -5,11 +5,11 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNo
 
 Future<void> configureLocalNotifications() async {
   const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings("mipmap/ic_launcher");
-  final InitializationSettings initializationSettings = InitializationSettings(
+  const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
   );
 
-  await flutterLocalNotificationsPlugin.initialize(
+  flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
   );
 }
