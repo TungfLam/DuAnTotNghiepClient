@@ -11,12 +11,9 @@ class LocalNotifications2{
 
   static Future init() async {
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-    final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
-      onDidReceiveLocalNotification: (id, title , body , payload) {},
-    );
-    final InitializationSettings initializationSettings = InitializationSettings(
+
+    const InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
-      iOS: initializationSettingsDarwin
     );
 
     _flutterLocalNotificationsPlugin.initialize(
@@ -29,11 +26,10 @@ class LocalNotifications2{
   static Future showNotification(String title , String content , String payload) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
     AndroidNotificationDetails(
-        "du_an_to_nghiep_notifcation_service_0393267599",
+        "du_an_to_nghiep_notifcation_0393267599",
         "Adadas Notification",
         importance: Importance.max,
-        priority: Priority.max,
-        ticker: 'ticker'
+        priority: Priority.high
     );
 
     const NotificationDetails platformChannelSpecifics = NotificationDetails(

@@ -42,22 +42,21 @@ import 'firebase_options.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   // showNotification( message.notification!.title.toString(), message.notification!.body.toString() , 'item x');
   LocalNotifications2.showNotification(message.notification!.title.toString(), message.notification!.body.toString(), 'item x');
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await configureLocalNotifications();
-  await LocalNotifications2.init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseMessagingService().initNotifications();
   await Permission.notification.isDenied.then((value) {
     if (value) {
       Permission.notification.request();
     }
   });
-  await FirebaseMessagingService().initNotifications();
+  await LocalNotifications2.init();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   runApp(const MyApp());
