@@ -2,7 +2,6 @@
 import 'package:appclient/Screen/Comment/AllComment.dart';
 import 'package:appclient/Screen/BannerScreen.dart';
 
-
 import 'package:appclient/Screen/ChangePassword.dart';
 
 import 'package:appclient/Screen/ConcentricAnimationOnboarding.dart';
@@ -31,6 +30,7 @@ import 'package:appclient/Screen/ChatBoxScreen.dart';
 import 'package:appclient/Screen/otp_screen.dart';
 import 'package:appclient/Screen/profile.dart';
 import 'package:appclient/services/firebaseMessagingService.dart';
+import 'package:appclient/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -38,18 +38,19 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'firebase_options.dart';
-import 'services/local_notification.dart';
 
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  showNotification( message.notification!.title.toString(), message.notification!.body.toString());
+  // showNotification( message.notification!.title.toString(), message.notification!.body.toString() , 'item x');
+  LocalNotifications2.showNotification(message.notification!.title.toString(), message.notification!.body.toString(), 'item x');
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await configureLocalNotifications();
+  // await configureLocalNotifications();
+  await LocalNotifications2.init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Permission.notification.isDenied.then((value) {
     if (value) {
@@ -58,6 +59,7 @@ void main() async {
   });
   await FirebaseMessagingService().initNotifications();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(const MyApp());
 }
 
@@ -74,7 +76,7 @@ class MyApp extends StatelessWidget {
       ),
 
 
-      initialRoute: '/banner', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
 
       routes: {

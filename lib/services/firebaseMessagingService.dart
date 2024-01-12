@@ -1,6 +1,5 @@
 
-import 'package:appclient/services/local_notification.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:appclient/services/notification_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 @pragma('vm:entry-point')
@@ -17,7 +16,9 @@ class FirebaseMessagingService{
       if(message.notification!.title.toString() == "Messenger"){
         return;
       }
-      showNotification( message.notification!.title.toString(), message.notification!.body.toString());
+      // showNotification( message.notification!.title.toString(), message.notification!.body.toString() , 'item x');
+      LocalNotifications2.showNotification(message.notification!.title.toString(), message.notification!.body.toString(), 'item x');
+
     });
   }
 

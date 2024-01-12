@@ -10,6 +10,7 @@ import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/apiRes.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:appclient/services/firebaseAuthService.dart';
+import 'package:appclient/services/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -127,6 +128,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _checkLogin();
+
+    LocalNotifications2.onClickNotification.listen((value) {
+      print("kkkkkkkkk");
+      Navigator.pushNamed(context, '/notification');
+    });
   }
 
   @override
