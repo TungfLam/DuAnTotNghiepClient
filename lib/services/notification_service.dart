@@ -10,7 +10,7 @@ class LocalNotifications2{
   }
 
   static Future init() async {
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
     final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
       onDidReceiveLocalNotification: (id, title , body , payload) {},
     );
