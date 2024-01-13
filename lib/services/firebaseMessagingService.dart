@@ -13,6 +13,7 @@ class FirebaseMessagingService{
 
     FirebaseMessaging.onMessage.listen((message) {
 
+      print(message.data);
       if(message.notification!.title.toString() == "Messenger"){
         return;
       }

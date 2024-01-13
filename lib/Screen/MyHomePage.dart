@@ -130,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _checkLogin();
 
     LocalNotifications2.onClickNotification.listen((value) {
-      print("kkkkkkkkk");
+      print("kkkkkkkkk : $value");
       Navigator.pushNamed(context, '/notification');
     });
   }
