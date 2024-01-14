@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PopularProductList extends StatefulWidget {
   const PopularProductList({super.key});
@@ -44,24 +45,32 @@ class _PopularProductListState extends State<PopularProductList> {
   }
 
   Future<void> addFavorite(String productId) async {
-    try {
-      final response = await http.post(
-        Uri.parse(
-            '$BASE_API/api/addFavorite/6524318746e12608b3558d74/$productId'),
-        headers: {'Content-Type': 'application/json'},
-      );
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? isLogin = prefs.getBool("isLogin");
+    final String? idUser = prefs.getString("idUser");
+    if (isLogin != null) {
+      if (isLogin == true) {
+        try {
+          final response = await http.post(
+            Uri.parse('$BASE_API/api/addFavorite/$idUser/$productId'),
+            headers: {'Content-Type': 'application/json'},
+          );
 
-      if (response.statusCode == 200) {
-        // Xử lý khi thành công
-        print('Added to favorites successfully!');
-      } else {
-        // Xử lý khi không thành công
-        print(
-            'Failed to add to favorites. Status code: ${response.statusCode}');
+          if (response.statusCode == 200) {
+            // Xử lý khi thành công
+            print('Added to favorites successfully!');
+          } else {
+            // Xử lý khi không thành công
+            print(
+                'Failed to add to favorites. Status code: ${response.statusCode}');
+          }
+        } catch (error) {
+          // Xử lý khi có lỗi
+          print('Error adding to favorites: $error');
+        }
+      } else if (isLogin == false) {
+        Navigator.pushNamed(context, '/login');
       }
-    } catch (error) {
-      // Xử lý khi có lỗi
-      print('Error adding to favorites: $error');
     }
   }
 
@@ -172,7 +181,8 @@ class _PopularProductListState extends State<PopularProductList> {
                                               (BuildContext context,
                                                   Object error,
                                                   StackTrace? stackTrace) {
-                                        return Center(child: const Icon(Icons.image));
+                                        return Center(
+                                            child: const Icon(Icons.image));
                                       }),
                                     ),
                                   ),

@@ -140,8 +140,7 @@ class _MensProductListState extends State<MensProductList> {
                     MaterialPageRoute(
                       builder: (context) => DetailProduct(
                         title: 'Chi tiết sản phẩm',
-                        product:
-                            product, // Truyền đối tượng sản phẩm đã được chọn
+                        product: product, // Truyền đối tượng sản phẩm đã được chọn
                       ),
                     ),
                   );

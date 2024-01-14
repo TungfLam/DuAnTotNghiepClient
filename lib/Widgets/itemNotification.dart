@@ -1,3 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
+
+import 'package:appclient/Screen/DetailProduct.dart';
+import 'package:appclient/Widgets/uilt.dart';
+import 'package:appclient/models/productModel.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +23,7 @@ class itemNotification extends StatefulWidget{
 class _itemNotificationState extends State<itemNotification> {
   DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm');
   bool isRead = true;
+  late productModel objProduct;
 
   Future<void> setStatusR () async{
     final response = await http.get(
@@ -25,6 +33,26 @@ class _itemNotificationState extends State<itemNotification> {
     if(response.statusCode == 200){
       isRead = false;
       setState(() {});
+    }
+  }
+
+  Future<void> _getProduct(String id) async {
+    final response = await http.get(
+      Uri.parse("$BASE_API/api/product-by-id/657844c0da370f7828dd7bc0"),
+    );
+
+    if(response.statusCode == 200){
+      final data = await jsonDecode(response.body);
+
+      if(!data['err']){
+        objProduct = productModel.fromJson(data['objProduct']);
+      }else{
+        print("err api");
+      }
+
+    }else{
+      print("err sv");
+      showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
     }
   }
 
@@ -41,16 +69,36 @@ class _itemNotificationState extends State<itemNotification> {
     String date = "${time.hour + 7}:${time.minute} ${time.day}-${time.month}-${time.year}";
 
     return InkWell(
+      onTap: () async {
+        switch(widget.notification.statuPayload){
+          case '0':
+            setStatusR();
+            break;
+          case '1':
+            setStatusR();
+            await _getProduct(widget.notification.payload);
 
-      onTap: () {
-        setStatusR();
+            print(objProduct.name);
+
+            Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                DetailProduct(
+                  title: "title",
+                  product: objProduct,
+                )
+            ));
+            break;
+          case '2':
+            setStatusR();
+            break;
+        }
+
       },
       child: Container(
         width: double.infinity,
         margin: const EdgeInsets.only(top : 4,bottom: 12, left: 16 , right: 16),
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isRead ? const Color(0xFFE5EBF6) : const Color(0xFFEEEEEF),
+          color: isRead ? const Color(0xFFE5EBF6) : const Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
@@ -79,7 +127,7 @@ class _itemNotificationState extends State<itemNotification> {
                     Expanded(
                       flex: 2,
                         child: Image.network(
-                            "${widget.notification.image}",
+                            "$BASE_API${widget.notification.image}",
                             height: 64,
                             width: 64,
                             errorBuilder: (BuildContext context , Object error, StackTrace? stackTrace){
