@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:appclient/Widgets/Itembill.dart';
 import 'package:appclient/models/productBillModel.dart';
+import 'package:appclient/services/baseApi.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -23,9 +24,11 @@ class _BillhtState extends State<Billht> {
     fetchData(idUser!);  // Gọi hàm fetchData khi widget được khởi tạo
   }
 
+
   Future<void> fetchData(String iduser) async {
     final apiUrl =
         'https://adadas.onrender.com/api/bill/$iduser';
+
 
     try {
       final response = await http.get(Uri.parse(apiUrl));

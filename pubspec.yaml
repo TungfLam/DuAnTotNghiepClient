@@ -54,6 +54,8 @@ dependencies:
   firebase_auth: ^4.15.0
   firebase_messaging: ^14.7.2
 
+  rxdart: ^0.27.7
+
   
   intl: ^0.19.0
   concentric_transition: ^1.0.3
@@ -64,6 +66,9 @@ dependencies:
 
 
 
+  socket_io_client: ^2.0.3+1
+  web_socket_channel: ^2.1.0
+  grouped_list: ^4.0.0
 
 dev_dependencies:
   flutter_test:
