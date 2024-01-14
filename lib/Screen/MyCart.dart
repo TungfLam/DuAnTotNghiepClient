@@ -122,8 +122,7 @@ class _MyCartState extends State<MyCart> {
 
     try {
       final response = await http.get(
-        Uri.parse(
-            'https://adadas.onrender.com/api/discount/655d7897afc3bd165ef29ea5'),
+        Uri.parse('https://adadas.onrender.com/api/discount/$idUser'),
       );
 
       if (response.statusCode == 200) {
@@ -275,11 +274,11 @@ class _MyCartState extends State<MyCart> {
                     for (int i = 0; i < products.length; i++)
                       if (selectedProducts[i])
                         _buildProductDetailsWidget(products[i]),
-                    Container(
+                    SizedBox(
                       width: double.infinity,
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<Listdiscount>(
-                          hint: Text('Chọn voucher'),
+                          hint: const Text('Chọn voucher'),
                           value: selectedVoucher,
                           onChanged: (Listdiscount? newSelectedVoucher) {
                             setState(() {
@@ -293,15 +292,16 @@ class _MyCartState extends State<MyCart> {
                               value: voucher,
                               child: Container(
                                 height: 70,
-                                padding: EdgeInsets.symmetric(vertical: 5),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 5),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     // Thêm các widget dựa trên hình ảnh, ví dụ:
                                     Container(
-                                      margin: EdgeInsets.only(right: 10),
-                                      child: ClipRRect(
+                                      margin: const EdgeInsets.only(right: 10),
+                                      child: const ClipRRect(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(10)),
                                         child: Image(
@@ -327,10 +327,10 @@ class _MyCartState extends State<MyCart> {
                         ),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       width: double.infinity,
                       child: DropdownButton<String>(
-                        hint: Text('phương thức thanh toán'),
+                        hint: const Text('phương thức thanh toán'),
                         value: selectedPaymentMethod.isNotEmpty
                             ? selectedPaymentMethod
                             : null,
@@ -394,14 +394,14 @@ class _MyCartState extends State<MyCart> {
                                   totalAmount, selectedVoucher?.sId ?? '');
                             }
                           },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF6342E8),
+                          ),
                           child: const Text(
                             'Thanh toán',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            primary: const Color(0xFF6342E8),
                           ),
                         ),
                       ],
@@ -418,14 +418,14 @@ class _MyCartState extends State<MyCart> {
 
   Widget _buildProductDetailsWidget(ListCart product) {
     return Container(
-      margin: EdgeInsets.only(bottom: 5),
+      margin: const EdgeInsets.only(bottom: 5),
       width: double.infinity,
       child: Column(
         children: [
           Row(
             children: [
               Container(
-                padding: EdgeInsets.only(right: 10),
+                padding: const EdgeInsets.only(right: 10),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
@@ -612,7 +612,7 @@ class _MyCartState extends State<MyCart> {
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.fromLTRB(
-                                                      0, 0, 20, 0),
+                                                      0, 0, 40, 0),
                                               child: Text(
                                                 product.productId?.product
                                                         ?.name ??
@@ -764,12 +764,40 @@ class _MyCartState extends State<MyCart> {
                                   icon: const Icon(Icons.close,
                                       color: Colors.black),
                                   onPressed: () {
-                                    if (product.sId != null) {
-                                      _removeItemFromCart(product.sId!);
-                                    } else {
-                                      print(
-                                          'CartId is null for product at index $index');
-                                    }
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                              'Xác nhận xóa sản phẩm'),
+                                          content: const Text(
+                                              'Bạn muốn xóa sản phẩm này?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .pop(); // Đóng hộp thoại
+                                                if (product.sId != null) {
+                                                  _removeItemFromCart(
+                                                      product.sId!);
+                                                } else {
+                                                  print(
+                                                      'CartId is null for product at index $index');
+                                                }
+                                              },
+                                              child: const Text('Có'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .pop(); // Đóng hộp thoại
+                                              },
+                                              child: const Text('Hủy'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
                                   },
                                 ),
                               ),
@@ -818,13 +846,13 @@ class _MyCartState extends State<MyCart> {
                           'Tổng tiền: ${NumberFormat.decimalPattern().format(totalAmount)} đ');
                       _showSelectedProductsModal();
                     },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF6342E8),
+                    ),
                     child: const Text(
                       'Mua Hàng',
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color(0xFF6342E8),
                     ),
                   ),
                 ],

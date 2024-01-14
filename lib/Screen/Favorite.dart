@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:appclient/Screen/DetailFavariteProduct.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Favorite extends StatefulWidget {
@@ -188,13 +189,16 @@ class _FavoriteState extends State<Favorite> {
                                         children: [
                                           Expanded(
                                             flex: 7,
-                                            child: Text(
-                                              product.productId?.name ??
-                                                  "Unknown",
-                                              style: const TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color(0xff6342E8)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(right: 40),
+                                              child: Text(
+                                                product.productId?.name ??
+                                                    "Unknown",
+                                                style: const TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color(0xff6342E8)),
+                                              ),
                                             ),
                                           ),
                                           Expanded(
@@ -205,7 +209,8 @@ class _FavoriteState extends State<Favorite> {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  '\đ${product.productId?.price ?? 'Unknown Price'}',
+                                                  '${NumberFormat.decimalPattern().format(product.productId?.price ?? 'Unknown Price')} đ',
+                                                  
                                                   style: const TextStyle(
                                                       fontSize: 18,
                                                       fontWeight:
@@ -237,17 +242,45 @@ class _FavoriteState extends State<Favorite> {
                               Positioned(
                                 top: 0,
                                 right: 0,
+                                
                                 child: IconButton(
                                   icon: const Icon(Icons.close,
                                       color: Colors.black),
                                   onPressed: () {
-                                    // Xử lý khi nút "x" được nhấn
-                                    if (product.sId != null) {
-                                      _removeItemFromFavorite(product.sId!);
-                                    } else {
-                                      print(
-                                          'ProductId is null for product at index $index');
-                                    }
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                              'Xác nhận xóa sản phẩm'),
+                                          content: const Text(
+                                              'Bạn muốn xóa sản phẩm này?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .pop(); // Đóng hộp thoại
+                                                if (product.sId != null) {
+                                                  _removeItemFromFavorite(
+                                                      product.sId!);
+                                                } else {
+                                                  print(
+                                                      'CartId is null for product at index $index');
+                                                }
+                                              },
+                                              child: const Text('Có'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .pop(); // Đóng hộp thoại
+                                              },
+                                              child: const Text('Hủy'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
                                   },
                                 ),
                               ),
