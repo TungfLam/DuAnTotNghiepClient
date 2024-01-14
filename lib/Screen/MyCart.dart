@@ -183,18 +183,18 @@ class _MyCartState extends State<MyCart> {
     }
   }
 
-  Future<void> addBillApiCall(String idcart, int payment) async {
+  Future<void> addBillApiCall(String userid, List<String> cartIds, int amount,
+      String idDiscount) async {
     // Tạo đối tượng body theo định dạng mà API yêu cầu
     final Map<String, dynamic> requestBody = {
-      "user_id": "$userid",
-      "cart_id": "$idcart",
-      "payments": payment,
-      "total_amount": 1,
+      "idCart": cartIds,
+      "amount": amount,
+      "idDiscount": idDiscount,
     };
 
     try {
       final response = await http.post(
-        Uri.parse('$BASE_API/api/addBill'),
+        Uri.parse('https://adadas.onrender.com/api/addBill/$userid'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -368,12 +368,9 @@ class _MyCartState extends State<MyCart> {
                             print(
                                 'phương thức tt đã chọn: $selectedPaymentMethod');
                             print('voucher đã chọn: ${selectedVoucher?.sId}');
-
+                            List<String> selectedCartIds = getSelectedCartIds();
+                            print('những sản phẩm được chọn: $selectedCartIds');
                             if (isVnPaySelected) {
-                              List<String> selectedCartIds =
-                                  getSelectedCartIds();
-                              print(
-                                  'những sản phẩm được chọn: $selectedCartIds');
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -393,7 +390,8 @@ class _MyCartState extends State<MyCart> {
                                   'Tổng tiền: đ${NumberFormat.decimalPattern().format(totalAmount - discountAmount)}');
                             } else {
                               // Xử lý thanh toán khác
-                              // addBillApiCall(product.sId!, 2);
+                              addBillApiCall(userid, selectedCartIds,
+                                  totalAmount, selectedVoucher?.sId ?? '');
                             }
                           },
                           child: const Text(
