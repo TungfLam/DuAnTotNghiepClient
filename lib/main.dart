@@ -15,21 +15,21 @@ import 'package:appclient/Screen/Favorite.dart';
 import 'package:appclient/Screen/Find.dart';
 import 'package:appclient/Screen/Locations/ChangeLocation.dart';
 import 'package:appclient/Screen/Locations/Location.dart';
-import 'package:appclient/Screen/Login.dart';
 import 'package:appclient/Screen/LoginOrRegister.dart';
-import 'package:appclient/Screen/LoginSMS.dart';
 import 'package:appclient/Screen/MyCart.dart';
 import 'package:appclient/Screen/MyHomePage.dart';
 import 'package:appclient/Screen/Notification.dart';
 import 'package:appclient/Screen/PayScreen.dart';
 import 'package:appclient/Screen/PaymentScreen.dart';
-import 'package:appclient/Screen/Register.dart';
-import 'package:appclient/Screen/RegisterScreen2.dart';
+import 'package:appclient/Screen/SignInUp/Login.dart';
+import 'package:appclient/Screen/SignInUp/LoginSMS.dart';
+import 'package:appclient/Screen/SignInUp/Register.dart';
+import 'package:appclient/Screen/SignInUp/RegisterScreen2.dart';
+import 'package:appclient/Screen/SignInUp/otp_screen.dart';
 import 'package:appclient/Screen/VoucherScreen.dart';
 import 'package:appclient/Screen/billAllScreen.dart';
 import 'package:appclient/Screen/ChatBoxScreen.dart';
 
-import 'package:appclient/Screen/otp_screen.dart';
 import 'package:appclient/Screen/profile.dart';
 import 'package:appclient/services/firebaseMessagingService.dart';
 import 'package:appclient/services/notification_service.dart';
@@ -45,7 +45,9 @@ import 'firebase_options.dart';
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // showNotification( message.notification!.title.toString(), message.notification!.body.toString() , 'item x');
+  if(message.notification!.title.toString() == "Messenger"){
+    return;
+  }
   LocalNotifications2.showNotification(message.notification!.title.toString(), message.notification!.body.toString(), 'item x');
 }
 
@@ -98,10 +100,10 @@ class MyApp extends StatelessWidget {
 
         Otp_Screen.nameOtp: (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS: (context) => const LoginSMS(title: ""),
-
         RegisterScreen2.nameRegiterScree2: (context) => const RegisterScreen2(title: ""),
         AllComment.nameComment: (context) => const AllComment(),
-
+        AddComment.nameAddComment : (context) => const AddComment(),
+        ChangeLocation.nameChangeLocation : (context) => const ChangeLocation(),
 
         '/pay': (context) => const PayScreen(userid: '',  idcart: [], totalAmount: 0, title: '',idDiscount: '',),
 
@@ -113,10 +115,6 @@ class MyApp extends StatelessWidget {
 
         '/profile': (context) => const profileScreen(),
         '/test': (context) => const ConcentricAnimationOnboarding(),
-
-        AddComment.nameAddComment : (context) => const AddComment(),
-        ChangeLocation.nameChangeLocation : (context) => const ChangeLocation(),
-
 
         // Đăng ký đường dẫn cho màn hình MyCart
       },
