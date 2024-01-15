@@ -64,6 +64,8 @@ class _LoginState extends State<LoginSMS> {
           await prefs.setString("phone", res.phone.toString());
           await prefs.setString("email", res.email.toString());
           await prefs.setString("fullname", res.fullname.toString());
+          await prefs.setString("address_city", res.addressCity.toString());
+          await prefs.setString("specific_addres", res.specificAddres.toString());
           await prefs.setBool("isLogin", true);
 
           if(phone.startsWith("0")){

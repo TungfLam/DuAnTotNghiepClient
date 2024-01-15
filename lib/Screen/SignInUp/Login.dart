@@ -50,6 +50,8 @@ class _LoginState extends State<Login> {
       Map<String , dynamic> apiRes = jsonDecode(response.body);
       ApiRes res = ApiRes.fromJson(apiRes);
 
+      print(response.body);
+
       if(res.err!){
         showSnackBarErr(context, res.msg!);
       }else{
@@ -67,6 +69,9 @@ class _LoginState extends State<Login> {
           await prefs.setString("phone", res.phone.toString());
           await prefs.setString("email", res.email.toString());
           await prefs.setString("address", res.address.toString());
+          await prefs.setString("address_city", res.addressCity.toString());
+          await prefs.setString("specific_addres", res.specificAddres.toString());
+
           await prefs.setBool("isLogin", true);
 
           showSnackBar(context, res.msg!);
