@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:appclient/Widgets/itemComment.dart';
+import 'package:appclient/Widgets/loading.dart';
 import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/apiRes.dart';
 import 'package:appclient/services/baseApi.dart';
@@ -30,8 +31,12 @@ class _AddCommentState extends State<AddComment> {
   String idUser = '';
   String idBill = '';
   bool isNewComment = true;
+  bool _isLoading = false;
 
   Future<void> getProductBill() async {
+    setState(() {
+      _isLoading = true;
+    });
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     try{
       idUser = prefs.getString("idUser")!;
@@ -74,9 +79,16 @@ class _AddCommentState extends State<AddComment> {
       showSnackBarErr(context, "Err : lỗi server");
       Navigator.pop(context);
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> postComment(String IdProductDetail, String IdProduct, String comment, String rating, List<XFile> images) async {
+    setState(() {
+      _isLoading = true;
+    });
 
     final request = http.MultipartRequest('POST' , Uri.parse("$BASE_API/api/comment"));
 
@@ -106,9 +118,16 @@ class _AddCommentState extends State<AddComment> {
     }else{
       print("that bai");
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> getComment(String idProductDetail , int index) async {
+    setState(() {
+      _isLoading = true;
+    });
     final response = await http.post(
       Uri.parse("$BASE_API/api/comment-by-id"),
       headers: <String , String>{
@@ -141,9 +160,16 @@ class _AddCommentState extends State<AddComment> {
     }else{
       showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> updateComment(String idComment , List<XFile> images) async {
+    setState(() {
+      _isLoading = true;
+    });
     final request = http.MultipartRequest('PUT' , Uri.parse("$BASE_API/api/comment/$idComment"));
     for(var image in images){
       File file = File(image.path);
@@ -151,6 +177,10 @@ class _AddCommentState extends State<AddComment> {
           await http.MultipartFile.fromPath('images', file.path , filename: image.name)
       );
     }
+
+    setState(() {
+      _isLoading = false;
+    });
 
   }
 
@@ -194,25 +224,31 @@ class _AddCommentState extends State<AddComment> {
           const SizedBox(width: 8)
         ],
       ),
-      body: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 8 , horizontal: 16),
-        child: SingleChildScrollView(
-          child: Column(
-            children: productBill.map((e) {
-              int index = productBill.indexOf(e);
-              return itemAddComment(
-                item: e,
-                starCtrl: arrStar[index],
-                commentCtrl: arrComment[index],
-                pickImage: _pickImages,
-                images: _images[index],
-                index: index,
-                imagescall: imagescall[index],
-              );
-            }).toList(),
+      body: Stack(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 8 , horizontal: 16),
+            child: SingleChildScrollView(
+              child: Column(
+                children: productBill.map((e) {
+                  int index = productBill.indexOf(e);
+                  return itemAddComment(
+                    item: e,
+                    starCtrl: arrStar[index],
+                    commentCtrl: arrComment[index],
+                    pickImage: _pickImages,
+                    images: _images[index],
+                    index: index,
+                    imagescall: imagescall[index],
+                  );
+                }).toList(),
+              ),
+            ),
           ),
-        ),
+
+          _isLoading ? const showLoading() : const SizedBox()
+        ],
       ),
     );
   }

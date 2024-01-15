@@ -6,13 +6,16 @@ import 'package:appclient/Listview/DiscountProductList.dart';
 import 'package:appclient/Listview/MensProductList.dart';
 import 'package:appclient/Listview/PopularProductList.dart';
 import 'package:appclient/Listview/WomensProductList.dart';
+import 'package:appclient/Widgets/loading.dart';
 import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/apiRes.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:appclient/services/firebaseAuthService.dart';
 import 'package:appclient/services/notification_service.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -31,8 +34,21 @@ class _MyHomePageState extends State<MyHomePage> {
   String mail = '';
   String fname = '';
   String _idUser = '';
+  var subscription;
+  bool _isLoading = false;
 
   Future<void> _checkLogin() async {
+    final connecting = await (Connectivity().checkConnectivity());
+    if(connecting == ConnectivityResult.none) {
+      showDialogUilt15(context, "Lỗi kết nối", "Mất kết nối internet , vui lòng kiểm tra lại", (){
+        Navigator.of(context).pop();
+        SystemNavigator.pop();
+      });
+      return;
+    }
+    setState(() {
+      _isLoading = true;
+    });
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final bool? isLogin = prefs.getBool("isLogin");
     final String? idUser = prefs.getString("idUser");
@@ -101,9 +117,16 @@ class _MyHomePageState extends State<MyHomePage> {
         _inout = "Đăng nhập";
       });
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<bool> logoutUser(String idUser) async {
+    setState(() {
+      _isLoading = true;
+    });
     final response = await http.post(Uri.parse("$BASE_API/api/logout/$idUser"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8'
@@ -121,8 +144,13 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       showSnackBarErr(context, "Lỗi Api");
     }
+    setState(() {
+      _isLoading = false;
+    });
     return false;
   }
+
+
 
   @override
   void initState() {
@@ -133,6 +161,25 @@ class _MyHomePageState extends State<MyHomePage> {
       print("kkkkkkkkk : $value");
       Navigator.pushNamed(context, '/notification');
     });
+
+    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      if(result == ConnectivityResult.none){
+        showDialogUilt15(context, "Lỗi kết nối", "Mất kết nối internet , vui lòng kiểm tra lại", (){
+            Navigator.of(context).pop();
+            SystemNavigator.pop();
+        });
+      }else{
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -205,29 +252,35 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        body: TabBarView(
-          // Nội dung của các tab
+        body: Stack(
           children: [
-            // Nội dung của Tab 1
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: const PopularProductList(),
+            TabBarView(
+              // Nội dung của các tab
+              children: [
+                // Nội dung của Tab 1
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  child: const PopularProductList(),
+                ),
+                // Nội dung của Tab 2
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  child: const MensProductList(),
+                ),
+                // Nội dung của Tab 3
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  child: const WomensProductList(),
+                ),
+                // Nội dung của Tab 4
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  child: const DiscountScreen(),
+                ),
+              ],
             ),
-            // Nội dung của Tab 2
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: const MensProductList(),
-            ),
-            // Nội dung của Tab 3
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: const WomensProductList(),
-            ),
-            // Nội dung của Tab 4
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: const DiscountScreen(),
-            ),
+
+            _isLoading ? const showLoading() : const SizedBox()
           ],
         ),
         endDrawer: Drawer(

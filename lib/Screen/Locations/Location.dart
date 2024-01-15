@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:appclient/Screen/Locations/ChangeLocation.dart';
 import 'package:appclient/Widgets/buttomCustom.dart';
+import 'package:appclient/Widgets/loading.dart';
 import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/Location_Model.dart';
 import 'package:appclient/models/apiRes.dart';
@@ -23,6 +24,8 @@ class LocationPage extends State<LocationScreen> {
   List<LocationModel> list = [];
   var select = 0;
 
+  bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +39,9 @@ class LocationPage extends State<LocationScreen> {
   }
 
   Future<void> fetchData() async {
+    setState(() {
+      _isLoading = true;
+    });
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? idUser = prefs.getString("idUser");
     final String? addressuser = prefs.getString('address');
@@ -57,8 +63,6 @@ class LocationPage extends State<LocationScreen> {
           if(addressuser != null){
             if(addressuser == locationModel.id){
               select = i;
-              print(addressuser);
-              print('==$i');
             }
           }
           setState(() {
@@ -67,8 +71,12 @@ class LocationPage extends State<LocationScreen> {
         }
       }
     } catch (error) {
-      print("Error: $error");
+      showSnackBarErr(context, "Err : Vui lòng thử lại sau");
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -82,29 +90,35 @@ class LocationPage extends State<LocationScreen> {
         ),
         centerTitle: true,
       ),
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: list.length,
-              itemBuilder: (context, index) {
-                var notifi = list[index];
-                return itemLocation(context, notifi, index, select, () {
-                  setState(() {
-                    select = index;
-                  });
-                });
-              },
+      body: Stack(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: list.length,
+                  itemBuilder: (context, index) {
+                    var notifi = list[index];
+                    return itemLocation(context, notifi, index, select, () {
+                      setState(() {
+                        select = index;
+                      });
+                    });
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Text('Số lượng địa chỉ ${list.length}/3')
+              ],
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            Text('Số lượng địa chỉ ${list.length}/3')
-          ],
-        ),
+          ),
+
+          _isLoading ? const showLoading() : const SizedBox()
+        ],
       ),
       bottomNavigationBar: BottomAppBar(
         height: 72,
@@ -207,32 +221,42 @@ class LocationPage extends State<LocationScreen> {
       ),
     );
   }
-}
 
+  Future<void> setAddress(BuildContext context , String idUser , String idAddress) async {
+    setState(() {
+      _isLoading = true;
+    });
 
-Future<void> setAddress(BuildContext context , String idUser , String idAddress) async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final response = await http.post(
-    Uri.parse("$BASE_API/api/setaddress"),
-    headers: <String , String>{
-      'Content-Type': 'application/json; charset=UTF-8'
-    },
-    body: jsonEncode(<String , String>{
-      'idUser' : idUser,
-      'idAddress' : idAddress
-    })
-  );
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final response = await http.post(
+        Uri.parse("$BASE_API/api/setaddress"),
+        headers: <String , String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: jsonEncode(<String , String>{
+          'idUser' : idUser,
+          'idAddress' : idAddress
+        })
+    );
 
-  if(response.statusCode == 200){
-    ApiRes res = ApiRes.fromJson(jsonDecode(response.body));
+    if(response.statusCode == 200){
+      ApiRes res = ApiRes.fromJson(jsonDecode(response.body));
 
-    if(res.err!){
-      showSnackBarErr(context, res.msg!);
+      if(res.err!){
+        showSnackBarErr(context, res.msg!);
+      }else{
+        await prefs.setString("address", idAddress);
+        showSnackBar(context, res.msg!);
+      }
     }else{
-      await prefs.setString("address", idAddress);
-      showSnackBar(context, res.msg!);
+      showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
     }
-  }else{
-    showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
+
+    setState(() {
+      _isLoading = false;
+    });
   }
+
 }
+
+

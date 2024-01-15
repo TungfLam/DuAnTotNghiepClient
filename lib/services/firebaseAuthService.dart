@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:appclient/Screen/otp_screen.dart';
+import 'package:appclient/Screen/SignInUp/otp_screen.dart';
 import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/toSendCode.dart';
 import 'package:device_info/device_info.dart';
@@ -33,10 +33,7 @@ class FirebaseAuthService {
     await _auth.verifyPhoneNumber(
       phoneNumber: phone,
       verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
-        // await _auth.currentUser!.reload();
-        // if(_auth.currentUser == null){
-        //   await _auth.signInWithCredential(phoneAuthCredential);
-        // }
+        //
       },
       verificationFailed: (err) async {
         print("that bai r");

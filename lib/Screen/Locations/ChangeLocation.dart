@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:appclient/Widgets/buttomCustom.dart';
 import 'package:appclient/Widgets/getLocationButtonn.dart';
+import 'package:appclient/Widgets/loading.dart';
 import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/apiRes.dart';
 import 'package:appclient/services/baseApi.dart';
@@ -47,7 +48,12 @@ class ChangeLocationPage extends State<ChangeLocation> {
   dynamic objAddress ;
   String idAddress = "";
 
+  bool _isLoading = false;
+
   Future<void> getProvincesP () async {
+    setState(() {
+      _isLoading = true;
+    });
     final dio = Dio();
     final responseP = await dio.get("$baseApiProvinces/api/p");
 
@@ -57,9 +63,16 @@ class ChangeLocationPage extends State<ChangeLocation> {
     }else{
       showSnackBarErr(context, "Lỗi server code : ${responseP.statusCode}");
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> getProvincesD (int provinceCode) async {
+    setState(() {
+      _isLoading = true;
+    });
     final dio = Dio();
     final responseD = await dio.get("$baseApiProvinces/api/p/$provinceCode/?depth=2");
 
@@ -69,9 +82,15 @@ class ChangeLocationPage extends State<ChangeLocation> {
     }else{
       showSnackBarErr(context, "Lỗi server code : ${responseD.statusCode}");
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> getProvincesW (int districtCode) async {
+    setState(() {
+      _isLoading = true;
+    });
     final dio = Dio();
     final responseW = await dio.get("$baseApiProvinces/api/d/$districtCode/?depth=2");
 
@@ -81,9 +100,15 @@ class ChangeLocationPage extends State<ChangeLocation> {
     }else{
       showSnackBarErr(context, "Lỗi server code : ${responseW.statusCode}");
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> _getLocation() async {
+    setState(() {
+      _isLoading = true;
+    });
     _addressCtrl.text = "Đang tìm ...";
     await _determinePosition();
     try {
@@ -100,9 +125,15 @@ class ChangeLocationPage extends State<ChangeLocation> {
     } catch (e) {
       print(e);
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> _getCityName() async {
+    setState(() {
+      _isLoading = true;
+    });
 
     const apiKey = 'fYfBOiPvOSBAI4T2A2JyFPdga7OPBzJhTYzz93V7';
     final apiUrl = 'https://rsapi.goong.io/Geocode?latlng=$latitude,$longitude&api_key=$apiKey';
@@ -132,6 +163,9 @@ class ChangeLocationPage extends State<ChangeLocation> {
     } catch (e) {
       print(e);
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<Position> _determinePosition() async {
@@ -159,6 +193,10 @@ class ChangeLocationPage extends State<ChangeLocation> {
   }
 
   Future<void> _addLoaction(String address , String specificaddes) async {
+    setState(() {
+      _isLoading = true;
+    });
+
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String idUser = prefs.getString("idUser") ?? "";
 
@@ -194,9 +232,16 @@ class ChangeLocationPage extends State<ChangeLocation> {
     }else{
       showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> _getAdderss(String id) async {
+    setState(() {
+      _isLoading = true;
+    });
     final response = await http.get(
       Uri.parse("$BASE_API/api/get-address/$id"),
     );
@@ -221,9 +266,16 @@ class ChangeLocationPage extends State<ChangeLocation> {
     }else{
       showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> _updateAddress(String id, String address, String specificAddress) async {
+    setState(() {
+      _isLoading = true;
+    });
     final response = await http.put(
       Uri.parse("$BASE_API/api/address/$id"),
       headers: <String , String>{
@@ -247,9 +299,16 @@ class ChangeLocationPage extends State<ChangeLocation> {
     }else{
       showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
   
   Future<void> _deleteAddress(String id) async {
+    setState(() {
+      _isLoading = true;
+    });
     final response = await http.delete(
       Uri.parse("$BASE_API/api/address/$id")
     );
@@ -267,6 +326,10 @@ class ChangeLocationPage extends State<ChangeLocation> {
     }else{
       showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -484,7 +547,9 @@ class ChangeLocationPage extends State<ChangeLocation> {
                 })
               ],
             ),
-          )
+          ),
+
+          _isLoading ? const showLoading() : const SizedBox()
         ],
       ),
     );

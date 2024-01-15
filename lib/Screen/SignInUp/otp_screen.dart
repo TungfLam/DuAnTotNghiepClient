@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:animate_do/animate_do.dart';
-import 'package:appclient/Screen/RegisterScreen2.dart';
+import 'package:appclient/Screen/SignInUp/RegisterScreen2.dart';
 import 'package:appclient/Widgets/buttomCustom.dart';
 import 'package:appclient/Widgets/countDown.dart';
 import 'package:appclient/Widgets/uilt.dart';
@@ -24,8 +24,6 @@ class Otp_Screen extends StatefulWidget{
 
 // ignore: camel_case_types
 class _Otp_ScreenState extends State<Otp_Screen> {
-  // final FirebaseAuthService _authService = FirebaseAuthService();
-  // final FirebaseMessagingService _messagingService = FirebaseMessagingService();
   String? otpCode;
 
   @override

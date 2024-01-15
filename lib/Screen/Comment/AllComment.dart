@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:appclient/Widgets/itemComment.dart';
+import 'package:appclient/Widgets/loading.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -19,8 +20,13 @@ class _AllCommentState extends State<AllComment> {
   String dropdownValue = list.first;
   String idProduct = '';
   List arrComment = [];
+  bool _isLoading = false;
 
   Future<void> getComment() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     final response = await http.get(
         Uri.parse("$BASE_API/api/comment/$idProduct?star=$dropdownValue")
     );
@@ -31,6 +37,10 @@ class _AllCommentState extends State<AllComment> {
       print(arrComment.length);
       setState(() {});
     }
+
+    setState(() {
+      _isLoading = true;
+    });
   }
 
   @override
@@ -56,48 +66,54 @@ class _AllCommentState extends State<AllComment> {
         centerTitle: true,
         title: const Text("Bình luận"),
       ),
-      body: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric( horizontal: 16),
-        child: Column(
-          children: [
-            Row(
+      body: Stack(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric( horizontal: 16),
+            child: Column(
               children: [
-                DropdownButton(
-                  value: dropdownValue,
-                  icon: const Icon(Icons.star , color: Colors.yellow,),
-                  elevation: 4,
-                  onChanged: (String? value) {
-                    setState(() {
-                      dropdownValue = value!;
-                      getComment();
-                      setState(() {});
-                    });
-                  },
-                  items: list.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      alignment: Alignment.center,
-                      child: (value == '0') ? const Text(" Tất cả ") : Text(" $value Sao "),
-                    );
-                  }).toList()
+                Row(
+                  children: [
+                    DropdownButton(
+                        value: dropdownValue,
+                        icon: const Icon(Icons.star , color: Colors.yellow,),
+                        elevation: 4,
+                        onChanged: (String? value) {
+                          setState(() {
+                            dropdownValue = value!;
+                            getComment();
+                            setState(() {});
+                          });
+                        },
+                        items: list.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            alignment: Alignment.center,
+                            child: (value == '0') ? const Text(" Tất cả ") : Text(" $value Sao "),
+                          );
+                        }).toList()
+                    )
+                  ],
+                ),
+
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(top: 8),
+                      child: Column(
+                        children: arrComment.map((e) => itemComment(item: e)).toList(),
+                      ),
+                    ),
+                  ),
                 )
               ],
             ),
+          ),
 
-            Expanded(
-              child: SingleChildScrollView(
-                child: Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.only(top: 8),
-                  child: Column(
-                    children: arrComment.map((e) => itemComment(item: e)).toList(),
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
+          _isLoading ? const showLoading() : const SizedBox()
+        ],
       ),
     );
   }
