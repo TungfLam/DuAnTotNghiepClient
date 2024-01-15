@@ -22,8 +22,10 @@ import 'package:appclient/Screen/MyCart.dart';
 import 'package:appclient/Screen/MyHomePage.dart';
 import 'package:appclient/Screen/Notification.dart';
 import 'package:appclient/Screen/PayScreen.dart';
+import 'package:appclient/Screen/PaymentScreen.dart';
 import 'package:appclient/Screen/Register.dart';
 import 'package:appclient/Screen/RegisterScreen2.dart';
+import 'package:appclient/Screen/VoucherScreen.dart';
 import 'package:appclient/Screen/billAllScreen.dart';
 import 'package:appclient/Screen/ChatBoxScreen.dart';
 
@@ -75,7 +77,7 @@ class MyApp extends StatelessWidget {
       ),
 
 
-      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/banner', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
 
       routes: {
@@ -90,6 +92,9 @@ class MyApp extends StatelessWidget {
         '/favorite': (context) => const Favorite(title: ''),
         '/detaiproduct': (context) => const DetailProduct(title: ''),
         '/chat': (context) => const ChatBoxScreen(),
+        '/voucher': (context) => const VoucherScreen(),
+        '/payment': (context) => const PaymentScreen(),
+
 
         Otp_Screen.nameOtp: (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS: (context) => const LoginSMS(title: ""),

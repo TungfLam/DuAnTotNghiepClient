@@ -175,13 +175,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 // Xử lý khi người dùng nhấn vào biểu tượng tìm kiếm
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.chat_bubble_outline_outlined),
-              onPressed: () {
-                Navigator.pushNamed(context, '/chat');
-                // Xử lý khi người dùng nhấn vào biểu tượng tìm kiếm
-              },
-            ),
             Builder(
               builder: (BuildContext context) {
                 return IconButton(
@@ -238,45 +231,52 @@ class _MyHomePageState extends State<MyHomePage> {
                 decoration: const BoxDecoration(
                   color: Colors.white,
                 ),
-                child: Row(
-                  children: [
-                    // Thêm hình ảnh bên trái
-                    if (anhdd != '')
-                      Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: ClipOval(
-                          child: Image(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/profile');
+                   
+                  },
+                  child: Row(
+                    children: [
+                      
+                      if (anhdd != '')
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: ClipOval(
+                            child: Image(
                               height: 60,
                               width: 60,
                               image: NetworkImage('$BASE_API$anhdd'),
                               errorBuilder: (BuildContext context, Object error,
                                   StackTrace? stackTrace) {
                                 return Center(child: const Icon(Icons.image));
-                              }),
+                              },
+                            ),
+                          ),
                         ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            fname ?? 'tên người dùng không tồn tại',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Text(
+                            mail,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
                       ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          fname ?? 'tên người dùng không tồn tại',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Text(
-                          mail,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               ListTile(
@@ -318,18 +318,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {
                   if (_inout == "Đăng xuất") {
                     Navigator.pushNamed(context, '/location');
-
-                  }else{
+                  } else {
                     showDialogUilt(context, "Thông báo",
-                      "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
-                      () {
-                        print("object");
-                        Navigator.pop(context);
-                        Navigator.pushNamed(context, '/login');
-                        print("object");
-                      }
-                    );
-
+                        "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
+                        () {
+                      print("object");
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/login');
+                      print("object");
+                    });
                   }
                 },
               ),
@@ -339,15 +336,41 @@ class _MyHomePageState extends State<MyHomePage> {
                   'Phương thức thanh toán',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                onTap: () {},
+                onTap: () {
+                  if (_inout == "Đăng xuất") {
+                    Navigator.pushNamed(context, '/payment');
+                  } else {
+                    showDialogUilt(context, "Thông báo",
+                        "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
+                        () {
+                      print("object");
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/login');
+                      print("object");
+                    });
+                  }
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.discount_outlined),
                 title: const Text(
-                  'Khuyến mại',
+                  'Voucher',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                onTap: () {},
+                onTap: () {
+                  if (_inout == "Đăng xuất") {
+                    Navigator.pushNamed(context, '/voucher');
+                  } else {
+                    showDialogUilt(context, "Thông báo",
+                        "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
+                        () {
+                      print("object");
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/login');
+                      print("object");
+                    });
+                  }
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.notifications_outlined),
@@ -355,15 +378,41 @@ class _MyHomePageState extends State<MyHomePage> {
                   'Thông báo',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                onTap: () {},
+                onTap: () {
+                  if (_inout == "Đăng xuất") {
+                    Navigator.pushNamed(context, '/notification');
+                  } else {
+                    showDialogUilt(context, "Thông báo",
+                        "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
+                        () {
+                      print("object");
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/login');
+                      print("object");
+                    });
+                  }
+                },
               ),
               ListTile(
-                leading: const Icon(Icons.help_outline_outlined),
+                leading: const Icon(Icons.chat_bubble_outline_outlined),
                 title: const Text(
                   'Hỗ trợ',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                onTap: () {},
+                onTap: () {
+                  if (_inout == "Đăng xuất") {
+                    Navigator.pushNamed(context, '/chat');
+                  } else {
+                    showDialogUilt(context, "Thông báo",
+                        "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
+                        () {
+                      print("object");
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/login');
+                      print("object");
+                    });
+                  }
+                },
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
