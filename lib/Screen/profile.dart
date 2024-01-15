@@ -34,290 +34,218 @@ class _profileScreenState extends State<profileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      
-      home: Scaffold(
-      body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 10, left: 10),
-                    child: Icon(Icons.arrow_back),
-                  )
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 10, bottom: 10),
-                child: CircleAvatar(
-                  radius: 70,
-                  backgroundImage: NetworkImage(
-                      'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Bùi Duy Quang" + " | " + "Hà Nội",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
-                ],
-              ),
-              Text("Description"),
+    return  Scaffold(
+       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: const Text(
+          'thông tin cá nhân',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        actions: const [],
+      ),
+      body: Container(
+        padding: EdgeInsets.all(18),
+        child: const SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.only(top: 40, bottom: 20,right: 20,left: 20),
-                  child:
-                   Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(
-                      'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg'),
+                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                  child: CircleAvatar(
+                    radius: 70,
+                    backgroundImage: NetworkImage(
+                        'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+                  ),
                 ),
-                Expanded(
-                          flex: 2,
-                          child: Text(
-                         "Đơn hàng đã mua",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Bùi Duy Quang" + " | " + "Hà Nội",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                  ],
+                ),
+                Text("Description"),
+                  
+                
+                Column(
+                  children: [
+                    // so dien thoai
+                    Column(
+                      children: [
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Text(
+                                "Số điện thoại",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            )),
+                        SizedBox(
+                          height: 40, // <-- TextField height
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(color: Colors.white),
+                            child: TextField(
+                              maxLines: null,
+                              expands: true,
+                              keyboardType: TextInputType.multiline,
+                              decoration: InputDecoration(
+                                  hintText: 'Nhập địa số điện thoại'),
+                            ),
                           ),
                         ),
-                  Icon(Icons.arrow_right),
+                      ],
+                    ),
+                        
+                    // ho ten
+                    Column(
+                      children: [
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Text(
+                                "Họ tên",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            )),
+                        SizedBox(
+                          height: 40, // <-- TextField height
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(color: Colors.white),
+                            child: TextField(
+                              maxLines: null,
+                              expands: true,
+                              keyboardType: TextInputType.multiline,
+                              decoration:
+                                  InputDecoration(hintText: 'Nhập họ tên'),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    //ngay sinh
+                    Column(
+                      children: [
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Text(
+                                "Ngày sinh",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            )),
+                        SizedBox(
+                          height: 40, // <-- TextField height
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(color: Colors.white),
+                            child: TextField(
+                              maxLines: null,
+                              expands: true,
+                              keyboardType: TextInputType.multiline,
+                              decoration:
+                                  InputDecoration(hintText: 'Nhập ngày sinh'),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    // gioi tinh
+                    Column(
+                      children: [
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Text(
+                                "Giới tính",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            )),
+                        SizedBox(
+                          height: 40, // <-- TextField height
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(color: Colors.white),
+                            child: TextField(
+                              maxLines: null,
+                              expands: true,
+                              keyboardType: TextInputType.multiline,
+                              decoration:
+                                  InputDecoration(hintText: 'Nhập giới tính'),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    // email
+                    Column(
+                      children: [
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Text(
+                                "Email",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            )),
+                        SizedBox(
+                          height: 40, // <-- TextField height
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(color: Colors.white),
+                            child: TextField(
+                              maxLines: null,
+                              expands: true,
+                              keyboardType: TextInputType.multiline,
+                              decoration:
+                                  InputDecoration(hintText: 'Nhập email'),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    // dia chi
+                    Column(
+                      children: [
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Text(
+                                "Địa chỉ",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            )),
+                        SizedBox(
+                          height: 40, // <-- TextField height
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(color: Colors.white),
+                            child: TextField(
+                              maxLines: null,
+                              expands: true,
+                              keyboardType: TextInputType.multiline,
+                              decoration:
+                                  InputDecoration(hintText: 'Nhập địa chỉ'),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
-                )),
-              
-              Padding(
-                  padding: EdgeInsets.only(right: 10, left: 10),
-                  child: Column(
-                    children: [
-                      // so dien thoai
-                      Column(
-                        children: [
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Text(
-                                  "Số điện thoại",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              )),
-                          SizedBox(
-                            height: 40, // <-- TextField height
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(color: Colors.white),
-                              child: TextField(
-                                maxLines: null,
-                                expands: true,
-                                keyboardType: TextInputType.multiline,
-                                decoration: InputDecoration(
-                                    hintText: 'Nhập địa số điện thoại'),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      // ho ten
-                      Column(
-                        children: [
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Text(
-                                  "Họ tên",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              )),
-                          SizedBox(
-                            height: 40, // <-- TextField height
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(color: Colors.white),
-                              child: TextField(
-                                maxLines: null,
-                                expands: true,
-                                keyboardType: TextInputType.multiline,
-                                decoration:
-                                    InputDecoration(hintText: 'Nhập họ tên'),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      //ngay sinh
-                      Column(
-                        children: [
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Text(
-                                  "Ngày sinh",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              )),
-                          SizedBox(
-                            height: 40, // <-- TextField height
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(color: Colors.white),
-                              child: TextField(
-                                maxLines: null,
-                                expands: true,
-                                keyboardType: TextInputType.multiline,
-                                decoration:
-                                    InputDecoration(hintText: 'Nhập ngày sinh'),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      // gioi tinh
-                      Column(
-                        children: [
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Text(
-                                  "Giới tính",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              )),
-                          SizedBox(
-                            height: 40, // <-- TextField height
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(color: Colors.white),
-                              child: TextField(
-                                maxLines: null,
-                                expands: true,
-                                keyboardType: TextInputType.multiline,
-                                decoration:
-                                    InputDecoration(hintText: 'Nhập giới tính'),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      // email
-                      Column(
-                        children: [
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Text(
-                                  "Email",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              )),
-                          SizedBox(
-                            height: 40, // <-- TextField height
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(color: Colors.white),
-                              child: TextField(
-                                maxLines: null,
-                                expands: true,
-                                keyboardType: TextInputType.multiline,
-                                decoration:
-                                    InputDecoration(hintText: 'Nhập email'),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      //tinh thanh
-                      Column(
-                        children: [
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Text(
-                                  "Thành phố",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              )),
-                          SizedBox(
-                            height: 40, // <-- TextField height
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(color: Colors.white),
-                              child: TextField(
-                                maxLines: null,
-                                expands: true,
-                                keyboardType: TextInputType.multiline,
-                                decoration:
-                                    InputDecoration(hintText: 'Nhập Thành phố'),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      // quan huyen
-                      Column(
-                        children: [
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Text(
-                                  "Quận huyện",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              )),
-                          SizedBox(
-                            height: 40, // <-- TextField height
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(color: Colors.white),
-                              child: TextField(
-                                maxLines: null,
-                                expands: true,
-                                keyboardType: TextInputType.multiline,
-                                decoration: InputDecoration(
-                                    hintText: 'Nhập quận huyện'),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      // dia chi
-                      Column(
-                        children: [
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Text(
-                                  "Địa chỉ",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              )),
-                          SizedBox(
-                            height: 40, // <-- TextField height
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(color: Colors.white),
-                              child: TextField(
-                                maxLines: null,
-                                expands: true,
-                                keyboardType: TextInputType.multiline,
-                                decoration:
-                                    InputDecoration(hintText: 'Nhập địa chỉ'),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  )),
-            ],
-          ),
-      )),
-    );
+                ),
+              ],
+            ),
+        ),
+      ));
+    ;
   }
 }
