@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
       ),
 
 
-      initialRoute: '/banner', // Đường dẫn mặc định khi khởi chạy ứng dụng
+      initialRoute: '/voucher', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
 
       routes: {

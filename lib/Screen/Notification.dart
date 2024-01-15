@@ -57,7 +57,7 @@ class NotificationPage extends State<NotificationScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Notification',
+            'Thông báo',
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
