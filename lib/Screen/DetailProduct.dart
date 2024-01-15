@@ -431,10 +431,13 @@ class _DetailProductState extends State<DetailProduct> {
   }
 
   Future<bool> addToCart(String productId, int quantity) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? isLogin = prefs.getBool("isLogin");
+    final String? idUser = prefs.getString("idUser");
     try {
       final response = await http.post(
         Uri.parse(
-            'https://adadas.onrender.com/api/addCart/6528fddae170b2e55ff929a1/$productId'),
+            'https://adadas.onrender.com/api/addCart/$idUser/$productId'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'quantity': quantity}),
       );
