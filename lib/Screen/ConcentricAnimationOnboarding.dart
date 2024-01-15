@@ -1,5 +1,5 @@
 import 'package:appclient/Screen/BannerScreen.dart';
-import 'package:appclient/Screen/Login.dart';
+import 'package:appclient/Screen/SignInUp/Login.dart';
 import 'package:appclient/Screen/LoginOrRegister.dart';
 import 'package:appclient/Screen/MyHomePage.dart';
 import 'package:concentric_transition/concentric_transition.dart';

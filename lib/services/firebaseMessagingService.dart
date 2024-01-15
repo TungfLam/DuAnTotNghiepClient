@@ -17,7 +17,6 @@ class FirebaseMessagingService{
       if(message.notification!.title.toString() == "Messenger"){
         return;
       }
-      // showNotification( message.notification!.title.toString(), message.notification!.body.toString() , 'item x');
       LocalNotifications2.showNotification(message.notification!.title.toString(), message.notification!.body.toString(), 'item x');
 
     });

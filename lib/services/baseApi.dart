@@ -11,8 +11,7 @@ const String BASE_API = "https://adadas.onrender.com";
 // http://192.168.2.112:6868
 // https://adadas.onrender.com
 
-// Duy : http://192.168.2.102:6868
-
+// Duy : http://192.168.2.101:6868
 
 Future<bool> setToken(
     BuildContext context, String idUser, String token, String deviceId) async {
