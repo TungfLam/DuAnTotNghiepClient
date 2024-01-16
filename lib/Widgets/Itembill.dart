@@ -65,6 +65,7 @@ class Itembill extends StatelessWidget {
 
         if (response.statusCode == 200) {
           print('Update thành công');
+          
         } else {
           print(
               'Update không thành công. Mã trạng thái: ${response.statusCode}');
@@ -107,8 +108,7 @@ class Itembill extends StatelessWidget {
                                 Icon(Icons.location_on_outlined),
                                 Text(
                                   '  Địa chỉ',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 )
                               ],
                             ),
@@ -161,8 +161,7 @@ class Itembill extends StatelessWidget {
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                         '${cartItem.productData?.colorName}/${cartItem.productData?.sizeName}'),
@@ -207,7 +206,9 @@ class Itembill extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pushNamed(AddComment.nameAddComment , arguments: idBill);
+                          Navigator.of(context).pushNamed(
+                              AddComment.nameAddComment,
+                              arguments: idBill);
                         },
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
@@ -226,10 +227,38 @@ class Itembill extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          if (billItem.sId != null) {
-                            updateBillStatus(billItem.sId!);
-                          }
-                          
+                          // Hiển thị dialog confirm
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Xác nhận'),
+                                content: Text('Bạn muốn hủy đơn hàng?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      // Người dùng chọn "Có", thực hiện hủy đơn hàng
+                                      Navigator.of(context)
+                                          .pop(); // Đóng dialog
+                                      if (billItem.sId != null) {
+                                        updateBillStatus(billItem.sId!);
+                                        
+                                        Navigator.pushNamed(context, '/bill');
+                                      }
+                                    },
+                                    child: Text('Có'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      // Người dùng chọn "Hủy", đóng dialog mà không thực hiện hủy đơn hàng
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Hủy'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
@@ -238,7 +267,9 @@ class Itembill extends StatelessWidget {
                         child: const Text(
                           'Hủy đơn hàng',
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.white),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),

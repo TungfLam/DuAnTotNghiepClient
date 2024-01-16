@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WomensProductList extends StatefulWidget {
   const WomensProductList({super.key});
@@ -28,8 +29,7 @@ class _WomensProductListState extends State<WomensProductList> {
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(
-      Uri.parse(
-          '$BASE_API/api/products/6573359c00c9d30fb93fddc4/$page'),
+      Uri.parse('$BASE_API/api/products/6573359c00c9d30fb93fddc4/$page'),
       headers: {'Content-Type': 'application/json'},
     ); // Thay thế URL của API sản phẩm
 
@@ -44,25 +44,45 @@ class _WomensProductListState extends State<WomensProductList> {
     }
   }
 
-  Future<void> addFavorite(String productId) async {
-    try {
-      final response = await http.post(
-        Uri.parse(
-            '$BASE_API/api/addFavorite/6524318746e12608b3558d74/$productId'),
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        // Xử lý khi thành công
-        print('Added to favorites successfully!');
-      } else {
-        // Xử lý khi không thành công
-        print(
-            'Failed to add to favorites. Status code: ${response.statusCode}');
+  Future<void> addFavorite(String productId, int index) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? isLogin = prefs.getBool("isLogin");
+    final String? idUser = prefs.getString("idUser");
+    if (isLogin != null) {
+      if (isLogin == true) {
+        print("người dùng đã login");
+        setState(() {
+          // dc=address!;
+          // dcct=addressdt!;
+        });
+      } else if (isLogin == false) {
+        Navigator.pushNamed(context, '/login');
       }
-    } catch (error) {
-      // Xử lý khi có lỗi
-      print('Error adding to favorites: $error');
+    } else {
+      Navigator.pushNamed(context, '/login');
+    }
+    if (idUser != null) {
+      try {
+        final response = await http.post(
+          Uri.parse('$BASE_API/api/addFavorite/$idUser/$productId'),
+          headers: {'Content-Type': 'application/json'},
+        );
+
+        if (response.statusCode == 200) {
+          // Xử lý khi thành công
+          setState(() {
+            products[index].isFavorite = true;
+          });
+          print('Added to favorites successfully!');
+        } else {
+          // Xử lý khi không thành công
+          print(
+              'Failed to add to favorites. Status code: ${response.statusCode}');
+        }
+      } catch (error) {
+        // Xử lý khi có lỗi
+        print('Error adding to favorites: $error');
+      }
     }
   }
 
@@ -162,16 +182,6 @@ class _WomensProductListState extends State<WomensProductList> {
                                 children: [
                                   Container(
                                     width: double.infinity,
-
-                                    // child: Image.memory(
-                                    //   base64Decode(product.image
-                                    //           ?.elementAt(0) ??
-                                    //       'loading...'), // Giả sử danh sách ảnh là danh sách base64
-                                    //   height: 200,
-                                    //   width: 180,
-                                    //   fit: BoxFit.cover,
-                                    // ),
-
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10.0),
                                       child: Image.network(
@@ -192,10 +202,17 @@ class _WomensProductListState extends State<WomensProductList> {
                                     top: 5,
                                     right: 5,
                                     child: IconButton(
-                                      icon:
-                                          Icon(Icons.favorite_border_outlined),
+                                      icon: Icon(
+                                        products[index].isFavorite ?? false
+                                            ? Icons.favorite
+                                            : Icons.favorite_border_outlined,
+                                        color:
+                                            products[index].isFavorite ?? false
+                                                ? Color(0xFF6342E8)
+                                                : null,
+                                      ),
                                       onPressed: () {
-                                        addFavorite(product.sId!);
+                                        addFavorite(product.sId!, index);
                                       },
                                     ),
                                   ),
@@ -205,7 +222,7 @@ class _WomensProductListState extends State<WomensProductList> {
                             Expanded(
                               flex: 1,
                               child: Container(
-                                padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
+                                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                                 child: Text(
                                   product.name ?? 'Unknown',
                                   style: const TextStyle(

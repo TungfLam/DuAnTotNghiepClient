@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MensProductList extends StatefulWidget {
   const MensProductList({super.key});
@@ -43,16 +44,36 @@ class _MensProductListState extends State<MensProductList> {
     }
   }
 
-  Future<void> addFavorite(String productId) async {
-    try {
+  Future<void> addFavorite(String productId, int index) async {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? isLogin = prefs.getBool("isLogin");
+    final String? idUser = prefs.getString("idUser");
+    if (isLogin != null) {
+      if (isLogin == true) {
+        print("người dùng đã login");
+        setState(() {
+          // dc=address!;
+          // dcct=addressdt!;
+        });
+      } else if (isLogin == false) {
+        Navigator.pushNamed(context, '/login');
+      }
+    } else {
+      Navigator.pushNamed(context, '/login');
+    }
+    if (idUser!=null) {
+       try {
       final response = await http.post(
         Uri.parse(
-            '$BASE_API/api/addFavorite/6549d3feffe41106e077bd42/$productId'),
+            '$BASE_API/api/addFavorite/$idUser/$productId'),
         headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
         // Xử lý khi thành công
+        setState(() {
+          products[index].isFavorite = true;
+        });
         print('Added to favorites successfully!');
       } else {
         // Xử lý khi không thành công
@@ -63,6 +84,8 @@ class _MensProductListState extends State<MensProductList> {
       // Xử lý khi có lỗi
       print('Error adding to favorites: $error');
     }
+    }
+   
   }
 
   @override
@@ -140,7 +163,8 @@ class _MensProductListState extends State<MensProductList> {
                     MaterialPageRoute(
                       builder: (context) => DetailProduct(
                         title: 'Chi tiết sản phẩm',
-                        product: product, // Truyền đối tượng sản phẩm đã được chọn
+                        product:
+                            product, // Truyền đối tượng sản phẩm đã được chọn
                       ),
                     ),
                   );
@@ -185,12 +209,17 @@ class _MensProductListState extends State<MensProductList> {
                                     top: 5,
                                     right: 5,
                                     child: IconButton(
-                                      icon:
-                                          Icon(Icons.favorite_border_outlined),
+                                      icon: Icon(
+                                        products[index].isFavorite ?? false
+                                            ? Icons.favorite
+                                            : Icons.favorite_border_outlined,
+                                        color:
+                                            products[index].isFavorite ?? false
+                                                ? Color(0xFF6342E8)
+                                                : null,
+                                      ),
                                       onPressed: () {
-                                        setState(() {
-                                          addFavorite(product.sId!);
-                                        });
+                                        addFavorite(product.sId!, index);
                                       },
                                     ),
                                   ),
@@ -200,7 +229,7 @@ class _MensProductListState extends State<MensProductList> {
                             Expanded(
                               flex: 1,
                               child: Container(
-                                padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
+                                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                                 child: Text(
                                   product.name ?? 'Unknown',
                                   style: const TextStyle(

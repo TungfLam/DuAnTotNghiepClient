@@ -66,7 +66,7 @@ class _BannerScreenState extends State<BannerScreen>
           width: double.infinity,
           height: double.infinity,
           decoration: const BoxDecoration(
-            color: Color(0xff9975ff),
+            color: Color(0xFFc2cbdc),
           ),
           child: SlideTransition(
             position: _offsetAnimation,
