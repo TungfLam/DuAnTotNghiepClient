@@ -1,4 +1,3 @@
-
 import 'package:appclient/Screen/Comment/AllComment.dart';
 import 'package:appclient/Screen/BannerScreen.dart';
 
@@ -41,14 +40,14 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'firebase_options.dart';
 
-
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  if(message.notification!.title.toString() == "Messenger"){
+  if (message.notification!.title.toString() == "Messenger") {
     return;
   }
-  LocalNotifications2.showNotification(message.notification!.title.toString(), message.notification!.body.toString(), 'item x');
+  LocalNotifications2.showNotification(message.notification!.title.toString(),
+      message.notification!.body.toString(), 'item x');
 }
 
 void main() async {
@@ -78,9 +77,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-
-      initialRoute: '/voucher', // Đường dẫn mặc định khi khởi chạy ứng dụng
-
+      initialRoute: '/', // Đường dẫn mặc định khi khởi chạy ứng dụng
 
       routes: {
         '/banner': (context) => const ConcentricAnimationOnboarding(),
@@ -97,15 +94,21 @@ class MyApp extends StatelessWidget {
         '/voucher': (context) => const VoucherScreen(),
         '/payment': (context) => const PaymentScreen(),
 
-
         Otp_Screen.nameOtp: (context) => const Otp_Screen(),
         LoginSMS.nameLoginSMS: (context) => const LoginSMS(title: ""),
-        RegisterScreen2.nameRegiterScree2: (context) => const RegisterScreen2(title: ""),
+        RegisterScreen2.nameRegiterScree2: (context) =>
+            const RegisterScreen2(title: ""),
         AllComment.nameComment: (context) => const AllComment(),
-        AddComment.nameAddComment : (context) => const AddComment(),
-        ChangeLocation.nameChangeLocation : (context) => const ChangeLocation(),
+        AddComment.nameAddComment: (context) => const AddComment(),
+        ChangeLocation.nameChangeLocation: (context) => const ChangeLocation(),
 
-        '/pay': (context) => const PayScreen(userid: '',  idcart: [], totalAmount: 0, title: '',idDiscount: '',),
+        '/pay': (context) => const PayScreen(
+              userid: '',
+              idcart: [],
+              totalAmount: 0,
+              title: '',
+              idDiscount: '',
+            ),
 
         '/notification': (context) => const NotificationScreen(),
         '/location': (context) => const LocationScreen(),
