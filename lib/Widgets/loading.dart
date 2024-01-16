@@ -12,7 +12,7 @@ class showLoading extends StatelessWidget{
         width: double.infinity,
         height: double.infinity,
         padding: const EdgeInsets.only(bottom: 80),
-        child: LoadingAnimationWidget.threeRotatingDots(
+        child: LoadingAnimationWidget.waveDots(
             color: const Color(0xFF6342E8),
             size: 80,
         ),

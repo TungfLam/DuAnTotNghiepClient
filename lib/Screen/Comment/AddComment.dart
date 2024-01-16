@@ -28,6 +28,7 @@ class _AddCommentState extends State<AddComment> {
   List<List<XFile>> _images = [];
   List<TextEditingController> arrStar = [];
   List<TextEditingController> arrComment = [];
+  List<String> arrIdComment = [];
   String idUser = '';
   String idBill = '';
   bool isNewComment = true;
@@ -59,6 +60,7 @@ class _AddCommentState extends State<AddComment> {
           imagescall = List.generate(productBill.length, (index) => []);
           arrStar = List.generate(productBill.length, (index) => TextEditingController());
           arrComment = List.generate(productBill.length, (index) => TextEditingController());
+          arrIdComment = List.generate(productBill.length, (index) => "");
 
           for(var item in productBill){
             int index = productBill.indexOf(item);
@@ -100,7 +102,7 @@ class _AddCommentState extends State<AddComment> {
     }
 
     request.fields['ProductDetailId'] = IdProductDetail;
-    request.fields['ProductId'] = "ProductId";
+    request.fields['ProductId'] = IdProduct;
     request.fields['UserId'] = idUser;
     request.fields['Comment'] = comment;
     request.fields['rating'] = rating;
@@ -144,6 +146,7 @@ class _AddCommentState extends State<AddComment> {
 
       if(!data['err']!){
         isNewComment = false;
+        arrIdComment[index] = data['objComment']['_id'];
         arrStar[index].text = data['objComment']['rating'].toString();
 
         List img = await data['objComment']['images'];
@@ -166,16 +169,28 @@ class _AddCommentState extends State<AddComment> {
     });
   }
 
-  Future<void> updateComment(String idComment , List<XFile> images) async {
+  Future<void> updateComment(String idComment , List<XFile> images, String comment, String rating,) async {
     setState(() {
       _isLoading = true;
     });
     final request = http.MultipartRequest('PUT' , Uri.parse("$BASE_API/api/comment/$idComment"));
+
     for(var image in images){
       File file = File(image.path);
       request.files.add(
           await http.MultipartFile.fromPath('images', file.path , filename: image.name)
       );
+    }
+
+    request.fields['Comment'] = comment;
+    request.fields['rating'] = rating;
+    print(rating);
+
+    final response = await request.send();
+
+    if(response.statusCode == 200){
+      final data = jsonDecode(await response.stream.bytesToString());
+      showSnackBar(context, "Update : ${data['msg']}");
     }
 
     setState(() {
@@ -264,6 +279,13 @@ class _AddCommentState extends State<AddComment> {
   }
 
   void clickUpdateCommetn(){
+    for(int i = 0; i < productBill.length ; i++){
+      if(arrComment[i].text.length > 200){
+        showSnackBarErr(context, "Đánh giá không quá 200 kí tự");
+        return;
+      }
+      updateComment(arrIdComment[i], _images[i],  arrComment[i].text, arrStar[i].text);
 
+    }
   }
 }
