@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:appclient/Listview/DiscountProductList.dart';
 import 'package:appclient/Listview/MensProductList.dart';
@@ -70,6 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (isLogin == null) {
       setState(() {
         _inout = "Đăng nhập";
+        _isLoading = false;
       });
       return;
     }
@@ -139,6 +141,9 @@ class _MyHomePageState extends State<MyHomePage> {
       if (res.err!) {
         showSnackBarErr(context, "${res.msg}");
       } else {
+        setState(() {
+          _isLoading = false;
+        });
         return true;
       }
     } else {
@@ -166,7 +171,7 @@ class _MyHomePageState extends State<MyHomePage> {
       if(result == ConnectivityResult.none){
         showDialogUilt15(context, "Lỗi kết nối", "Mất kết nối internet , vui lòng kiểm tra lại", (){
             Navigator.of(context).pop();
-            SystemNavigator.pop();
+            exit(0);
         });
       }else{
         setState(() {
@@ -184,315 +189,323 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 4,
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: const Text(
-            'Adadas',
-            style: TextStyle(fontWeight: FontWeight.bold),
+    return WillPopScope(
+      onWillPop: () async {
+        showDialogUilt2(context, "Thông báo", "Bạn có muốn thoát", (){
+          exit(0);
+        });
+        return false;
+      },
+      child: DefaultTabController(
+        length: 4,
+        child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: const Text(
+              'Adadas',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.notifications_outlined),
+                onPressed: () {
+                  // Xử lý khi người dùng nhấn vào biểu tượng thông báo
+                  Navigator.pushNamed(context, '/notification');
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.shopping_bag_outlined),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/mycart');
+                  // Xử lý khi người dùng nhấn vào biểu tượng giỏ hàng
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.favorite_border_outlined),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/favorite');
+                  // Xử lý khi người dùng nhấn vào biểu tượng yêu thích
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.search_outlined),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/find');
+                  // Xử lý khi người dùng nhấn vào biểu tượng tìm kiếm
+                },
+              ),
+              Builder(
+                builder: (BuildContext context) {
+                  return IconButton(
+                    icon: const Icon(Icons.menu_outlined),
+                    onPressed: () {
+                      // Mở thanh điều hướng bên phải khi người dùng nhấp vào biểu tượng menu
+                      Scaffold.of(context).openEndDrawer();
+                    },
+                  );
+                },
+              ),
+            ],
+            backgroundColor: Colors.white,
+            bottom: const TabBar(
+              // Thanh TabBar ở đây
+              tabs: [
+                Tab(text: 'Phổ biến'),
+                Tab(text: 'Nam'),
+                Tab(text: 'Nữ'),
+                Tab(text: 'Khiến mại'),
+              ],
+            ),
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications_outlined),
-              onPressed: () {
-                // Xử lý khi người dùng nhấn vào biểu tượng thông báo
-                Navigator.pushNamed(context, '/notification');
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.shopping_bag_outlined),
-              onPressed: () {
-                Navigator.pushNamed(context, '/mycart');
-                // Xử lý khi người dùng nhấn vào biểu tượng giỏ hàng
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.favorite_border_outlined),
-              onPressed: () {
-                Navigator.pushNamed(context, '/favorite');
-                // Xử lý khi người dùng nhấn vào biểu tượng yêu thích
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.search_outlined),
-              onPressed: () {
-                Navigator.pushNamed(context, '/find');
-                // Xử lý khi người dùng nhấn vào biểu tượng tìm kiếm
-              },
-            ),
-            Builder(
-              builder: (BuildContext context) {
-                return IconButton(
-                  icon: const Icon(Icons.menu_outlined),
-                  onPressed: () {
-                    // Mở thanh điều hướng bên phải khi người dùng nhấp vào biểu tượng menu
-                    Scaffold.of(context).openEndDrawer();
-                  },
-                );
-              },
-            ),
-          ],
-          backgroundColor: Colors.white,
-          bottom: const TabBar(
-            // Thanh TabBar ở đây
-            tabs: [
-              Tab(text: 'Phổ biến'),
-              Tab(text: 'Nam'),
-              Tab(text: 'Nữ'),
-              Tab(text: 'Khiến mại'),
+          body: Stack(
+            children: [
+              TabBarView(
+                // Nội dung của các tab
+                children: [
+                  // Nội dung của Tab 1
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    child: const PopularProductList(),
+                  ),
+                  // Nội dung của Tab 2
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    child: const MensProductList(),
+                  ),
+                  // Nội dung của Tab 3
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    child: const WomensProductList(),
+                  ),
+                  // Nội dung của Tab 4
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    child: const DiscountScreen(),
+                  ),
+                ],
+              ),
+
+              _isLoading ? const showLoading() : const SizedBox()
             ],
           ),
-        ),
-        body: Stack(
-          children: [
-            TabBarView(
-              // Nội dung của các tab
+          endDrawer: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
               children: [
-                // Nội dung của Tab 1
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  child: const PopularProductList(),
+                DrawerHeader(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/profile');
+
+                    },
+                    child: Row(
+                      children: [
+
+                        if (anhdd != '')
+                          Padding(
+                            padding: const EdgeInsets.only(right: 16.0),
+                            child: ClipOval(
+                              child: Image(
+                                height: 60,
+                                width: 60,
+                                image: NetworkImage('$BASE_API$anhdd'),
+                                errorBuilder: (BuildContext context, Object error,
+                                    StackTrace? stackTrace) {
+                                  return const Center(child: Icon(Icons.image));
+                                },
+                              ),
+                            ),
+                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              fname ?? 'tên người dùng không tồn tại',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            Text(
+                              mail,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                // Nội dung của Tab 2
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  child: const MensProductList(),
+                ListTile(
+                  leading: const Icon(Icons.shopping_bag_outlined),
+                  title: const Text(
+                    'Giỏ hàng',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/mycart');
+                  },
                 ),
-                // Nội dung của Tab 3
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  child: const WomensProductList(),
+                ListTile(
+                  leading: const Icon(Icons.favorite_border_outlined),
+                  title: const Text(
+                    'Yêu thích',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/favorite');
+                  },
                 ),
-                // Nội dung của Tab 4
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  child: const DiscountScreen(),
+                ListTile(
+                  leading: const Icon(Icons.blinds_closed_outlined),
+                  title: const Text(
+                    'Đơn hàng',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/bill');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.location_on_outlined),
+                  title: const Text(
+                    'Địa chỉ',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  onTap: () {
+                    if (_inout == "Đăng xuất") {
+                      Navigator.pushNamed(context, '/location');
+                    } else {
+                      showDialogUilt(context, "Thông báo",
+                          "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
+                          () {
+                        print("object");
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/login');
+                        print("object");
+                      });
+                    }
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.payment_outlined),
+                  title: const Text(
+                    'Phương thức thanh toán',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  onTap: () {
+                    if (_inout == "Đăng xuất") {
+                      Navigator.pushNamed(context, '/payment');
+                    } else {
+                      showDialogUilt(context, "Thông báo",
+                          "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
+                          () {
+                        print("object");
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/login');
+                        print("object");
+                      });
+                    }
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.discount_outlined),
+                  title: const Text(
+                    'Voucher',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  onTap: () {
+                    if (_inout == "Đăng xuất") {
+                      Navigator.pushNamed(context, '/voucher');
+                    } else {
+                      showDialogUilt(context, "Thông báo",
+                          "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
+                          () {
+                        print("object");
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/login');
+                        print("object");
+                      });
+                    }
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.notifications_outlined),
+                  title: const Text(
+                    'Thông báo',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  onTap: () {
+                    if (_inout == "Đăng xuất") {
+                      Navigator.pushNamed(context, '/notification');
+                    } else {
+                      showDialogUilt(context, "Thông báo",
+                          "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
+                          () {
+                        print("object");
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/login');
+                        print("object");
+                      });
+                    }
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.chat_bubble_outline_outlined),
+                  title: const Text(
+                    'Hỗ trợ',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  onTap: () {
+                    if (_inout == "Đăng xuất") {
+                      Navigator.pushNamed(context, '/chat');
+                    } else {
+                      showDialogUilt(context, "Thông báo",
+                          "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
+                          () {
+                        print("object");
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/login');
+                        print("object");
+                      });
+                    }
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                  child: ListTile(
+                    leading: Icon((_inout == "Đăng xuất"
+                        ? Icons.logout_outlined
+                        : Icons.login_outlined)),
+                    title: Text(
+                      _inout,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    onTap: () async {
+                      if (_inout == "Đăng xuất") {
+                        final SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        String? idUser = prefs.getString("idUser");
+                        await logoutUser(idUser!);
+                        prefs.clear();
+                        await prefs.setBool("isLogin", false);
+                        FirebaseAuth.instance.signOut();
+                      }
+
+                      Navigator.pushNamed(context, '/login');
+                    },
+                  ),
                 ),
               ],
             ),
-
-            _isLoading ? const showLoading() : const SizedBox()
-          ],
-        ),
-        endDrawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              DrawerHeader(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/profile');
-                   
-                  },
-                  child: Row(
-                    children: [
-                      
-                      if (anhdd != '')
-                        Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: ClipOval(
-                            child: Image(
-                              height: 60,
-                              width: 60,
-                              image: NetworkImage('$BASE_API$anhdd'),
-                              errorBuilder: (BuildContext context, Object error,
-                                  StackTrace? stackTrace) {
-                                return Center(child: const Icon(Icons.image));
-                              },
-                            ),
-                          ),
-                        ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            fname ?? 'tên người dùng không tồn tại',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Text(
-                            mail,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.shopping_bag_outlined),
-                title: const Text(
-                  'Giỏ hàng',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  Navigator.pushNamed(context, '/mycart');
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.favorite_border_outlined),
-                title: const Text(
-                  'Yêu thích',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  Navigator.pushNamed(context, '/favorite');
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.blinds_closed_outlined),
-                title: const Text(
-                  'Đơn hàng',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  Navigator.pushNamed(context, '/bill');
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.location_on_outlined),
-                title: const Text(
-                  'Địa chỉ',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  if (_inout == "Đăng xuất") {
-                    Navigator.pushNamed(context, '/location');
-                  } else {
-                    showDialogUilt(context, "Thông báo",
-                        "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
-                        () {
-                      print("object");
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/login');
-                      print("object");
-                    });
-                  }
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.payment_outlined),
-                title: const Text(
-                  'Phương thức thanh toán',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  if (_inout == "Đăng xuất") {
-                    Navigator.pushNamed(context, '/payment');
-                  } else {
-                    showDialogUilt(context, "Thông báo",
-                        "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
-                        () {
-                      print("object");
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/login');
-                      print("object");
-                    });
-                  }
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.discount_outlined),
-                title: const Text(
-                  'Voucher',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  if (_inout == "Đăng xuất") {
-                    Navigator.pushNamed(context, '/voucher');
-                  } else {
-                    showDialogUilt(context, "Thông báo",
-                        "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
-                        () {
-                      print("object");
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/login');
-                      print("object");
-                    });
-                  }
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.notifications_outlined),
-                title: const Text(
-                  'Thông báo',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  if (_inout == "Đăng xuất") {
-                    Navigator.pushNamed(context, '/notification');
-                  } else {
-                    showDialogUilt(context, "Thông báo",
-                        "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
-                        () {
-                      print("object");
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/login');
-                      print("object");
-                    });
-                  }
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.chat_bubble_outline_outlined),
-                title: const Text(
-                  'Hỗ trợ',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  if (_inout == "Đăng xuất") {
-                    Navigator.pushNamed(context, '/chat');
-                  } else {
-                    showDialogUilt(context, "Thông báo",
-                        "Bạn chưa đăng nhận, vui lòng đăng nhập để sử dụng tính năng này",
-                        () {
-                      print("object");
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/login');
-                      print("object");
-                    });
-                  }
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                child: ListTile(
-                  leading: Icon((_inout == "Đăng xuất"
-                      ? Icons.logout_outlined
-                      : Icons.login_outlined)),
-                  title: Text(
-                    _inout,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  onTap: () async {
-                    if (_inout == "Đăng xuất") {
-                      final SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      String? idUser = prefs.getString("idUser");
-                      await logoutUser(idUser!);
-                      prefs.clear();
-                      await prefs.setBool("isLogin", false);
-                      FirebaseAuth.instance.signOut();
-                    }
-
-                    Navigator.pushNamed(context, '/login');
-                  },
-                ),
-              ),
-            ],
           ),
         ),
       ),

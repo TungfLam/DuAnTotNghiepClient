@@ -37,12 +37,16 @@ class FirebaseAuthService {
       },
       verificationFailed: (err) async {
         print("that bai r");
+        showDialogUilt(context, "Cảnh báo", "Bạn đã gửi qua nhiều lần trong ngày, vui lòng thử lại sau", (){});
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.clear();
         await prefs.setBool("isLogin", false);
         throw Exception(err.message);
       },
-      codeSent: (verificationId, [int? forceResendingToken]) {
+      codeSent: (verificationId, [int? forceResendingToken]) async {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool("isDone", false);
+
         toSendCode vphone = toSendCode(verificationId: verificationId , phone: phone , isLogin: isLogin);
         Navigator.of(context).pushNamed(Otp_Screen.nameOtp , arguments: vphone);
       },
@@ -50,6 +54,7 @@ class FirebaseAuthService {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         bool? isDone = prefs.getBool("isDone");
         print("time out ");
+        print(isDone);
         if(isDone == null || !isDone){
           Navigator.pop(context);
           showSnackBarErr(context, "Mã OTP đã hêt hạn");

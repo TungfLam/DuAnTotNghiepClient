@@ -116,9 +116,8 @@ class _AddCommentState extends State<AddComment> {
       }else{
         showSnackBar(context, res.msg!);
       }
-      print("thanh cong");
     }else{
-      print("that bai");
+      showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
     }
 
     setState(() {
@@ -184,13 +183,18 @@ class _AddCommentState extends State<AddComment> {
 
     request.fields['Comment'] = comment;
     request.fields['rating'] = rating;
-    print(rating);
 
     final response = await request.send();
 
     if(response.statusCode == 200){
       final data = jsonDecode(await response.stream.bytesToString());
-      showSnackBar(context, "Update : ${data['msg']}");
+      if(data['err']){
+        showSnackBarErr(context, "Update : ${data['msg']}");
+      }else{
+        showSnackBar(context, "Update : ${data['msg']}");
+      }
+    }else{
+      showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
     }
 
     setState(() {

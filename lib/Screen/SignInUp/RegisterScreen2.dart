@@ -222,6 +222,17 @@ class _RegisterState extends State<RegisterScreen2> {
     return await Geolocator.getCurrentPosition();
   }
 
+  Future<void> setSMSDone () async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("isDone", true);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setSMSDone();
+  }
+
   @override
   Widget build(BuildContext context) {
     final phone = ModalRoute.of(context)!.settings.arguments as String;

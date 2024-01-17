@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:appclient/Screen/SignInUp/LoginSMS.dart';
 import 'package:appclient/Widgets/buttomCustom.dart';
@@ -101,6 +102,9 @@ class _LoginState extends State<Login> {
     return WillPopScope(
       onWillPop: () async {
         // người dùng nhấn nút back
+        showDialogUilt2(context, "Thông báo", "Bạn có muốn thoát", (){
+          exit(0);
+        });
         return false;
       },
       child: Scaffold(

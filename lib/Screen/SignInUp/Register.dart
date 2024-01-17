@@ -47,6 +47,9 @@ class _RegisterState extends State<Register> {
       if(res.err!){
         if(res.msg! == "Số điện thoại chưa đăng ký"){
           print("thanh cong");
+          setState(() {
+            _isLoading = false;
+          });
           return true;
         }
       }

@@ -557,7 +557,7 @@ class _DetailProductState extends State<DetailProduct> {
                             margin: const EdgeInsets.only(top: 8),
                             alignment: Alignment.centerLeft,
                             child: const Text(
-                              "Đáng giá",
+                              "Đánh giá",
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             )),
