@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:appclient/Widgets/loading.dart';
 import 'package:appclient/Widgets/voucheritem.dart';
 import 'package:appclient/models/voucherModel.dart';
 import 'package:flutter/foundation.dart';
@@ -79,18 +80,29 @@ class _VoucherScreenState extends State<VoucherScreen> {
         centerTitle: true,
         actions: const [],
       ),
-      body: Container(
-        padding: EdgeInsets.all(18),
-        child: vouchers.isEmpty
-            ? Center(child: CircularProgressIndicator())
-            : ListView.builder(
-                itemCount: vouchers.length,
-                itemBuilder: (context, index) {
-                  final voucher = vouchers[index];
-                  return voucheritem(voucher: voucher);
-                },
-              ),
-      ),
+      body: Stack(
+        children: [
+          vouchers.isNotEmpty ?
+          Container(
+            padding: EdgeInsets.all(18),
+            child: ListView.builder(
+              itemCount: vouchers.length,
+              itemBuilder: (context, index) {
+                final voucher = vouchers[index];
+                return voucheritem(voucher: voucher);
+              },
+            ),
+          ) :
+          SizedBox(
+              height: double.infinity,
+              child: Center(
+                  child: Image.asset('lib/images/empty-box.png' , width: 200 , height: 200,
+                  )
+              )
+          ),
+          vouchers.isEmpty ? Center(child: showLoading()) : const SizedBox()
+        ],
+      )
     );
   }
 }

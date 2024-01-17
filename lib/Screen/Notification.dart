@@ -84,13 +84,21 @@ class NotificationPage extends State<NotificationScreen> {
         ),
       body: Stack(
         children: [
+          listNotification.isNotEmpty ?
           SingleChildScrollView(
             child: SizedBox(
               width: double.infinity,
               child: Column(
                 children: listNotification.map((e) => itemNotification(notification: e)).toList(),
               ),
-            ),
+            )
+          ) :
+          SizedBox(
+              height: double.infinity,
+              child: Center(
+                  child: Image.asset('lib/images/empty-box.png' , width: 200 , height: 200,
+                  )
+              )
           ),
 
           isLoading ? const showLoading() : const SizedBox()

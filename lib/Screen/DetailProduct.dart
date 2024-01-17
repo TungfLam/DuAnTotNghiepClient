@@ -348,7 +348,7 @@ class _DetailProductState extends State<DetailProduct> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: const Center(child: Text('Xin Lỗi')),
-                              content: Text(
+                              content: const Text(
                                   'Vui lòng chọn kích thước và màu sắc.'),
                               actions: <Widget>[
                                 TextButton(
@@ -561,6 +561,7 @@ class _DetailProductState extends State<DetailProduct> {
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             )),
+                        arrComment.isNotEmpty ?
                         Container(
                           width: double.infinity,
                           margin: const EdgeInsets.only(top: 8),
@@ -569,6 +570,13 @@ class _DetailProductState extends State<DetailProduct> {
                                 .map((e) => itemComment(item: e))
                                 .toList(),
                           ),
+                        ) :
+                        SizedBox(
+                          height: 300,
+                            child: Center(
+                                child: Image.asset('lib/images/empty-box.png' , width: 200 , height: 200,
+                                )
+                            )
                         ),
                         const SizedBox(height: 8),
                         InkWell(
