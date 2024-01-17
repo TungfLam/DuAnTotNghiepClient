@@ -44,8 +44,8 @@ class _PopularProductListState extends State<PopularProductList> {
     }
   }
 
-   Future<void> addFavorite(String productId, int index) async {
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<void> addFavorite(String productId, int index) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final bool? isLogin = prefs.getBool("isLogin");
     final String? idUser = prefs.getString("idUser");
     if (isLogin != null) {
@@ -61,31 +61,29 @@ class _PopularProductListState extends State<PopularProductList> {
     } else {
       Navigator.pushNamed(context, '/login');
     }
-    if (idUser!=null) {
-       try {
-      final response = await http.post(
-        Uri.parse(
-            '$BASE_API/api/addFavorite/$idUser/$productId'),
-        headers: {'Content-Type': 'application/json'},
-      );
+    if (idUser != null) {
+      try {
+        final response = await http.post(
+          Uri.parse('$BASE_API/api/addFavorite/$idUser/$productId'),
+          headers: {'Content-Type': 'application/json'},
+        );
 
-      if (response.statusCode == 200) {
-        // Xử lý khi thành công
-        setState(() {
-          products[index].isFavorite = true;
-        });
-        print('Added to favorites successfully!');
-      } else {
-        // Xử lý khi không thành công
-        print(
-            'Failed to add to favorites. Status code: ${response.statusCode}');
+        if (response.statusCode == 200) {
+          // Xử lý khi thành công
+          setState(() {
+            products[index].isFavorite = true;
+          });
+          print('Added to favorites successfully!');
+        } else {
+          // Xử lý khi không thành công
+          print(
+              'Failed to add to favorites. Status code: ${response.statusCode}');
+        }
+      } catch (error) {
+        // Xử lý khi có lỗi
+        print('Error adding to favorites: $error');
       }
-    } catch (error) {
-      // Xử lý khi có lỗi
-      print('Error adding to favorites: $error');
     }
-    }
-   
   }
 
   @override
@@ -128,11 +126,11 @@ class _PopularProductListState extends State<PopularProductList> {
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                 const PopupMenuItem<String>(
                   value: 'Sort Down',
-                  child: Text('lớn đến bé'),
+                  child: Text('giá ↑ '),
                 ),
                 const PopupMenuItem<String>(
                   value: 'Sort Up',
-                  child: Text('bé đến lớn'),
+                  child: Text('giá ↓ '),
                 ),
               ],
               child: Icon(Icons.filter_list), // Biểu tượng sắp xếp xuống
@@ -146,7 +144,7 @@ class _PopularProductListState extends State<PopularProductList> {
             crossAxisCount: 2,
             crossAxisSpacing: 8,
             mainAxisSpacing: 8,
-            childAspectRatio: 0.8,
+            childAspectRatio: 0.70,
           ),
           itemCount: isLoadingMore ? products.length + 1 : products.length,
           itemBuilder: (context, index) {
@@ -225,7 +223,7 @@ class _PopularProductListState extends State<PopularProductList> {
                               flex: 1,
                               child: Container(
                                 padding:
-                                    const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                    const EdgeInsets.fromLTRB(10, 5, 10,0),
                                 child: Text(
                                   product.name ?? 'Unknown',
                                   style: const TextStyle(
@@ -239,13 +237,44 @@ class _PopularProductListState extends State<PopularProductList> {
                             Expanded(
                               flex: 1,
                               child: Container(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: Text(
-                                  '${NumberFormat.decimalPattern().format(product.price ?? 'Unknown Price')} đ',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 105, 105, 105),
-                                  ),
+                                padding: const EdgeInsets.only(bottom: 5),
+                                child: Column(
+                                  children: [
+                                    if (product.discount == null)
+                                      Text(
+                                        '${NumberFormat.decimalPattern().format(product.price ?? 'Unknown Price')} đ',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Color.fromARGB(
+                                              255, 105, 105, 105),
+                                        ),
+                                      ),
+                                    if (product.discount != null)
+                                      Column(
+                                        children: [
+                                          Text(
+                                            '${NumberFormat.decimalPattern().format(product.price ?? 'Unknown Price')} đ',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                              fontSize: 10,
+                                              decoration: TextDecoration
+                                                  .lineThrough, // Thêm gạch ngang
+                                              decorationColor: Colors
+                                                  .grey, // Màu của gạch ngang
+                                              decorationThickness:
+                                                  1.5, // Độ dày của gạch ngang
+                                            ),
+                                          ),
+                                          Text(
+                                            '${NumberFormat.decimalPattern().format(product.discount ?? 'Unknown Discount')} đ',
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xff9975ff)),
+                                          ),
+                                        ],
+                                      ),
+                                  ],
                                 ),
                               ),
                             )

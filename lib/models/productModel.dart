@@ -9,6 +9,7 @@ class productModel {
   int? iV;
   bool? isFavorite;
   int? rating;
+  int? discount;
 
   productModel(
     {
@@ -22,6 +23,7 @@ class productModel {
       this.iV,
       this.isFavorite=false,
       this.rating,
+      this.discount
     }
   );
 
@@ -36,6 +38,7 @@ class productModel {
     iV = json['__v'];
     isFavorite = json['isFavorite'];
     rating = json['rating'];
+    discount= json['discount'];
   }
 
   Map<String, dynamic> toJson() {
@@ -50,6 +53,7 @@ class productModel {
     data['__v'] = this.iV;
     data['isFavorite'] = this.isFavorite;
     data['rating'] = this.rating;
+    data['discount'] = this.discount;
     return data;
   }
 }
