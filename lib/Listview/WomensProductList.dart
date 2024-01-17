@@ -29,7 +29,7 @@ class _WomensProductListState extends State<WomensProductList> {
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
     final response = await http.get(
-      Uri.parse('$BASE_API/api/products/6573359c00c9d30fb93fddc4/$page'),
+      Uri.parse('$BASE_API/api/products/65a6c6a39cbc5e426a0adeeb/$page'),
       headers: {'Content-Type': 'application/json'},
     ); // Thay thế URL của API sản phẩm
 
@@ -126,11 +126,11 @@ class _WomensProductListState extends State<WomensProductList> {
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                 const PopupMenuItem<String>(
                   value: 'Sort Down',
-                  child: Text('bé đến lớn'),
+                  child: Text('giá ↑'),
                 ),
                 const PopupMenuItem<String>(
                   value: 'Sort Up',
-                  child: Text('lớn đến bé'),
+                  child: Text('giá ↓'),
                 ),
               ],
               child: Icon(Icons.filter_list), // Biểu tượng sắp xếp xuống

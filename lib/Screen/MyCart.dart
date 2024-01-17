@@ -1,4 +1,6 @@
 import 'package:appclient/Screen/PayScreen.dart';
+import 'package:appclient/models/AddressModel.dart';
+import 'package:appclient/models/ProfileModel.dart';
 import 'package:appclient/models/productBillModel.dart';
 import 'package:appclient/models/voucherModel.dart';
 import 'package:appclient/services/baseApi.dart';
@@ -36,12 +38,101 @@ class _MyCartState extends State<MyCart> {
   int quantitysave = 0;
   String dc = '';
   String dcct = '';
+  ObjUser? profile;
+
+  String fullname = '';
+  String ava = '';
+  String email = '';
+  String sdt = '';
+  String idaddress = '';
+  ObjAddress? address;
   // late ListCart product;
   void calculateDiscountAmount() {
     discountAmount = 0;
 
     if (selectedVoucher != null) {
       discountAmount = selectedVoucher!.price ?? 0;
+    }
+  }
+
+  Future<void> fetchProfile() async {
+    // Get user ID from SharedPreferences
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? idUser = prefs.getString("idUser");
+
+    // Check if the user is logged in
+    if (idUser != null) {
+      try {
+        final response = await http.get(
+          Uri.parse('https://adadas.onrender.com/api/userproflie/$idUser'),
+        );
+
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+          if (responseData.containsKey('objUser')) {
+            final Map<String, dynamic> objUserData = responseData['objUser'];
+
+            // Update the assignment to a single instance
+            profile = ObjUser.fromJson(objUserData);
+
+            // Now you can access the profile data using profile?.objUser
+            print('API Response Data: ${response.body}');
+            print('Username: ${profile?.username}');
+            print('Email: ${profile?.email}');
+            print('fullname: ${profile?.fullName}');
+            print('sdt: ${profile?.phoneNumber}');
+            print('idaddress: ${profile?.address}');
+            setState(() {
+              fullname = profile?.fullName ?? '';
+              ava = profile?.avata ?? '';
+              email = profile?.email ?? '';
+              sdt = profile?.phoneNumber ?? '';
+              idaddress = profile?.address ?? '';
+            });
+            fetchAddresses(profile?.address ?? '');
+            // Add other properties as needed
+          } else {
+            print('Key objUser not found in JSON response');
+          }
+        } else {
+          print('Request failed with status: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error during API call: $e');
+      }
+    } else {
+      // Redirect to the login page if the user is not logged in
+      Navigator.pushNamed(context, '/login');
+    }
+  }
+
+  Future<void> fetchAddresses(String addressid) async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://adadas.onrender.com/api/get-address/$addressid'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+        if (responseData.containsKey('objAddress')) {
+          final Map<String, dynamic> objAddressData =
+              responseData['objAddress'];
+          address = ObjAddress.fromJson(objAddressData);
+          print('địa chỉ là: ${address?.specificAddres}');
+          setState(() {
+            dc = address?.specificAddres ?? '';
+            dcct = address?.address ?? '';
+          });
+        } else {
+          print('Key objAddress not found in JSON response');
+        }
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error during API call: $e');
     }
   }
 
@@ -52,7 +143,6 @@ class _MyCartState extends State<MyCart> {
     final String? idUser = prefs.getString("idUser");
     final String? address = prefs.getString("address_city");
     final String? addressdt = prefs.getString("specific_addres");
-    print('địa chỉ là: $address');
 
     if (isLogin != null) {
       if (isLogin == true) {
@@ -296,10 +386,22 @@ class _MyCartState extends State<MyCart> {
                             )
                           ],
                         ),
-                        Text('Trần Văn Trọng'),
-                        Text('(+84)868132185'),
-                        Text(
-                            'Số 48, ngõ 99, Cầu Diễn, Phường Phúc Diễn, Quận Bắc Từ Liêm, Hà Nội'),
+                        Text('$fullname'),
+                        Text('$sdt'),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text('$dc,$dcct'),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, '/location');
+                                print('Icon pressed!');
+                              },
+                              child: Icon(Icons.arrow_right),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                     SizedBox(
@@ -550,6 +652,7 @@ class _MyCartState extends State<MyCart> {
     super.initState();
     fetchProducts();
     fetchVouchers();
+    fetchProfile();
     selectedProducts = List.generate(products.length, (index) => false);
     yourFunctionToProcessSelectedCarts();
   }
@@ -746,78 +849,76 @@ class _MyCartState extends State<MyCart> {
                                             Expanded(
                                               flex: 4,
                                               child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
                                                 children: [
-                                                  // Text(
-                                                  //   'Số lượng: ${product.quantity! ?? ''}',
-                                                  //   style: const TextStyle(
-                                                  //     fontSize: 15,
+                                                  const Text("Số lượng:  "),
+                                                  Text(
+                                                    //  '${quantityselect + product.quantity!}'
+                                                    '${quantitysave}'
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                        fontSize: 16),
+                                                  ),
+                                                  // Container(
+                                                  //   decoration: BoxDecoration(
+                                                  //       border: Border.all(
+                                                  //           color: Colors.grey,
+                                                  //           width: 1),
+                                                  //       borderRadius:
+                                                  //           const BorderRadius
+                                                  //               .all(
+                                                  //               Radius.circular(
+                                                  //                   5))),
+                                                  //   child: StatefulBuilder(
+                                                  //     builder:
+                                                  //         (context, setState) {
+                                                  //       return Row(
+                                                  //         children: [
+                                                  //           IconButton(
+                                                  //             onPressed: () {
+                                                  //               setState(() {
+                                                  //                 decreaseQuantity(product
+                                                  //                     .productId!
+                                                  //                     .quantity!);
+                                                  //               });
+                                                  //               updateCartApiCall(
+                                                  //                   product
+                                                  //                       .sId!,
+                                                  //                   quantityselect +
+                                                  //                       quantitysave);
+                                                  //             },
+                                                  //             icon: const Icon(
+                                                  //                 Icons.remove),
+                                                  //           ),
+                                                  //           Text(
+                                                  //             //  '${quantityselect + product.quantity!}'
+                                                  //             '${quantityselect + quantitysave}'
+                                                  //                 .toString(),
+                                                  //             style:
+                                                  //                 const TextStyle(
+                                                  //                     fontSize:
+                                                  //                         16),
+                                                  //           ),
+                                                  //           IconButton(
+                                                  //             onPressed: () {
+                                                  //               setState(() {
+                                                  //                 increaseQuantity(product
+                                                  //                     .productId!
+                                                  //                     .quantity!);
+                                                  //               });
+                                                  //               updateCartApiCall(
+                                                  //                   product
+                                                  //                       .sId!,
+                                                  //                   quantityselect +
+                                                  //                       quantitysave);
+                                                  //             },
+                                                  //             icon: const Icon(
+                                                  //                 Icons.add),
+                                                  //           ),
+                                                  //         ],
+                                                  //       );
+                                                  //     },
                                                   //   ),
                                                   // ),
-                                                  const Text("Số lượng"),
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.grey,
-                                                            width: 1),
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .all(
-                                                                Radius.circular(
-                                                                    5))),
-                                                    child: StatefulBuilder(
-                                                      builder:
-                                                          (context, setState) {
-                                                        return Row(
-                                                          children: [
-                                                            IconButton(
-                                                              onPressed: () {
-                                                                setState(() {
-                                                                  decreaseQuantity(product
-                                                                      .productId!
-                                                                      .quantity!);
-                                                                });
-                                                                updateCartApiCall(
-                                                                    product
-                                                                        .sId!,
-                                                                    quantityselect +
-                                                                        quantitysave);
-                                                              },
-                                                              icon: const Icon(
-                                                                  Icons.remove),
-                                                            ),
-                                                            Text(
-                                                              //  '${quantityselect + product.quantity!}'
-                                                              '${quantityselect + quantitysave}'
-                                                                  .toString(),
-                                                              style:
-                                                                  const TextStyle(
-                                                                      fontSize:
-                                                                          16),
-                                                            ),
-                                                            IconButton(
-                                                              onPressed: () {
-                                                                setState(() {
-                                                                  increaseQuantity(product
-                                                                      .productId!
-                                                                      .quantity!);
-                                                                });
-                                                                updateCartApiCall(
-                                                                    product
-                                                                        .sId!,
-                                                                    quantityselect +
-                                                                        quantitysave);
-                                                              },
-                                                              icon: const Icon(
-                                                                  Icons.add),
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
                                                 ],
                                               ),
                                             ),
