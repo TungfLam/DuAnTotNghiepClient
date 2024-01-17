@@ -45,7 +45,7 @@ class _MensProductListState extends State<MensProductList> {
   }
 
   Future<void> addFavorite(String productId, int index) async {
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final bool? isLogin = prefs.getBool("isLogin");
     final String? idUser = prefs.getString("idUser");
     if (isLogin != null) {
@@ -61,31 +61,29 @@ class _MensProductListState extends State<MensProductList> {
     } else {
       Navigator.pushNamed(context, '/login');
     }
-    if (idUser!=null) {
-       try {
-      final response = await http.post(
-        Uri.parse(
-            '$BASE_API/api/addFavorite/$idUser/$productId'),
-        headers: {'Content-Type': 'application/json'},
-      );
+    if (idUser != null) {
+      try {
+        final response = await http.post(
+          Uri.parse('$BASE_API/api/addFavorite/$idUser/$productId'),
+          headers: {'Content-Type': 'application/json'},
+        );
 
-      if (response.statusCode == 200) {
-        // Xử lý khi thành công
-        setState(() {
-          products[index].isFavorite = true;
-        });
-        print('Added to favorites successfully!');
-      } else {
-        // Xử lý khi không thành công
-        print(
-            'Failed to add to favorites. Status code: ${response.statusCode}');
+        if (response.statusCode == 200) {
+          // Xử lý khi thành công
+          setState(() {
+            products[index].isFavorite = true;
+          });
+          print('Added to favorites successfully!');
+        } else {
+          // Xử lý khi không thành công
+          print(
+              'Failed to add to favorites. Status code: ${response.statusCode}');
+        }
+      } catch (error) {
+        // Xử lý khi có lỗi
+        print('Error adding to favorites: $error');
       }
-    } catch (error) {
-      // Xử lý khi có lỗi
-      print('Error adding to favorites: $error');
     }
-    }
-   
   }
 
   @override
@@ -128,11 +126,11 @@ class _MensProductListState extends State<MensProductList> {
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                 const PopupMenuItem<String>(
                   value: 'Sort Down',
-                  child: Text('Sort Down'),
+                  child: Text('giá ↑'),
                 ),
                 const PopupMenuItem<String>(
                   value: 'Sort Up',
-                  child: Text('Sort Up'),
+                  child: Text('giá ↓'),
                 ),
               ],
               child: Icon(Icons.filter_list), // Biểu tượng sắp xếp xuống
@@ -185,7 +183,7 @@ class _MensProductListState extends State<MensProductList> {
                                   Container(
                                     width: double.infinity,
 
-                                    child: product.image?.elementAt(1) != null
+                                    child: product.image?.elementAt(0) != null
                                         ? ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(10.0),

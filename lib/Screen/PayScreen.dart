@@ -94,7 +94,7 @@ class _PayScreenState extends State<PayScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushNamed(context, '/');
             // Xử lý khi người dùng nhấn nút back
           },
         ),
