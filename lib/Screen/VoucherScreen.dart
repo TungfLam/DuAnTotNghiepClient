@@ -3,9 +3,8 @@ import 'dart:convert';
 import 'package:appclient/Widgets/loading.dart';
 import 'package:appclient/Widgets/voucheritem.dart';
 import 'package:appclient/models/voucherModel.dart';
-import 'package:flutter/foundation.dart';
+import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -29,7 +28,7 @@ class _VoucherScreenState extends State<VoucherScreen> {
 
     try {
       final response = await http.get(
-        Uri.parse('https://adadas.onrender.com/api/discount/$idUser'),
+        Uri.parse('$BASE_API/api/discount/$idUser'),
       );
 
       if (response.statusCode == 200) {

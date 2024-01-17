@@ -9,6 +9,7 @@ import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Itembill extends StatelessWidget {
   const Itembill({
@@ -27,8 +28,63 @@ class Itembill extends StatelessWidget {
     return formattedDate;
   }
 
+  Future<dynamic> _getUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? idUser = prefs.getString("idUser");
+
+    final response = await http.get(
+        Uri.parse('$BASE_API/api/userproflie/$idUser')
+    );
+
+    if(response.statusCode == 200){
+      final data = await jsonDecode(response.body);
+
+      if(data['err']){
+        return false;
+      }else{
+
+        return data['objUser'];
+
+      }
+
+    }else{
+      print("Err : ${response.statusCode}");
+    }
+  }
+
+  Future<dynamic> _getAddress() async {
+
+    final response = await http.get(
+        Uri.parse('$BASE_API/api/get-address/${billItem.userData?.address}')
+    );
+
+    print(billItem.userData?.address);
+
+    if(response.statusCode == 200){
+      final data = await jsonDecode(response.body);
+
+      if(data['err']){
+
+        return false;
+      }else{
+        return data['objAddress'];
+      }
+
+    }else{
+      print("Err : ${response.statusCode}");
+    }
+  }
+
   final BiilModel billItem;
-  void _showBillDetails(BuildContext context) {
+  Future<void> _showBillDetails(BuildContext context) async {
+
+    dynamic jsUser = await _getUser();
+    dynamic jsAddress;
+    if(jsUser != null && jsUser != false){
+      jsAddress = await _getAddress();
+    }
+
+
     String date = '${billItem.createdAt}';
     String outputdate = parseDate(date);
     String idBill = billItem.sId ?? "";
@@ -100,7 +156,7 @@ class Itembill extends StatelessWidget {
                       Text('Ngày đặt hàng: $outputdate'),
                       Container(
                         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                        child: const Column(
+                        child:  Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
@@ -112,10 +168,12 @@ class Itembill extends StatelessWidget {
                                 )
                               ],
                             ),
-                            Text('Trần Văn Trọng'),
-                            Text('(+84)868132185'),
-                            Text(
-                                'Số 48, ngõ 99, Cầu Diễn, Phường Phúc Diễn, Quận Bắc Từ Liêm, Hà Nội'),
+                            Text((jsUser != null && jsUser != false) ? jsUser['full_name'].toString() : "Nguyễn Bá Duy"),
+                            Text((jsUser != null && jsUser != false) ? jsUser['phone_number'].toString() : "0393267599"),
+                            Text((jsAddress != null && jsAddress != false) ?
+                            "${jsAddress['specific_addres'].toString()} ${jsAddress['address']}" :
+                              "nha so 9 ngõ 103 phương canh , Từ Liêm , Hà Nội"
+                            ),
                           ],
                         ),
                       ),

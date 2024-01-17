@@ -88,6 +88,7 @@ class _itemNotificationState extends State<itemNotification> {
             ));
             break;
           case '2':
+            Navigator.pushNamed(context, '/bill');
             setStatusR();
             break;
         }
