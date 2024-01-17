@@ -34,6 +34,8 @@ class _MyCartState extends State<MyCart> {
   int discountAmount = 0;
   int quantityselect = 0;
   int quantitysave = 0;
+  String dc = '';
+  String dcct = '';
   // late ListCart product;
   void calculateDiscountAmount() {
     discountAmount = 0;
@@ -48,9 +50,17 @@ class _MyCartState extends State<MyCart> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final bool? isLogin = prefs.getBool("isLogin");
     final String? idUser = prefs.getString("idUser");
+    final String? address = prefs.getString("address_city");
+    final String? addressdt = prefs.getString("specific_addres");
+    print('địa chỉ là: $address');
+
     if (isLogin != null) {
       if (isLogin == true) {
         print("người dùng đã login");
+        setState(() {
+          // dc=address!;
+          // dcct=addressdt!;
+        });
       } else if (isLogin == false) {
         Navigator.pushNamed(context, '/login');
       }
@@ -274,6 +284,24 @@ class _MyCartState extends State<MyCart> {
                     for (int i = 0; i < products.length; i++)
                       if (selectedProducts[i])
                         _buildProductDetailsWidget(products[i]),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.location_on_outlined),
+                            Text(
+                              '  Địa chỉ',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                        Text('Trần Văn Trọng'),
+                        Text('(+84)868132185'),
+                        Text(
+                            'Số 48, ngõ 99, Cầu Diễn, Phường Phúc Diễn, Quận Bắc Từ Liêm, Hà Nội'),
+                      ],
+                    ),
                     SizedBox(
                       width: double.infinity,
                       child: DropdownButtonHideUnderline(
@@ -361,37 +389,92 @@ class _MyCartState extends State<MyCart> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            int discountedAmount =
-                                totalAmount - (selectedVoucher!.price ?? 0) ??
-                                    0;
+                            // final giagiam = selectedVoucher!.price;
 
-                            print(
-                                'phương thức tt đã chọn: $selectedPaymentMethod');
-                            print('voucher đã chọn: ${selectedVoucher?.sId}');
-                            List<String> selectedCartIds = getSelectedCartIds();
-                            print('những sản phẩm được chọn: $selectedCartIds');
-                            if (isVnPaySelected) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PayScreen(
-                                      // productId: product.sId!,
-                                      userid: userid,
-                                      idcart: selectedCartIds,
-                                      title: '',
-                                      totalAmount: discountedAmount,
-                                      idDiscount: selectedVoucher?.sId ?? ''),
-                                ),
-                              );
-                              print('userid là: $userid');
-                              print('selectedCartIds là: $selectedCartIds');
-                              print('totalAmount là: $totalAmount');
+                            if (selectedVoucher != null) {
+                              int discountedAmount =
+                                  totalAmount - selectedVoucher!.price! ?? 0;
+
                               print(
-                                  'Tổng tiền: đ${NumberFormat.decimalPattern().format(totalAmount - discountAmount)}');
+                                  'phương thức tt đã chọn: $selectedPaymentMethod');
+                              print('voucher đã chọn: ${selectedVoucher?.sId}');
+                              List<String> selectedCartIds =
+                                  getSelectedCartIds();
+                              print(
+                                  'những sản phẩm được chọn: $selectedCartIds');
+                              if (isVnPaySelected) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PayScreen(
+                                        // productId: product.sId!,
+                                        userid: userid,
+                                        idcart: selectedCartIds,
+                                        title: '',
+                                        totalAmount: discountedAmount,
+                                        idDiscount: selectedVoucher?.sId ?? ''),
+                                  ),
+                                );
+                                print('userid là: $userid');
+                                print('selectedCartIds là: $selectedCartIds');
+                                print('totalAmount là: $totalAmount');
+                                print(
+                                    'Tổng tiền: đ${NumberFormat.decimalPattern().format(totalAmount - discountAmount)}');
+                              } else {
+                                addBillApiCall(
+                                    userid,
+                                    selectedCartIds,
+                                    discountedAmount,
+                                    selectedVoucher?.sId ?? '');
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('đặt hàng thành công!'),
+                                  ),
+                                );
+                                Navigator.pushNamed(context, '/bill');
+                              }
                             } else {
-                              // Xử lý thanh toán khác
-                              addBillApiCall(userid, selectedCartIds,
-                                  totalAmount, selectedVoucher?.sId ?? '');
+                              int discountedAmount = totalAmount;
+
+                              print(
+                                  'phương thức tt đã chọn: $selectedPaymentMethod');
+                              print('voucher đã chọn: ${selectedVoucher?.sId}');
+                              List<String> selectedCartIds =
+                                  getSelectedCartIds();
+                              print(
+                                  'những sản phẩm được chọn: $selectedCartIds');
+                              if (isVnPaySelected) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PayScreen(
+                                        // productId: product.sId!,
+                                        userid: userid,
+                                        idcart: selectedCartIds,
+                                        title: '',
+                                        totalAmount: discountedAmount,
+                                        idDiscount: selectedVoucher?.sId ?? ''),
+                                  ),
+                                );
+                                print('userid là: $userid');
+                                print('selectedCartIds là: $selectedCartIds');
+                                print('totalAmount là: $totalAmount');
+                                print(
+                                    'Tổng tiền: đ${NumberFormat.decimalPattern().format(totalAmount - discountAmount)}');
+                              } else {
+                                // Xử lý thanh toán khác
+                                addBillApiCall(
+                                    userid,
+                                    selectedCartIds,
+                                    discountedAmount,
+                                    selectedVoucher?.sId ?? '');
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('đặt hàng thành công!'),
+                                  ),
+                                );
+                                Navigator.pushNamed(context, '/bill');
+                              }
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -527,339 +610,347 @@ class _MyCartState extends State<MyCart> {
         centerTitle: true,
         actions: const [],
       ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Container(
-              color: Colors.white,
-              width: double.infinity,
-              height: 620,
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  crossAxisSpacing: 6,
-                  mainAxisSpacing: 6,
-                  childAspectRatio: 2,
-                ),
-                itemCount: products.length,
-                itemBuilder: (context, index) {
-                  if (index < products.length) {
-                    final product = products[index];
-                    if (product.productId != null &&
-                        product.productId!.product != null) {
-                      print(product.productId?.quantity);
-                      quantitysave = product.quantity!;
-                      return GestureDetector(
-                        onTap: () {
-                          if (index < products.length) {
-                            final product = products[index];
-                            if (product.productId != null) {
-                              _showProductDetailsModal(context, product);
-                              print(
-                                  'soluongmax: ${product.productId!.quantity!}');
+      body: Container(
+        height: double.infinity,
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(18),
+              child: Container(
+                color: Colors.white,
+                width: double.infinity,
+                height: 620,
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                    crossAxisSpacing: 6,
+                    mainAxisSpacing: 6,
+                    childAspectRatio: 2,
+                  ),
+                  itemCount: products.length,
+                  itemBuilder: (context, index) {
+                    if (index < products.length) {
+                      final product = products[index];
+                      if (product.productId != null &&
+                          product.productId!.product != null) {
+                        print(product.productId?.quantity);
+                        quantitysave = product.quantity!;
+                        return GestureDetector(
+                          onTap: () {
+                            if (index < products.length) {
+                              final product = products[index];
+                              if (product.productId != null) {
+                                _showProductDetailsModal(context, product);
+                                print(
+                                    'soluongmax: ${product.productId!.quantity!}');
+                              }
                             }
-                          }
-                        },
-                        child: Card(
-                          child: Stack(
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: Checkbox(
-                                      value: selectedProducts[index],
-                                      onChanged: (value) {
-                                        setState(() {
-                                          selectedProducts[index] = value!;
-                                          yourFunctionToProcessSelectedCarts();
-                                        });
-                                      },
+                          },
+                          child: Card(
+                            child: Stack(
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Checkbox(
+                                        value: selectedProducts[index],
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedProducts[index] = value!;
+                                            yourFunctionToProcessSelectedCarts();
+                                          });
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    flex: 4,
-                                    child: Container(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 10, 10, 10),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Image.network(
-                                          product.productId?.product?.image
-                                                  ?.elementAt(0) ??
-                                              "",
-                                          height: 200,
-                                          width: 180,
-                                          fit: BoxFit.cover,
+                                    Expanded(
+                                      flex: 4,
+                                      child: Container(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 10, 10, 10),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: Image.network(
+                                            product.productId?.product?.image
+                                                    ?.elementAt(0) ??
+                                                "",
+                                            height: 200,
+                                            width: 180,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    flex: 6,
-                                    child: Container(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 10, 10, 10),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            flex: 5,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      0, 0, 40, 0),
-                                              child: Text(
-                                                product.productId?.product
-                                                        ?.name ??
-                                                    "Unknown",
-                                                style: const TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Color(0xff6342E8)),
+                                    Expanded(
+                                      flex: 6,
+                                      child: Container(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 10, 10, 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              flex: 5,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        0, 0, 40, 0),
+                                                child: Text(
+                                                  product.productId?.product
+                                                          ?.name ??
+                                                      "Unknown",
+                                                  style: const TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Color(0xff6342E8)),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          Expanded(
-                                            flex: 2,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  'Kích cỡ: ${product.productId?.sizeId?.name ?? ''}',
-                                                  style: const TextStyle(
-                                                    fontSize: 15,
+                                            Expanded(
+                                              flex: 2,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    'Kích cỡ: ${product.productId?.sizeId?.name ?? ''}',
+                                                    style: const TextStyle(
+                                                      fontSize: 15,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                          Expanded(
-                                            flex: 3,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  'Màu sắc: ${product.productId?.colorId?.name ?? ''}',
-                                                  style: const TextStyle(
-                                                    fontSize: 15,
+                                            Expanded(
+                                              flex: 3,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    'Màu sắc: ${product.productId?.colorId?.name ?? ''}',
+                                                    style: const TextStyle(
+                                                      fontSize: 15,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                          Expanded(
-                                            flex: 4,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                // Text(
-                                                //   'Số lượng: ${product.quantity! ?? ''}',
-                                                //   style: const TextStyle(
-                                                //     fontSize: 15,
-                                                //   ),
-                                                // ),
-                                                const Text("Số lượng"),
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.grey,
-                                                          width: 1),
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                              .all(
-                                                              Radius.circular(
-                                                                  5))),
-                                                  child: StatefulBuilder(
-                                                    builder:
-                                                        (context, setState) {
-                                                      return Row(
-                                                        children: [
-                                                          IconButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                decreaseQuantity(product
-                                                                    .productId!
-                                                                    .quantity!);
-                                                              });
-                                                              updateCartApiCall(
-                                                                  product.sId!,
-                                                                  quantityselect +
-                                                                      quantitysave);
-                                                            },
-                                                            icon: const Icon(
-                                                                Icons.remove),
-                                                          ),
-                                                          Text(
-                                                            //  '${quantityselect + product.quantity!}'
-                                                            '${quantityselect + quantitysave}'
-                                                                .toString(),
-                                                            style:
-                                                                const TextStyle(
-                                                                    fontSize:
-                                                                        16),
-                                                          ),
-                                                          IconButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                increaseQuantity(product
-                                                                    .productId!
-                                                                    .quantity!);
-                                                              });
-                                                              updateCartApiCall(
-                                                                  product.sId!,
-                                                                  quantityselect +
-                                                                      quantitysave);
-                                                            },
-                                                            icon: const Icon(
-                                                                Icons.add),
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
+                                            Expanded(
+                                              flex: 4,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  // Text(
+                                                  //   'Số lượng: ${product.quantity! ?? ''}',
+                                                  //   style: const TextStyle(
+                                                  //     fontSize: 15,
+                                                  //   ),
+                                                  // ),
+                                                  const Text("Số lượng"),
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: Colors.grey,
+                                                            width: 1),
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .all(
+                                                                Radius.circular(
+                                                                    5))),
+                                                    child: StatefulBuilder(
+                                                      builder:
+                                                          (context, setState) {
+                                                        return Row(
+                                                          children: [
+                                                            IconButton(
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  decreaseQuantity(product
+                                                                      .productId!
+                                                                      .quantity!);
+                                                                });
+                                                                updateCartApiCall(
+                                                                    product
+                                                                        .sId!,
+                                                                    quantityselect +
+                                                                        quantitysave);
+                                                              },
+                                                              icon: const Icon(
+                                                                  Icons.remove),
+                                                            ),
+                                                            Text(
+                                                              //  '${quantityselect + product.quantity!}'
+                                                              '${quantityselect + quantitysave}'
+                                                                  .toString(),
+                                                              style:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                          16),
+                                                            ),
+                                                            IconButton(
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  increaseQuantity(product
+                                                                      .productId!
+                                                                      .quantity!);
+                                                                });
+                                                                updateCartApiCall(
+                                                                    product
+                                                                        .sId!,
+                                                                    quantityselect +
+                                                                        quantitysave);
+                                                              },
+                                                              icon: const Icon(
+                                                                  Icons.add),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                          Expanded(
-                                            flex: 3,
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  '${NumberFormat.decimalPattern().format(product.productId?.product?.price ?? '')} đ',
-                                                  style: const TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
+                                            Expanded(
+                                              flex: 3,
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    '${NumberFormat.decimalPattern().format(product.productId?.product?.price ?? '')} đ',
+                                                    style: const TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Positioned(
-                                top: 0,
-                                right: 0,
-                                child: IconButton(
-                                  icon: const Icon(Icons.close,
-                                      color: Colors.black),
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text(
-                                              'Xác nhận xóa sản phẩm'),
-                                          content: const Text(
-                                              'Bạn muốn xóa sản phẩm này?'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context)
-                                                    .pop(); // Đóng hộp thoại
-                                                if (product.sId != null) {
-                                                  _removeItemFromCart(
-                                                      product.sId!);
-                                                } else {
-                                                  print(
-                                                      'CartId is null for product at index $index');
-                                                }
-                                              },
-                                              child: const Text('Có'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context)
-                                                    .pop(); // Đóng hộp thoại
-                                              },
-                                              child: const Text('Hủy'),
+                                                ],
+                                              ),
                                             ),
                                           ],
-                                        );
-                                      },
-                                    );
-                                  },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
+                                Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.close,
+                                        color: Colors.black),
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text(
+                                                'Xác nhận xóa sản phẩm'),
+                                            content: const Text(
+                                                'Bạn muốn xóa sản phẩm này?'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context)
+                                                      .pop(); // Đóng hộp thoại
+                                                  if (product.sId != null) {
+                                                    _removeItemFromCart(
+                                                        product.sId!);
+                                                  } else {
+                                                    print(
+                                                        'CartId is null for product at index $index');
+                                                  }
+                                                },
+                                                child: const Text('Có'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context)
+                                                      .pop(); // Đóng hộp thoại
+                                                },
+                                                child: const Text('Hủy'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      } else {
+                        print('productId is null for product at index $index');
+                        return const SizedBox
+                            .shrink(); // Nếu productId là null, có thể trả về một widget trống hoặc thích hợp khác.
+                      }
                     } else {
-                      print('productId is null for product at index $index');
-                      return const SizedBox
-                          .shrink(); // Nếu productId là null, có thể trả về một widget trống hoặc thích hợp khác.
+                      if (mounted) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
                     }
-                  } else {
-                    if (mounted) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  }
-                  return null;
-                },
+                    return null;
+                  },
+                ),
               ),
             ),
-          ),
-          Positioned(
-            bottom: 0,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(20),
-              color: Colors.white,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Tổng tiền: ${NumberFormat.decimalPattern().format(totalAmount)} đ',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+            Positioned(
+              bottom: 0,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.all(20),
+                color: Colors.white,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Tổng tiền: ${NumberFormat.decimalPattern().format(totalAmount)} đ',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Xử lý khi nút Mua Hàng được nhấn
-                      print(
-                          'Tổng tiền: ${NumberFormat.decimalPattern().format(totalAmount)} đ');
-                      _showSelectedProductsModal();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF6342E8),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Xử lý khi nút Mua Hàng được nhấn
+                        print(
+                            'Tổng tiền: ${NumberFormat.decimalPattern().format(totalAmount)} đ');
+                        _showSelectedProductsModal();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF6342E8),
+                      ),
+                      child: const Text(
+                        'Mua Hàng',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
                     ),
-                    child: const Text(
-                      'Mua Hàng',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

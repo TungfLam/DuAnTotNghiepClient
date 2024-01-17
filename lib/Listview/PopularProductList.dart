@@ -44,34 +44,48 @@ class _PopularProductListState extends State<PopularProductList> {
     }
   }
 
-  Future<void> addFavorite(String productId) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+   Future<void> addFavorite(String productId, int index) async {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
     final bool? isLogin = prefs.getBool("isLogin");
     final String? idUser = prefs.getString("idUser");
     if (isLogin != null) {
       if (isLogin == true) {
-        try {
-          final response = await http.post(
-            Uri.parse('$BASE_API/api/addFavorite/$idUser/$productId'),
-            headers: {'Content-Type': 'application/json'},
-          );
-
-          if (response.statusCode == 200) {
-            // Xử lý khi thành công
-            print('Added to favorites successfully!');
-          } else {
-            // Xử lý khi không thành công
-            print(
-                'Failed to add to favorites. Status code: ${response.statusCode}');
-          }
-        } catch (error) {
-          // Xử lý khi có lỗi
-          print('Error adding to favorites: $error');
-        }
+        print("người dùng đã login");
+        setState(() {
+          // dc=address!;
+          // dcct=addressdt!;
+        });
       } else if (isLogin == false) {
         Navigator.pushNamed(context, '/login');
       }
+    } else {
+      Navigator.pushNamed(context, '/login');
     }
+    if (idUser!=null) {
+       try {
+      final response = await http.post(
+        Uri.parse(
+            '$BASE_API/api/addFavorite/$idUser/$productId'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        // Xử lý khi thành công
+        setState(() {
+          products[index].isFavorite = true;
+        });
+        print('Added to favorites successfully!');
+      } else {
+        // Xử lý khi không thành công
+        print(
+            'Failed to add to favorites. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Xử lý khi có lỗi
+      print('Error adding to favorites: $error');
+    }
+    }
+   
   }
 
   @override
@@ -190,10 +204,17 @@ class _PopularProductListState extends State<PopularProductList> {
                                     top: 5,
                                     right: 5,
                                     child: IconButton(
-                                      icon: const Icon(
-                                          Icons.favorite_border_outlined),
+                                      icon: Icon(
+                                        products[index].isFavorite ?? false
+                                            ? Icons.favorite
+                                            : Icons.favorite_border_outlined,
+                                        color:
+                                            products[index].isFavorite ?? false
+                                                ? Color(0xFF6342E8)
+                                                : null,
+                                      ),
                                       onPressed: () {
-                                        addFavorite(product.sId!);
+                                        addFavorite(product.sId!, index);
                                       },
                                     ),
                                   ),
@@ -204,7 +225,7 @@ class _PopularProductListState extends State<PopularProductList> {
                               flex: 1,
                               child: Container(
                                 padding:
-                                    const EdgeInsets.fromLTRB(10, 0, 10, 5),
+                                    const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                 child: Text(
                                   product.name ?? 'Unknown',
                                   style: const TextStyle(

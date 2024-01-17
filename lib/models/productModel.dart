@@ -20,7 +20,7 @@ class productModel {
       this.updatedAt,
       this.price,
       this.iV,
-      this.isFavorite,
+      this.isFavorite=false,
       this.rating,
     }
   );
