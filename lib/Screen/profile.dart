@@ -40,7 +40,7 @@ class _profileScreenState extends State<profileScreen> {
       try {
         final response = await http.get(
           Uri.parse(
-              'https://adadas.onrender.com/api/userproflie/$idUser'),
+              '$BASE_API/api/userproflie/$idUser'),
         );
 
         if (response.statusCode == 200) {
@@ -86,7 +86,7 @@ class _profileScreenState extends State<profileScreen> {
   Future<void> fetchAddresses(String addressid) async {
     try {
       final response = await http.get(
-        Uri.parse('https://adadas.onrender.com/api/get-address/$addressid'),
+        Uri.parse('$BASE_API/api/get-address/$addressid'),
       );
 
       if (response.statusCode == 200) {

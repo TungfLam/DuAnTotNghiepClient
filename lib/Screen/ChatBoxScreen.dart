@@ -123,7 +123,7 @@ class _ChatBoxScreenState extends State<ChatBoxScreen> {
                   return ListTile(
                     leading: const CircleAvatar(
                       backgroundImage: NetworkImage(
-                          '$BASE_API /imgMessage/659bdaf0da877cd9d80894f9_hwzscsulpsrsyjzarw4m.jpg'),
+                          '$BASE_API/imgMessage/659bdaf0da877cd9d80894f9_hwzscsulpsrsyjzarw4m.jpg'),
                     ),
                     title: const Text('ADADAS ONLINE'),
                     // subtitle: Text(conversation.members.join(' ')),
@@ -631,7 +631,7 @@ class _MessageScreenState extends State<MessageScreen> {
     final bool isImage = message.startsWith('/imgMessage/');
 
     if (isImage) {
-      final String imageUrl = '$BASE_API$message';
+      final String imageUrl = 'https://adadas.onrender.com$message';
       return SizedBox(
         width: 250,
         height: 250,
@@ -639,8 +639,10 @@ class _MessageScreenState extends State<MessageScreen> {
           borderRadius: BorderRadius.circular(10), // Bo tròn các góc
           child: Image.network(
             imageUrl,
-            fit: BoxFit
-                .cover, // Điều chỉnh hình ảnh để vừa với kích thước của Container
+            fit: BoxFit.cover,
+            errorBuilder: (BuildContext context , Object error, StackTrace? stackTrace){
+              return const Icon(Icons.image);
+            }
           ),
         ),
       );

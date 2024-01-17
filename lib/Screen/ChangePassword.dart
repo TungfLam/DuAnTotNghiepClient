@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:appclient/Widgets/uilt.dart';
 import 'package:appclient/models/apiRes.dart';
+import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:http/http.dart' as http;
@@ -37,7 +38,7 @@ class ChangePasswordPage extends State<ChangePassword> {
   Future<void> _callChangePassword(BuildContext context, String id,
       String password, String newPassword) async {
     final response = await http.put(
-        Uri.parse("https://adadas.onrender.com/api/change-password/$id"),
+        Uri.parse("$BASE_API/api/change-password/$id"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8'
         },

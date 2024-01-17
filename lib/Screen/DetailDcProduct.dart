@@ -391,7 +391,7 @@ class _DetailDcProductState extends State<DetailDcProduct> {
       //   ),
       final response = await http.read(
         Uri.parse(
-          'https://adadas.onrender.com/api/getListAll_deltail/${widget.productdc?.sId}',
+          '$BASE_API/api/getListAll_deltail/${widget.productdc?.sId}',
         ),
         headers: {'Content-Type': 'application/json'},
       );
@@ -428,7 +428,7 @@ class _DetailDcProductState extends State<DetailDcProduct> {
     try {
       final response = await http.post(
         Uri.parse(
-            'https://adadas.onrender.com/api/addCart/6524318746e12608b3558d74/$productId'),
+            '$BASE_API/api/addCart/6524318746e12608b3558d74/$productId'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'quantity': quantity}),
       );
