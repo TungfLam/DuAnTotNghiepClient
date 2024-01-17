@@ -31,7 +31,6 @@ class _MensProductListState extends State<MensProductList> {
 
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
-
     final response = await http.get(
       Uri.parse('$BASE_API/api/products/658b22fd972503452eb54013/$page'),
       headers: {'Content-Type': 'application/json'},
@@ -41,7 +40,8 @@ class _MensProductListState extends State<MensProductList> {
       final List<dynamic>? productData = jsonDecode(response.body);
       if (productData != null && mounted) {
         setState(() {
-          products = products + productData.map((item) => productModel.fromJson(item)).toList();
+          products = products +
+              productData.map((item) => productModel.fromJson(item)).toList();
         });
       }
     }
@@ -88,7 +88,6 @@ class _MensProductListState extends State<MensProductList> {
       }
     }
   }
-
 
   @override
   void initState() {
@@ -148,7 +147,7 @@ class _MensProductListState extends State<MensProductList> {
             crossAxisCount: 2,
             crossAxisSpacing: 8,
             mainAxisSpacing: 8,
-            childAspectRatio: 0.8,
+            childAspectRatio: 0.70,
           ),
           itemCount: isLoadingMore ? products.length + 1 : products.length,
           itemBuilder: (context, index) {
@@ -186,37 +185,32 @@ class _MensProductListState extends State<MensProductList> {
                                 children: [
                                   Container(
                                     width: double.infinity,
-
-                                    child: product.image?.elementAt(0) != null
-                                        ? ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                            child: Image.network(
-                                                product.image!.elementAt(0),
-                                                height: 200,
-                                                width: 180,
-                                                fit: BoxFit.cover, errorBuilder:
-                                                    (BuildContext context,
-                                                        Object error,
-                                                        StackTrace?
-                                                            stackTrace) {
-                                              return Center(
-                                                  child:
-                                                      const Icon(Icons.image));
-                                            }),
-                                          )
-                                        : Placeholder(), // You can use a placeholder or any other widget
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      child: Image.network(
+                                          '${product.image?.elementAt(0)}' ??
+                                              'loading...',
+                                          height: 200,
+                                          width: 180,
+                                          fit: BoxFit.cover, errorBuilder:
+                                              (BuildContext context,
+                                                  Object error,
+                                                  StackTrace? stackTrace) {
+                                        return Center(
+                                            child: const Icon(Icons.image));
+                                      }),
+                                    ),
                                   ),
                                   Positioned(
                                     top: 5,
                                     right: 5,
                                     child: IconButton(
                                       icon: Icon(
-                                        product.isFavorite ?? false
+                                        products[index].isFavorite ?? false
                                             ? Icons.favorite
                                             : Icons.favorite_border_outlined,
                                         color:
-                                        product.isFavorite ?? false
+                                            products[index].isFavorite ?? false
                                                 ? Color(0xFF6342E8)
                                                 : null,
                                       ),
@@ -231,7 +225,8 @@ class _MensProductListState extends State<MensProductList> {
                             Expanded(
                               flex: 1,
                               child: Container(
-                                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 5, 10, 0),
                                 child: Text(
                                   product.name ?? 'Unknown',
                                   style: const TextStyle(
@@ -245,13 +240,44 @@ class _MensProductListState extends State<MensProductList> {
                             Expanded(
                               flex: 1,
                               child: Container(
-                                padding: EdgeInsets.only(bottom: 10),
-                                child: Text(
-                                  '${NumberFormat.decimalPattern().format(product.price ?? 'Unknown Price')} đ',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 105, 105, 105),
-                                  ),
+                                padding: const EdgeInsets.only(bottom: 5),
+                                child: Column(
+                                  children: [
+                                    if (product.discount == null)
+                                      Text(
+                                        '${NumberFormat.decimalPattern().format(product.price ?? 'Unknown Price')} đ',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Color.fromARGB(
+                                              255, 105, 105, 105),
+                                        ),
+                                      ),
+                                    if (product.discount != null)
+                                      Column(
+                                        children: [
+                                          Text(
+                                            '${NumberFormat.decimalPattern().format(product.price ?? 'Unknown Price')} đ',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                              fontSize: 10,
+                                              decoration: TextDecoration
+                                                  .lineThrough, // Thêm gạch ngang
+                                              decorationColor: Colors
+                                                  .grey, // Màu của gạch ngang
+                                              decorationThickness:
+                                                  1.5, // Độ dày của gạch ngang
+                                            ),
+                                          ),
+                                          Text(
+                                            '${NumberFormat.decimalPattern().format(product.discount ?? 'Unknown Discount')} đ',
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xff9975ff)),
+                                          ),
+                                        ],
+                                      ),
+                                  ],
                                 ),
                               ),
                             )

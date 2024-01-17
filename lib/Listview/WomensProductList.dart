@@ -144,7 +144,7 @@ class _WomensProductListState extends State<WomensProductList> {
             crossAxisCount: 2,
             crossAxisSpacing: 8,
             mainAxisSpacing: 8,
-            childAspectRatio: 0.8,
+            childAspectRatio: 0.70,
           ),
           itemCount: isLoadingMore ? products.length + 1 : products.length,
           itemBuilder: (context, index) {
@@ -222,7 +222,8 @@ class _WomensProductListState extends State<WomensProductList> {
                             Expanded(
                               flex: 1,
                               child: Container(
-                                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 5, 10, 0),
                                 child: Text(
                                   product.name ?? 'Unknown',
                                   style: const TextStyle(
@@ -236,13 +237,44 @@ class _WomensProductListState extends State<WomensProductList> {
                             Expanded(
                               flex: 1,
                               child: Container(
-                                padding: EdgeInsets.only(bottom: 10),
-                                child: Text(
-                                  '${NumberFormat.decimalPattern().format(product.price ?? 'Unknown Price')} đ',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 105, 105, 105),
-                                  ),
+                                padding: const EdgeInsets.only(bottom: 5),
+                                child: Column(
+                                  children: [
+                                    if (product.discount == null)
+                                      Text(
+                                        '${NumberFormat.decimalPattern().format(product.price ?? 'Unknown Price')} đ',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Color.fromARGB(
+                                              255, 105, 105, 105),
+                                        ),
+                                      ),
+                                    if (product.discount != null)
+                                      Column(
+                                        children: [
+                                          Text(
+                                            '${NumberFormat.decimalPattern().format(product.price ?? 'Unknown Price')} đ',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                              fontSize: 10,
+                                              decoration: TextDecoration
+                                                  .lineThrough, // Thêm gạch ngang
+                                              decorationColor: Colors
+                                                  .grey, // Màu của gạch ngang
+                                              decorationThickness:
+                                                  1.5, // Độ dày của gạch ngang
+                                            ),
+                                          ),
+                                          Text(
+                                            '${NumberFormat.decimalPattern().format(product.discount ?? 'Unknown Discount')} đ',
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xff9975ff)),
+                                          ),
+                                        ],
+                                      ),
+                                  ],
                                 ),
                               ),
                             )
