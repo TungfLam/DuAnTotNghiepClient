@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:appclient/Widgets/Itembill.dart';
 import 'package:appclient/models/productBillModel.dart';
+import 'package:appclient/services/baseApi.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -28,7 +29,7 @@ class _BillhuyState extends State<Billhuy> {
   }
 
   Future<void> fetchData(String iduser) async {
-    final apiUrl = 'https://adadas.onrender.com/api/bill/$iduser';
+    final apiUrl = '$BASE_API/api/bill/$iduser';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));

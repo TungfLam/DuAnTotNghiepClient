@@ -29,7 +29,7 @@ class _BillhtState extends State<Billht> {
   }
 
   Future<void> fetchData(String iduser) async {
-    final apiUrl = 'https://adadas.onrender.com/api/bill/$iduser';
+    final apiUrl = '$BASE_API/api/bill/$iduser';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));

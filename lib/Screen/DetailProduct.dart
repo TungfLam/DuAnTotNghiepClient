@@ -405,7 +405,7 @@ class _DetailProductState extends State<DetailProduct> {
       //   ),
       final response = await http.read(
         Uri.parse(
-          'https://adadas.onrender.com/api/getListAll_deltail/${widget.product?.sId}',
+          '$BASE_API/api/getListAll_deltail/${widget.product?.sId}',
         ),
         headers: {'Content-Type': 'application/json'},
       );
@@ -444,7 +444,10 @@ class _DetailProductState extends State<DetailProduct> {
     final String? idUser = prefs.getString("idUser");
     try {
       final response = await http.post(
-        Uri.parse('https://adadas.onrender.com/api/addCart/$idUser/$productId'),
+
+        Uri.parse(
+            '$BASE_API/api/addCart/$idUser/$productId'),
+
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'quantity': quantity}),
       );

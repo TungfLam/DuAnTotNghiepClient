@@ -64,7 +64,7 @@ class _MyCartState extends State<MyCart> {
     if (idUser != null) {
       try {
         final response = await http.get(
-          Uri.parse('https://adadas.onrender.com/api/userproflie/$idUser'),
+          Uri.parse('$BASE_API/api/userproflie/$idUser'),
         );
 
         if (response.statusCode == 200) {
@@ -110,7 +110,7 @@ class _MyCartState extends State<MyCart> {
   Future<void> fetchAddresses(String addressid) async {
     try {
       final response = await http.get(
-        Uri.parse('https://adadas.onrender.com/api/get-address/$addressid'),
+        Uri.parse('$BASE_API/api/get-address/$addressid'),
       );
 
       if (response.statusCode == 200) {
@@ -169,7 +169,7 @@ class _MyCartState extends State<MyCart> {
         //   Uri.parse('$BASE_API/api/getListCart/6524318746e12608b3558d74'),);
 
         final response = await http.get(
-          Uri.parse('https://adadas.onrender.com/api/getListCart/$idUser'),
+          Uri.parse('$BASE_API/api/getListCart/$idUser'),
         );
 
         if (response.statusCode == 200) {
@@ -222,7 +222,7 @@ class _MyCartState extends State<MyCart> {
 
     try {
       final response = await http.get(
-        Uri.parse('https://adadas.onrender.com/api/discount/$idUser'),
+        Uri.parse('$BASE_API/api/discount/$idUser'),
       );
 
       if (response.statusCode == 200) {
@@ -251,7 +251,7 @@ class _MyCartState extends State<MyCart> {
   Future<void> updateCartApiCall(String cartId, int quantity) async {
     // Địa chỉ API và ID cart được truyền vào URL
     final String apiUrl =
-        'https://adadas.onrender.com/api/updateCart/$userid/$cartId';
+        '$BASE_API/api/updateCart/$userid/$cartId';
 
     // Tạo đối tượng body theo định dạng mà API yêu cầu
     final Map<String, dynamic> requestBody = {
@@ -293,7 +293,7 @@ class _MyCartState extends State<MyCart> {
 
     try {
       final response = await http.post(
-        Uri.parse('https://adadas.onrender.com/api/addBill/$userid'),
+        Uri.parse('$BASE_API/api/addBill/$userid'),
         headers: {
           'Content-Type': 'application/json',
         },

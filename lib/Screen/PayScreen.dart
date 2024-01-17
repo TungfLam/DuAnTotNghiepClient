@@ -30,7 +30,7 @@ class _PayScreenState extends State<PayScreen> {
   Future<void> createPayment() async {
     // const apiUrl = '$BASE_API/order/create_payment_url/$idcart';
     final apiUrl =
-        'https://adadas.onrender.com/order/create_payment_url/${widget.userid}';
+        '$BASE_API/order/create_payment_url/${widget.userid}';
     final requestData = {
       "idCart": widget.idcart,
       "amount": widget.totalAmount,

@@ -382,7 +382,7 @@ class _DetailFavariteProductState extends State<DetailFavariteProduct> {
       //   ),
       final response = await http.read(
         Uri.parse(
-          'https://adadas.onrender.com/api/getListAll_deltail/${widget.productfvr?.productId?.sId}',
+          '$BASE_API/api/getListAll_deltail/${widget.productfvr?.productId?.sId}',
         ),
         headers: {'Content-Type': 'application/json'},
       );
@@ -421,7 +421,7 @@ class _DetailFavariteProductState extends State<DetailFavariteProduct> {
     try {
       final response = await http.post(
         Uri.parse(
-            'https://adadas.onrender.com/api/addCart/6524318746e12608b3558d74/$productId'),
+            '$BASE_API/api/addCart/6524318746e12608b3558d74/$productId'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'quantity': quantity}),
       );
