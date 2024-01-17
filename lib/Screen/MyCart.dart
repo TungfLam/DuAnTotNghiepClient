@@ -338,19 +338,139 @@ class _MyCartState extends State<MyCart> {
     totalAmount = 0;
     for (int i = 0; i < products.length; i++) {
       if (selectedProducts[i]) {
-        totalAmount += (products[i].productId?.product?.price)! *
-            (products[i].quantity ?? 0);
+        if (products[i].productId?.product?.discount == null) {
+          totalAmount += (products[i].productId?.product?.price)! *
+              (products[i].quantity ?? 0);
+        } else if (products[i].productId?.product?.discount != null) {
+          totalAmount += (products[i].productId?.product?.discount)! *
+              (products[i].quantity ?? 0);
+        }
       }
     }
   }
 
-  void _showProductDetailsModal(BuildContext context, ListCart product) {
-    showModalBottomSheet(
+  void _showProductDetailsModal(BuildContext context, ListCart product) async {
+    bool? isBottomSheetClosed = await showModalBottomSheet<bool>(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return Container();
+            return SingleChildScrollView(
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(18),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              product.productId?.product?.image?.elementAt(0) ??
+                                  "",
+                              height: 100,
+                              width: 100,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product.productId?.product?.name ?? "Unknown",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                  color: Color(0xff6342E8),
+                                ),
+                              ),
+                              Text(
+                                  '${product.productId?.sizeId?.name}/${product.productId?.colorId?.name}'),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Số lượng: ${product.quantity}'),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.grey, width: 1),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(5))),
+                                    child: StatefulBuilder(
+                                      builder: (context, setState) {
+                                        return Row(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  decreaseQuantity(product
+                                                      .productId!.quantity!);
+                                                });
+                                                updateCartApiCall(
+                                                    product.sId!,
+                                                    quantityselect +
+                                                        (product.quantity!));
+                                              },
+                                              icon: const Icon(Icons.remove),
+                                            ),
+                                            Text(
+                                              '${quantityselect + (product.quantity!)}'
+                                                  .toString(),
+                                              style:
+                                                  const TextStyle(fontSize: 16),
+                                            ),
+                                            IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  increaseQuantity(product
+                                                      .productId!.quantity!);
+                                                });
+                                                updateCartApiCall(
+                                                    product.sId!,
+                                                    quantityselect +
+                                                        (product.quantity!));
+                                              },
+                                              icon: const Icon(Icons.add),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.only(top: 10),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context, true);
+                          quantityselect = 0;
+                          fetchProducts();
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Color(0xFF6342E8)),
+                        ),
+                        child:
+                            Text('Lưu', style: TextStyle(color: Colors.white)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
           },
         );
       },
@@ -858,67 +978,6 @@ class _MyCartState extends State<MyCart> {
                                                     style: const TextStyle(
                                                         fontSize: 16),
                                                   ),
-                                                  // Container(
-                                                  //   decoration: BoxDecoration(
-                                                  //       border: Border.all(
-                                                  //           color: Colors.grey,
-                                                  //           width: 1),
-                                                  //       borderRadius:
-                                                  //           const BorderRadius
-                                                  //               .all(
-                                                  //               Radius.circular(
-                                                  //                   5))),
-                                                  //   child: StatefulBuilder(
-                                                  //     builder:
-                                                  //         (context, setState) {
-                                                  //       return Row(
-                                                  //         children: [
-                                                  //           IconButton(
-                                                  //             onPressed: () {
-                                                  //               setState(() {
-                                                  //                 decreaseQuantity(product
-                                                  //                     .productId!
-                                                  //                     .quantity!);
-                                                  //               });
-                                                  //               updateCartApiCall(
-                                                  //                   product
-                                                  //                       .sId!,
-                                                  //                   quantityselect +
-                                                  //                       quantitysave);
-                                                  //             },
-                                                  //             icon: const Icon(
-                                                  //                 Icons.remove),
-                                                  //           ),
-                                                  //           Text(
-                                                  //             //  '${quantityselect + product.quantity!}'
-                                                  //             '${quantityselect + quantitysave}'
-                                                  //                 .toString(),
-                                                  //             style:
-                                                  //                 const TextStyle(
-                                                  //                     fontSize:
-                                                  //                         16),
-                                                  //           ),
-                                                  //           IconButton(
-                                                  //             onPressed: () {
-                                                  //               setState(() {
-                                                  //                 increaseQuantity(product
-                                                  //                     .productId!
-                                                  //                     .quantity!);
-                                                  //               });
-                                                  //               updateCartApiCall(
-                                                  //                   product
-                                                  //                       .sId!,
-                                                  //                   quantityselect +
-                                                  //                       quantitysave);
-                                                  //             },
-                                                  //             icon: const Icon(
-                                                  //                 Icons.add),
-                                                  //           ),
-                                                  //         ],
-                                                  //       );
-                                                  //     },
-                                                  //   ),
-                                                  // ),
                                                 ],
                                               ),
                                             ),
@@ -931,14 +990,28 @@ class _MyCartState extends State<MyCart> {
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
-                                                  Text(
-                                                    '${NumberFormat.decimalPattern().format(product.productId?.product?.price ?? '')} đ',
-                                                    style: const TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                                  if (product.productId?.product
+                                                          ?.discount ==
+                                                      null)
+                                                    Text(
+                                                      '${NumberFormat.decimalPattern().format(product.productId?.product?.price ?? '')} đ',
+                                                      style: const TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
                                                     ),
-                                                  ),
+                                                  if (product.productId?.product
+                                                          ?.discount !=
+                                                      null)
+                                                    Text(
+                                                      '${NumberFormat.decimalPattern().format(product.productId?.product?.discount ?? '')} đ',
+                                                      style: const TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
                                                 ],
                                               ),
                                             ),

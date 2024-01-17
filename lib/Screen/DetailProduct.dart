@@ -22,7 +22,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailProduct extends StatefulWidget {
   const DetailProduct(
-      {Key? key, required this.title, this.product, this.productfvr, this.productdc})
+      {Key? key,
+      required this.title,
+      this.product,
+      this.productfvr,
+      this.productdc})
       : super(key: key);
   final String title;
   final productModel? product;
@@ -50,15 +54,9 @@ class _DetailProductState extends State<DetailProduct> {
   void initState() {
     super.initState();
     fetchProductList();
-    // arrComment.add(Comment(sId: "6558d4bcc1ab8c3f98265386" , productId: "65785ed034b7645148ab9f0a",
-    //   userId: "6524318746e12608b3558d74",comment: "em dep lam2",rating: 4 ,date: "123456" , images: ["$BASE_API/avatas/6524318746e12608b3558d74_images.jpg" , "$BASE_API/avatas/6524318746e12608b3558d74_images.jpg" ]));
-    // setState(() {
-    //
-    // });
-    if(widget.product != null){
+    if (widget.product != null) {
       getComment();
     }
-
   }
 
   void incrementQuantity() {
@@ -131,13 +129,22 @@ class _DetailProductState extends State<DetailProduct> {
                             Text(
                               widget.product?.name ?? 'Unknown Product Name',
                             ),
-                            Text(
-                              '${NumberFormat.decimalPattern().format(widget.product?.price ?? 0.00)} đ',
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                            if (widget.product?.discount == null)
+                              Text(
+                                '${NumberFormat.decimalPattern().format(widget.product?.price ?? 0.00)} đ',
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            if (widget.product?.discount != null)
+                              Text(
+                                '${NumberFormat.decimalPattern().format(widget.product?.discount ?? 0.00)} đ',
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
+                              ),
                           ],
                         ),
                       ),
@@ -169,7 +176,8 @@ class _DetailProductState extends State<DetailProduct> {
                         child: Container(
                           padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                           decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(Radius.circular(5)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(5)),
                             color: _selectedColor == uniqueColor
                                 ? const Color(0xFF6342E8)
                                 : Colors.grey[300],
@@ -213,7 +221,8 @@ class _DetailProductState extends State<DetailProduct> {
                         child: Container(
                           width: 50,
                           decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(Radius.circular(5)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(5)),
                             color: _selectedSize == uniqueSize
                                 ? const Color(0xFF6342E8)
                                 : Colors.grey[300],
@@ -243,7 +252,8 @@ class _DetailProductState extends State<DetailProduct> {
                       height: 40,
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey, width: 1),
-                          borderRadius: const BorderRadius.all(Radius.circular(5))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(5))),
                       child: StatefulBuilder(
                         builder: (context, setState) {
                           return Row(
@@ -284,12 +294,10 @@ class _DetailProductState extends State<DetailProduct> {
                           _selectedColor.isNotEmpty) {
                         for (var productListSize in productList) {
                           if (_selectedSize == productListSize.sizeId?.name &&
-                              _selectedColor ==
-                                  productListSize.colorId?.name) {
+                              _selectedColor == productListSize.colorId?.name) {
                             setState(() {
                               maxQuantity = productListSize.quantity!;
-                              _selectedProductListSizeId =
-                                  productListSize.sId;
+                              _selectedProductListSizeId = productListSize.sId;
                             });
                           }
                         }
@@ -436,8 +444,10 @@ class _DetailProductState extends State<DetailProduct> {
     final String? idUser = prefs.getString("idUser");
     try {
       final response = await http.post(
+
         Uri.parse(
             '$BASE_API/api/addCart/$idUser/$productId'),
+
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'quantity': quantity}),
       );
@@ -459,8 +469,8 @@ class _DetailProductState extends State<DetailProduct> {
   }
 
   Future<void> getComment() async {
-    final response = await http.get(
-        Uri.parse("$BASE_API/api/comment/${widget.product!.sId}?count=4"));
+    final response = await http
+        .get(Uri.parse("$BASE_API/api/comment/${widget.product!.sId}?count=4"));
 
     if (response.statusCode == 200) {
       final data = await json.decode(response.body);
@@ -521,12 +531,25 @@ class _DetailProductState extends State<DetailProduct> {
                             ),
                             Expanded(
                               flex: 3,
-                              child: Text(
-                                '${NumberFormat.decimalPattern().format(widget.product?.price ?? 0.00)} đ',
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold),
+                              child: Column(
+                                children: [
+                                  if (widget.product?.discount == null)
+                                    Text(
+                                      '${NumberFormat.decimalPattern().format(widget.product?.price ?? 0.00)} đ',
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  if (widget.product?.discount != null)
+                                    Text(
+                                      '${NumberFormat.decimalPattern().format(widget.product?.discount ?? 0.00)} đ',
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                ],
                               ),
                             )
                           ],
@@ -561,29 +584,35 @@ class _DetailProductState extends State<DetailProduct> {
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             )),
-                        arrComment.isNotEmpty ?
-                        Container(
-                          width: double.infinity,
-                          margin: const EdgeInsets.only(top: 8),
-                          child: Column(
-                            children: arrComment
-                                .map((e) => itemComment(item: e))
-                                .toList(),
-                          ),
-                        ) :
-                        SizedBox(
-                          height: 300,
-                            child: Center(
-                                child: Image.asset('lib/images/empty-box.png' , width: 200 , height: 200,
-                                )
-                            )
-                        ),
+                        arrComment.isNotEmpty
+                            ? Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.only(top: 8),
+                                child: Column(
+                                  children: arrComment
+                                      .map((e) => itemComment(item: e))
+                                      .toList(),
+                                ),
+                              )
+                            : SizedBox(
+                                height: 300,
+                                child: Center(
+                                    child: Image.asset(
+                                  'lib/images/empty-box.png',
+                                  width: 200,
+                                  height: 200,
+                                ))),
                         const SizedBox(height: 8),
                         InkWell(
                             onTap: () {
-                              Navigator.of(context).pushNamed(AllComment.nameComment, arguments: widget.product?.sId);
+                              Navigator.of(context).pushNamed(
+                                  AllComment.nameComment,
+                                  arguments: widget.product?.sId);
                             },
-                            child: Text((arrComment.length >= 4) ? "Xem tất cả đánh giá" : "",
+                            child: Text(
+                              (arrComment.length >= 4)
+                                  ? "Xem tất cả đánh giá"
+                                  : "",
                               style: const TextStyle(fontSize: 18),
                             )),
                         const SizedBox(height: 56)

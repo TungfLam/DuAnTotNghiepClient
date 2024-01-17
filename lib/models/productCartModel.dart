@@ -140,14 +140,16 @@ class Product {
   String? name;
   List<String>? image;
   int? price;
+  int? discount;
 
-  Product({this.sId, this.name, this.image, this.price});
+  Product({this.sId, this.name, this.image, this.price, this.discount});
 
   Product.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     name = json['name'];
     image = json['image'].cast<String>();
     price = json['price'];
+    discount = json['discount'];
   }
 
   Map<String, dynamic> toJson() {
@@ -156,6 +158,7 @@ class Product {
     data['name'] = this.name;
     data['image'] = this.image;
     data['price'] = this.price;
+    data['discount'] = this.discount;
     return data;
   }
 }
