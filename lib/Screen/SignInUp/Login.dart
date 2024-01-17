@@ -75,6 +75,8 @@ class _LoginState extends State<Login> {
 
           await prefs.setBool("isLogin", true);
 
+          print(res.addressCity.toString());
+
           showSnackBar(context, res.msg!);
 
           await Navigator.pushReplacementNamed(context,"/");

@@ -73,7 +73,7 @@ Future<void> showDialogUilt2(BuildContext context , String title , String conten
                 onPressed: (){
                   Navigator.pop(context);
                 },
-                child: const Text("back")
+                child: const Text("Hủy")
             ),
             TextButton(
                 onPressed: (){

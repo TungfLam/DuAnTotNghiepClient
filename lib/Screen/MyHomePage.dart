@@ -56,6 +56,8 @@ class _MyHomePageState extends State<MyHomePage> {
     final String? avarta = prefs.getString("avata");
     final String? email = prefs.getString("email");
     final String? fullname = prefs.getString("fullname");
+
+
     print('$email');
     print('$avarta');
     print('$fullname');
