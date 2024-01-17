@@ -1,6 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:core';
 
+import 'package:appclient/Widgets/loading.dart';
 import 'package:appclient/models/productFvoriteModel.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +23,13 @@ class Favorite extends StatefulWidget {
 
 class _FavoriteState extends State<Favorite> {
   List<ListFavorite> products = []; // Danh sách sản phẩm từ API
+  bool _isLoading = false;
+
 
   Future<void> fetchFavoritesProducts() async {
+    setState(() {
+      _isLoading = true;
+    });
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final bool? isLogin = prefs.getBool("isLogin");
     final String? idUser = prefs.getString("idUser");
@@ -29,6 +37,9 @@ class _FavoriteState extends State<Favorite> {
       if (isLogin == true) {
         print("người dùng đã login");
       } else if (isLogin == false) {
+        setState(() {
+          _isLoading = false;
+        });
         Navigator.pushNamed(context, '/login');
       }
     }
@@ -53,6 +64,7 @@ class _FavoriteState extends State<Favorite> {
               products = favoriteData
                   .map((favorite) => ListFavorite.fromJson(favorite))
                   .toList();
+              print("leng : ${products.length}");
             });
           } else {
             print('Invalid data format: listFavorite is not a List');
@@ -64,9 +76,16 @@ class _FavoriteState extends State<Favorite> {
         print('Error fetching favorites: $e');
       }
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void _removeItemFromFavorite(String favoriteId) async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
       final response = await http.get(
         Uri.parse('$BASE_API/api/deleteFavorite/$favoriteId'),
@@ -87,6 +106,10 @@ class _FavoriteState extends State<Favorite> {
       // Xử lý khi có lỗi
       print('Error removing from cart: $error');
     }
+    setState(() {
+      _isLoading = false;
+    });
+
   }
 
   @override
@@ -116,6 +139,7 @@ class _FavoriteState extends State<Favorite> {
       ),
       body: Stack(
         children: [
+          products.isNotEmpty ?
           Padding(
             padding: const EdgeInsets.all(20),
             child: Container(
@@ -171,8 +195,8 @@ class _FavoriteState extends State<Favorite> {
                                               (BuildContext context,
                                                   Object error,
                                                   StackTrace? stackTrace) {
-                                        return Center(
-                                            child: const Icon(Icons.image));
+                                        return const Center(
+                                            child: Icon(Icons.image));
                                       }),
                                     ),
                                   ),
@@ -217,15 +241,15 @@ class _FavoriteState extends State<Favorite> {
                                                           FontWeight.bold),
                                                 ),
                                                 Container(
-                                                  decoration: BoxDecoration(
+                                                  decoration: const BoxDecoration(
                                                     color: Color(0xff6342E8),
                                                     borderRadius:
                                                         BorderRadius.all(
                                                             Radius.circular(
                                                                 10)),
                                                   ),
-                                                  padding: EdgeInsets.all(5),
-                                                  child: Icon(
+                                                  padding: const EdgeInsets.all(5),
+                                                  child: const Icon(
                                                     Icons.shopify_outlined,
                                                     color: Colors.white,
                                                   ),
@@ -304,34 +328,16 @@ class _FavoriteState extends State<Favorite> {
                 },
               ),
             ),
+          ) :
+          SizedBox(
+              height: double.infinity,
+              child: Center(
+                  child: Image.asset('lib/images/empty-box.png' , width: 200 , height: 200,
+                  )
+              )
           ),
-          // Align(
-          //   alignment: Alignment.bottomCenter,
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(16.0),
-          //     child: SizedBox(
-          //       width: double.infinity,
-          //       height: 50,
-          //       child: ElevatedButton.icon(
-          //         onPressed: () {
-          //           // Xử lý khi nút được nhấn
-          //         },
-          //         icon: const Icon(
-          //           Icons.shopping_cart,
-          //           color: Colors.white,
-          //         ), // Icon tùy chọn
-          //         label: const Text(
-          //           'ADD ALL TO CART',
-          //           style: TextStyle(
-          //               color: Colors.white, fontWeight: FontWeight.bold),
-          //         ),
-          //         style: ElevatedButton.styleFrom(
-          //           backgroundColor: const Color(0xFF6342E8), // Đặt màu nền
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
+
+          _isLoading ? const showLoading() : const SizedBox()
         ],
       ),
     );

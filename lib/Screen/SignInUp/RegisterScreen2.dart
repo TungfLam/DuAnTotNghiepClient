@@ -80,7 +80,7 @@ class _RegisterState extends State<RegisterScreen2> {
     });
   }
 
-  Future<void> _callRegister(BuildContext context , String phone , String fullname , String email , String password) async{
+  Future<void> _callRegister(BuildContext context , String phone , String fullname , String username , String password) async{
     setState(() {
       _isLoading = true;
     });
@@ -97,7 +97,7 @@ class _RegisterState extends State<RegisterScreen2> {
     }
     request.fields['Phone'] = phone;
     request.fields['Fullname'] = fullname;
-    request.fields['Email'] = email;
+    request.fields['username'] = username;
     request.fields['Password'] = password;
     request.fields['Token'] = token;
     request.fields['DeviceId'] = deviceId;
@@ -116,7 +116,7 @@ class _RegisterState extends State<RegisterScreen2> {
         await prefs.setString("role", res.role.toString());
         await prefs.setBool("isLogin", true);
 
-        await Navigator.pushReplacementNamed(context,"/");
+        await Navigator.pushReplacementNamed(context,"/login");
       }
     }else{
       showSnackBarErr(context, "Lỗi server : code ${response.statusCode}");
@@ -377,10 +377,10 @@ class _RegisterState extends State<RegisterScreen2> {
                                       });
                                     }
                                   },
-                                  keyboardType: TextInputType.emailAddress,
+                                  keyboardType: TextInputType.text,
                                   decoration: InputDecoration(
-                                      labelText: "Email",
-                                      hintText: "Email",
+                                      labelText: "Username",
+                                      hintText: "Username",
                                       border: OutlineInputBorder(
                                           borderRadius:
                                           BorderRadius.circular(10)),
@@ -437,7 +437,7 @@ class _RegisterState extends State<RegisterScreen2> {
   void _clickSave (BuildContext context , String phone){
     String fullname = _fullnameCtrl.text.trim();
     String address = _addressCtrl.text.trim();
-    String email = _emailCtrl.text.trim();
+    String username = _emailCtrl.text.trim();
     String password = _passwordCtrl.text.trim();
     String rePassword = _rePasswordCtrl.text.trim();
     String specificAddress = _specificAddress.text.trim();
@@ -456,9 +456,9 @@ class _RegisterState extends State<RegisterScreen2> {
       }
       phone = "0$phone";
 
-      if(email.isNotEmpty || email != ""){
-        if(!EmailValidator.validate(email)){
-          showSnackBarErr(context, "Email không đúng định dạng");
+      if(username.isNotEmpty){
+        if(username.length < 6 || username.length > 22){
+          showSnackBarErr(context, "Username phải từ 6 đến 22 ký tự");
         } else if(password.isEmpty || password == ""){
           showSnackBarErr(context, "Vui lòng nhập mật khẩu");
         }else if(rePassword.isEmpty || rePassword == ""){
@@ -468,7 +468,7 @@ class _RegisterState extends State<RegisterScreen2> {
         }else if(password.length < 8){
           showSnackBarErr(context, "Mật khẩu phải ít nhất 8 ký tự");
         }else{
-          _callRegister(context ,phone , fullname , email , password);
+          _callRegister(context ,phone , fullname , username , password);
         }
       }else{
         _callRegister(context ,phone , fullname , "" , "");

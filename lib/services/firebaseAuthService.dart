@@ -62,7 +62,7 @@ class FirebaseAuthService {
         }
 
       },
-      timeout: const Duration(seconds: 12)
+      timeout: const Duration(seconds: 62)
     );
   }
 

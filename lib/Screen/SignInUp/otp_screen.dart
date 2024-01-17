@@ -132,7 +132,7 @@ class _Otp_ScreenState extends State<Otp_Screen> {
             const SizedBox(height: 32),
             Container(
               margin: const EdgeInsets.only(right: 24 , left: 24),
-              child: CustomButton(text: "Đăng ký", onPressed: () {
+              child: CustomButton(text: "Xác nhận", onPressed: () {
                 if(otpCode != null){
                   if(verificationphone.isLogin!){
                     verifyOtpSignIn(context , verificationphone.verificationId.toString(), otpCode!);

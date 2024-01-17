@@ -7,11 +7,11 @@ import 'package:appclient/models/apiRes.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-const String BASE_API = "http://192.168.137.1:6868";
+const String BASE_API = "http://192.168.2.101:6868";
 // http://192.168.2.112:6868
 // https://adadas.onrender.com
 
-// Duy : http://192.168.2.101:6868
+// Duy : http://192.168.137.1:6868
 
 Future<bool> setToken(
     BuildContext context, String idUser, String token, String deviceId) async {

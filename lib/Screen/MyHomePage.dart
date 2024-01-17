@@ -35,6 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String mail = '';
   String fname = '';
   String _idUser = '';
+  String phone = '';
   var subscription;
   bool _isLoading = false;
 
@@ -56,6 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final String? avarta = prefs.getString("avata");
     final String? email = prefs.getString("email");
     final String? fullname = prefs.getString("fullname");
+    phone = prefs.getString('phone')!;
 
 
     print('$email');
@@ -116,7 +118,6 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }
     } else {
-      // sử lý khi chưa đăng nhập
       setState(() {
         _inout = "Đăng nhập";
       });
@@ -334,7 +335,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                             Text(
-                              mail,
+                              phone,
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey,

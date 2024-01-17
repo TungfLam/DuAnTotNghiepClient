@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:core';
 
 import 'package:appclient/Screen/DetailProduct.dart';
+import 'package:appclient/Widgets/uilt.dart';
+import 'package:appclient/models/productFvoriteModel.dart';
 import 'package:appclient/models/productModel.dart';
 import 'package:appclient/services/baseApi.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,7 @@ class MensProductList extends StatefulWidget {
 
 class _MensProductListState extends State<MensProductList> {
   List<productModel> products = []; // Danh sách sản phẩm từ API
+  List<ListFavorite> listFavorite = [];
   final scrollController = ScrollController();
   bool isLoadingMore = false;
   int page = 1;
@@ -28,6 +31,7 @@ class _MensProductListState extends State<MensProductList> {
 
   // Hàm để gọi API và cập nhật danh sách sản phẩm
   Future<void> fetchProducts() async {
+
     final response = await http.get(
       Uri.parse('$BASE_API/api/products/658b22fd972503452eb54013/$page'),
       headers: {'Content-Type': 'application/json'},
@@ -37,8 +41,7 @@ class _MensProductListState extends State<MensProductList> {
       final List<dynamic>? productData = jsonDecode(response.body);
       if (productData != null && mounted) {
         setState(() {
-          products = products +
-              productData.map((item) => productModel.fromJson(item)).toList();
+          products = products + productData.map((item) => productModel.fromJson(item)).toList();
         });
       }
     }
@@ -87,6 +90,7 @@ class _MensProductListState extends State<MensProductList> {
     }
    
   }
+
 
   @override
   void initState() {
@@ -185,7 +189,7 @@ class _MensProductListState extends State<MensProductList> {
                                   Container(
                                     width: double.infinity,
 
-                                    child: product.image?.elementAt(1) != null
+                                    child: product.image?.elementAt(0) != null
                                         ? ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(10.0),
@@ -210,11 +214,11 @@ class _MensProductListState extends State<MensProductList> {
                                     right: 5,
                                     child: IconButton(
                                       icon: Icon(
-                                        products[index].isFavorite ?? false
+                                        product.isFavorite ?? false
                                             ? Icons.favorite
                                             : Icons.favorite_border_outlined,
                                         color:
-                                            products[index].isFavorite ?? false
+                                        product.isFavorite ?? false
                                                 ? Color(0xFF6342E8)
                                                 : null,
                                       ),
